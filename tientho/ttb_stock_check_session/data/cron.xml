@@ -1,0 +1,20 @@
+<odoo noupdate="1">
+    <record id="ir_cron_generate_kvc_session" model="ir.cron">
+        <field name="name">Sinh phiên kiểm kê KVC</field>
+        <field name="model_id" ref="model_kvc_inventory_session"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_generate_weekly_kvc_session(target_date='')</field>
+        <field name="nextcall" eval="(DateTime.now() + relativedelta(days=(6 - DateTime.now().weekday()) % 7, hour=14, minute=0, second=0)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_recompute_augges_qty" model="ir.cron">
+        <field name="name">Kiểm kê: tính lại chênh lệch tồn kho augges và kiểm tồn</field>
+        <field name="model_id" ref="model_stock_check_session"/>
+        <field name="state">code</field>
+        <field name="code">model.search([]).action_qty_recomputed()</field>
+        <field name="active">False</field>
+    </record>
+</odoo>

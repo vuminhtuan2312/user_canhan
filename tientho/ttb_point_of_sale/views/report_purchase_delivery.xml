@@ -1,0 +1,53 @@
+<odoo>
+    <record id="view_report_purchase_delivery_form" model="ir.ui.view">
+        <field name="name">report.purchase.delivery.view.form</field>
+        <field name="model">report.purchase.delivery</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="branch"/>
+                        </h1>
+                    </div>
+                    <notebook>
+                        <page string="Chi tiết sản phẩm">
+                            <field name="line_ids" nolabel="1">
+                                <list>
+                                    <field name="product_id" />
+                                    <field name="qty_order" />
+                                    <field name="qty_received" />
+                                    <field name="price_unit" />
+                                    <field name="value_received" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_report_purchase_delivery_list" model="ir.ui.view">
+        <field name="name">report.purchase.delivery.list</field>
+        <field name="model">report.purchase.delivery</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="branch" />
+                <field name="supplier_name" />
+                <field name="supplier_code" />
+                <field name="qty_order" />
+                <field name="amount_order" />
+                <field name="qty_received" />
+                <field name="amount_received" />
+                <field name="rate_delivery" widget="percentage"/>
+                <field name="avg_delivery_days" />
+            </list>
+        </field>
+    </record>
+    <record id="wizard_purchase_delivery_action" model="ir.actions.act_window">
+        <field name="name">Báo cáo giao hàng thời vụ</field>
+        <field name="res_model">wizard.purchase.delivery</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

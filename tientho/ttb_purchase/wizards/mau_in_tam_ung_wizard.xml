@@ -1,0 +1,18 @@
+<odoo>
+    <record id="view_report_downloader_form" model="ir.ui.view">
+        <field name="name">report.downloader.form</field>
+        <field name="model">report.downloader</field>
+        <field name="arch" type="xml">
+            <form string="Download Report">
+                <group>
+                    <p>Báo cáo của bạn đã được tạo thành công. Vui lòng bấm vào đây để tải về.</p>
+                    <field name="file_data" filename="file_name"/>
+                    <field name="file_name" invisible="1"/>
+                </group>
+                <footer>
+                    <button string="Đóng" class="btn btn-secondary" special="cancel" data-hotkey="q"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

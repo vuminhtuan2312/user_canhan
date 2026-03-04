@@ -1,0 +1,166 @@
+<odoo>
+    <record id="view_product_sale_item_list" model="ir.ui.view">
+        <field name="name">product.sale.item.list</field>
+        <field name="model">product.sale.item</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="price" optional="show"/>
+                <field name="qty" optional="show"/>
+                <field name="matched_stock_item_code"/>
+                <field name="matched_stock_item_id"/>
+                <field name="diff_name" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_product_sale_item_form" model="ir.ui.view">
+        <field name="name">product.sale.item.form</field>
+        <field name="model">product.sale.item</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_show_point_category_1" type="object" string="Xem điểm MCH1" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="price"/>
+                        <field name="donvi"/>
+                        <field name="qty"/>
+                        <field name="batch_name"/>
+
+                        <field name="category_id_level_1"/>
+                        <field name="category_id_level_1_rate"/>
+                        <field name="category_id_level_1_type"/>
+                        <field name="category_id_level_2"/>
+                        <field name="category_id_level_2_rate"/>
+                        <field name="category_id_level_2_type"/>
+                        <field name="category_id_level_3"/>
+                        <field name="category_id_level_3_rate"/>
+                        <field name="category_id_level_3_type"/>
+                        <field name="category_id_level_4"/>
+                        <field name="category_id_level_4_rate"/>
+                        <field name="category_id_level_4_type"/>
+                        <field name="category_id_level_5"/>
+                        <field name="category_id_level_5_rate"/>
+                        <field name="category_id_level_5_type"/>
+                    </group>
+                    <notebook>
+                        <page name="match1" string="Sản phẩm tương hợp 0">
+                            <group>
+                                <field name="matched_stock_item_code"/>
+                                <field name="matched_stock_item_id"/>
+                                <field name="diff_name"/>
+                            </group>
+                        </page>
+                        <page name="match_n" string="Sản phẩm tương hợp 1-21">
+                            <group>
+                                <field name="matched_stock_item_code_1"/>
+                                <field name="matched_stock_item_id_1"/>
+                                <field name="diff_name_1"/>
+
+                                <field name="matched_stock_item_code_2"/>
+                                <field name="matched_stock_item_id_2"/>
+                                <field name="diff_name_2"/>
+
+                                <field name="matched_stock_item_code_3"/>
+                                <field name="matched_stock_item_id_3"/>
+                                <field name="diff_name_3"/>
+
+                                <field name="matched_stock_item_code_4"/>
+                                <field name="matched_stock_item_id_4"/>
+                                <field name="diff_name_4"/>
+
+                                <field name="matched_stock_item_code_5"/>
+                                <field name="matched_stock_item_id_5"/>
+                                <field name="diff_name_5"/>
+
+                                <field name="matched_stock_item_code_6"/>
+                                <field name="matched_stock_item_id_6"/>
+                                <field name="diff_name_6"/>
+
+                                <field name="matched_stock_item_code_7"/>
+                                <field name="matched_stock_item_id_7"/>
+                                <field name="diff_name_7"/>
+
+                                <field name="matched_stock_item_code_8"/>
+                                <field name="matched_stock_item_id_8"/>
+                                <field name="diff_name_8"/>
+
+                                <field name="matched_stock_item_code_9"/>
+                                <field name="matched_stock_item_id_9"/>
+                                <field name="diff_name_9"/>
+
+                                <field name="matched_stock_item_code_10"/>
+                                <field name="matched_stock_item_id_10"/>
+                                <field name="diff_name_10"/>
+
+                                <field name="matched_stock_item_code_11"/>
+                                <field name="matched_stock_item_id_11"/>
+                                <field name="diff_name_11"/>
+
+                                <field name="matched_stock_item_code_12"/>
+                                <field name="matched_stock_item_id_12"/>
+                                <field name="diff_name_12"/>
+
+                                <field name="matched_stock_item_code_13"/>
+                                <field name="matched_stock_item_id_13"/>
+                                <field name="diff_name_13"/>
+
+                                <field name="matched_stock_item_code_14"/>
+                                <field name="matched_stock_item_id_14"/>
+                                <field name="diff_name_14"/>
+
+                                <field name="matched_stock_item_code_15"/>
+                                <field name="matched_stock_item_id_15"/>
+                                <field name="diff_name_15"/>
+
+                                <field name="matched_stock_item_code_16"/>
+                                <field name="matched_stock_item_id_16"/>
+                                <field name="diff_name_16"/>
+
+                                <field name="matched_stock_item_code_17"/>
+                                <field name="matched_stock_item_id_17"/>
+                                <field name="diff_name_17"/>
+
+                                <field name="matched_stock_item_code_18"/>
+                                <field name="matched_stock_item_id_18"/>
+                                <field name="diff_name_18"/>
+
+                                <field name="matched_stock_item_code_19"/>
+                                <field name="matched_stock_item_id_19"/>
+                                <field name="diff_name_19"/>
+
+                                <field name="matched_stock_item_code_20"/>
+                                <field name="matched_stock_item_id_20"/>
+                                <field name="diff_name_20"/>
+
+                                <field name="matched_stock_item_code_21"/>
+                                <field name="matched_stock_item_id_21"/>
+                                <field name="diff_name_21"/>
+                            </group>
+                        </page>
+                        <page name="match_group" string="Tương hợp nhóm">
+                            <group>
+                                <field name="matched_group_item_id"/>
+                                <field name="matched_group_item_code"/>
+                                <field name="diff_name_group"/>
+                            </group>
+                        </page>
+                        <page name="ai_vector" string="ai_vector">
+                            <field name="ai_vector"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_product_sale_item" model="ir.actions.act_window">
+        <field name="name">Sản phẩm bán ra</field>
+        <field name="res_model">product.sale.item</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

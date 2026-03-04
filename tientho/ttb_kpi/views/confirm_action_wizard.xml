@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_confirm_action_wizard" model="ir.ui.view">
+        <field name="name">confirm.action.wizard.form</field>
+        <field name="model">reopen.approval.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Gửi duyệt mở phiếu">
+                <group>
+                    <field name="approver_id" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Xác nhận" type="object" class="btn-primary"/>
+                    <button name="action_cancel" string="Hủy" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+     <record id="change_category_action_wizard" model="ir.ui.view">
+        <field name="name">change_category.action.wizard.form</field>
+        <field name="model">change.category.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Chuyển quầy">
+                <group>
+                    <field name="ttb_categ_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Xác nhận" type="object" class="btn-primary"/>
+                    <button name="action_cancel" string="Hủy" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+     <record id="change_area_action_wizard" model="ir.ui.view">
+        <field name="name">change.area.action.wizard.form</field>
+        <field name="model">change.area.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Chuyển khu vực">
+                <group>
+                    <field name="ttb_area_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Xác nhận" type="object" class="btn-primary"/>
+                    <button name="action_cancel" string="Hủy" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+     <record id="pause_work_action_wizard" model="ir.ui.view">
+        <field name="name">pause.work.action.wizard.form</field>
+        <field name="model">pause.work.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Nghỉ tạm thời">
+                <group>
+                    <field name="date_start" widget="daterange" options="{'end_date_field': 'date_end'}"/>
+                    <field name="date_end" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Xác nhận" type="object" class="btn-primary"/>
+                    <button name="action_cancel" string="Hủy" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="quit_job_action_wizard" model="ir.ui.view">
+        <field name="name">quit.job.action.wizard.form</field>
+        <field name="model">quit.job.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Nghỉ việc">
+                <group>
+                    <field name="quit_type"/>
+                    <field name="reason" invisible="quit_type != 'sudden_leave'"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Xác nhận" type="object" class="btn-primary"/>
+                    <button name="action_cancel" string="Hủy" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

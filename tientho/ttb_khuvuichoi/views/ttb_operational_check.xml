@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Hậu kiểm: List + Form + Wizard + Action + Menu -->
+
+    <record id="view_ttb_operational_task_audit_list" model="ir.ui.view">
+        <field name="name">ttb.operational.task.audit.list</field>
+        <field name="model">ttb.operational.task</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="audit_state == 'pending'" decoration-danger="audit_state == 'fail'" decoration-success="audit_state == 'pass'" default_order="audit_state asc, actual_date_end desc">
+                <field name="name" readonly="1"/>
+                <field name="employee_id" widget="many2one_avatar_user"/>
+                <field name="area_id"/>
+                <field name="actual_date_end"/>
+                <field name="audit_state" widget="badge" decoration-warning="audit_state == 'pending'" decoration-success="audit_state == 'pass'" decoration-danger="audit_state == 'fail'"/>
+                <field name="audit_user_id" widget="many2one_avatar_user"/>
+                <field name="can_audit" column_invisible="True"/>
+                <button name="action_audit_pass" string="Đạt" type="object" icon="fa-check" class="btn-success" invisible="audit_state != 'pending' or state != 'done' or not can_audit"/>
+                <button name="action_audit_fail_wizard" string="Lỗi" type="object" icon="fa-times" class="btn-danger" invisible="audit_state != 'pending' or state != 'done' or not can_audit"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ttb_operational_task_audit_form" model="ir.ui.view">
+        <field name="name">ttb.operational.task.audit.form</field>
+        <field name="model">ttb.operational.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="can_audit" invisible="1"/>
+                    <button name="action_audit_pass" string="ĐẠT" type="object" class="btn-success oe_highlight" invisible="audit_state != 'pending' or state != 'done' or not can_audit"/>
+                    <button name="action_audit_fail_wizard" string="KHÔNG ĐẠT" type="object" class="btn-danger" invisible="audit_state != 'pending' or state != 'done' or not can_audit"/>
+                    <field name="audit_state" widget="statusbar" statusbar_visible="pending,pass,fail"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="ĐẠT" bg_color="text-bg-success" invisible="audit_state != 'pass'"/>
+                    <widget name="web_ribbon" title="KHÔNG ĐẠT" bg_color="text-bg-danger" invisible="audit_state != 'fail'"/>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Bằng chứng thực tế">
+                            <field name="proof_image" widget="image" options="{'size': [600, 600]}" nolabel="1" readonly="1"/>
+                        </group>
+                        <group>
+                            <group string="Thông tin nhân viên">
+                                <field name="employee_id"/>
+                                <field name="area_id"/>
+                                <field name="actual_date_end"/>
+                            </group>
+                            <group string="Kết quả đánh giá">
+                                <field name="audit_note" readonly="audit_state != 'pending'"/>
+                                <field name="audit_user_id" readonly="1"/>
+                                <field name="audit_date" readonly="1"/>
+                            </group>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Tiêu chuẩn / Hướng dẫn">
+                            <div class="alert alert-info" role="alert">
+                                <strong>Tiêu chuẩn công việc:</strong><br/>
+                                <field name="description" readonly="1"/>
+                            </div>
+                            <div class="alert alert-success" role="alert" invisible="not expected_result">
+                                <strong>Kết quả mong muốn:</strong>
+                                <div class="mt-2">
+                                    <field name="expected_result" readonly="1" nolabel="1"/>
+                                </div>
+                            </div>
+                            <div class="alert alert-warning" role="alert" invisible="not avoid_errors">
+                                <strong>Lỗi cần tránh:</strong><br/>
+                                <field name="avoid_errors" readonly="1"/>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_audit" model="ir.actions.act_window">
+        <field name="name">Hậu kiểm</field>
+        <field name="res_model">ttb.operational.task</field>
+        <field name="view_mode">list,kanban,form,pivot</field>
+        <field name="domain">[('is_audit_required', '=', True)]</field>
+        <field name="context">{'search_default_audit_pending': 1}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_ttb_operational_task_audit_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_ttb_operational_task_audit_form')})]"/>
+    </record>
+
+    <menuitem id="ttb_menu_audit" name="Hậu kiểm" parent="ttb_menu_management" action="action_audit" sequence="20"/>
+</odoo>

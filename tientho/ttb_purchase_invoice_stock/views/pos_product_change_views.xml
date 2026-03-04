@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- pos product fix change -->
+    <record id="pos_product_fix_change_view_form" model="ir.ui.view">
+        <field name="name">ttb.pos.product.fix.change.form</field>
+        <field name="model">ttb.pos.product.fix.change</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="change_product_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="pos_product_fix_change_view_list" model="ir.ui.view">
+        <field name="name">ttb.pos.product.fix.change.list</field>
+        <field name="model">ttb.pos.product.fix.change</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_id"/>
+                <field name="change_product_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_pos_product_fix_change_action" model="ir.actions.act_window">
+        <field name="name">Sản phẩm thay thế cố định</field>
+        <field name="res_model">ttb.pos.product.fix.change</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="ttb_pos_product_fix_change_menu"
+        name="Sản phẩm thay thế cố định"
+        parent="ttb_pos_invoice_config_menu"
+        action="ttb_pos_product_fix_change_action"
+    />
+
+    <!-- pos product no change -->
+    <record id="pos_product_no_change_view_form" model="ir.ui.view">
+        <field name="name">ttb.pos.product.no.change.form</field>
+        <field name="model">ttb.pos.product.no.change</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="pos_product_no_change_view_list" model="ir.ui.view">
+        <field name="name">ttb.pos.product.no.change.list</field>
+        <field name="model">ttb.pos.product.no.change</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_pos_product_no_change_action" model="ir.actions.act_window">
+        <field name="name">Sản phẩm không thay thế</field>
+        <field name="res_model">ttb.pos.product.no.change</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="ttb_pos_product_no_change_menu"
+        name="Sản phẩm không thay thế"
+        parent="ttb_pos_invoice_config_menu"
+        action="ttb_pos_product_no_change_action"
+    />
+</odoo>

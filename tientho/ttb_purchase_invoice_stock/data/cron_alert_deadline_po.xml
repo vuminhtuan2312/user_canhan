@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Cron job kiểm tra deadline PO -->
+        <record id="cron_check_po_deadline" model="ir.cron">
+            <field name="name">Kiểm tra deadline đơn hàng mua</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="state">code</field>
+            <field name="code">model._check_alert_po_deadline()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=17, minute=1, second=0, microsecond=0)"/>
+        </record>
+
+        <record id="cron_check_po_compare" model="ir.cron">
+            <field name="name">Kiểm tra trạng thái đơn hàng</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_compare_invoice_po()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=17, minute=1, second=0, microsecond=0)"/>
+        </record>
+
+        <record id="cron_update_data_po" model="ir.cron">
+            <field name="name">Update data chứng từ cho PO P47695</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_update_data_po()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=17, minute=1, second=0, microsecond=0)"/>
+        </record>
+
+         <record id="cron_check_data_po_invoice" model="ir.cron">
+            <field name="name">Kiểm tra dữ liệu bị lệch giữa PO với hóa đơn đỏ</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="state">code</field>
+            <field name="code">model.check_data_diff_po_invoice()</field>
+            <field name="interval_number">10</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="False"/>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(minutes=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+
+        <record id="cron_update_data_vector_invoice_line" model="ir.cron">
+            <field name="name">Update data vector cho các dòng hóa đơn chi tiết</field>
+            <field name="model_id" ref="ttb_purchase_invoice_stock.model_ttb_nimbox_invoice"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_update_data_vector_for_invoice_line()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+            <field name="nextcall"
+                   eval="(DateTime.now() + timedelta(days=1)).replace(hour=17, minute=1, second=0, microsecond=0)"/>
+        </record>
+    </data>
+</odoo>

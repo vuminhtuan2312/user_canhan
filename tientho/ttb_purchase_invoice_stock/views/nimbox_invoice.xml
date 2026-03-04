@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_nimbox_invoice_view_form" model="ir.ui.view">
+        <field name="name">ttb.nimbox.invoice.form</field>
+        <field name="model">ttb.nimbox.invoice</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Xác nhận" type="object" name="action_confirm" class="btn btn-primary" invisible="state== 'done' "/>
+                    <button string="Hóa đơn không hợp lệ" type="object" name="button_not_matching" class="btn btn-primary" invisible="state in ['done', 'not_matching'] "/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_pickings" icon="fa-truck">
+                            <field name="delivery_count" widget="statinfo" string="Điều chuyển"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ttb_branch_id" readonly="state== 'done' "/>
+                            <field name="ttb_vendor_invoice_no" readonly="state== 'done' "/>
+                            <field name="ttb_vendor_invoice_code" readonly="state== 'done' "/>
+                            <field name="ttb_price_unit" readonly="state== 'done' "/>
+                            <field name="list_product" readonly="state== 'done' " invisible="1"/>
+                            <field name="count_product" readonly="state== 'done' "/>
+                            <field name="ttb_product_ids" widget="many2many_tags" invisible="1"/>
+                            <field name="count_ttb_product" invisible="1"/>
+                            <field name="po_ids" widget="many2many_tags" options="{'no_quick_create': True, 'no_create_edit': True}" readonly="1"/>
+                            <field name="ttb_total_price_unit"/>
+                            <field name="status_mapping" readonly="1"/>
+                            <field name="is_line_exclude_tax"/>
+                            <field name="line_exclude_tax"/>
+
+                        </group>
+                        <group>
+                            <field name="ttb_vendor_name" readonly="state== 'done'"/>
+                            <field name="ttb_vendor_vat" readonly="state== 'done'"/>
+                            <field name="ttb_vendor_invoice_date" readonly="state== 'done'"/>
+                            <field name="domain_po_ids" invisible="1"/>
+
+                            <field name="id_nibot"/>
+                            <field name="tien_c_thue"/>
+                            <field name="total_thanhtien"/>
+                            <field name="total_diff"/>
+                            <field name="tien_thue"/>
+                            <field name="thuesuat"/>
+                            <field name="tien_ck_tm"/>
+                            <field name="tien_phi"/>
+                            <field name="trang_thai_hd"/>
+                            <field name="hvtnmhang"/>
+                            <field name="dia_chi_nmhang"/>
+                            <field name="ma_nmhang"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Chi tiết hóa đơn" name="nimbox_line_ids" >
+                            <field name="nimbox_line_ids">
+                                <list limit="800" create="0" edit="0">
+                                    <field name="id" optional="hide"/>
+                                    <field name="tchat" optional="show"/>
+                                    <field name="tensp"/>
+                                    <field name="soluong" optional="show"/>
+                                    <field name="donvi" optional="show"/>
+                                    <field name="dongia" optional="show"/>
+                                    <field name="ti_le_chiet_khau" optional="show"/>
+                                    <field name="so_tien_chiet_khau" optional="show"/>
+                                    <field name="thuesuat" optional="show"/>
+                                    <field name="thanhtien" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="XML" name="xml">
+                            <field name="formatted_xml_display"
+                               widget="code"
+                               options="{'mode': 'xml'}"
+                               readonly="1"
+                               force_save="1"
+                               />
+                        </page>
+                        <page string="Đơn mua hàng cùng MST" name="page_po_map_vat_ids" invisible="1">
+<!--                              invisible="state== 'done' or not po_map_vat_ids">-->
+                            <field name="po_map_vat_ids" context="{'res_id': id}">
+                                <list limit="80" default_order="difference_amount asc">
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="ttb_vat"/>
+                                    <field name="received_amount_total" string="Tổng tiền" optional="show"/>
+                                    <field name="difference_amount" string="Tiền lệch" optional="show"/>
+                                    <field name="ttb_product_ids" widget="many2many_tags"/>
+                                    <field name="count_ttb_product"/>
+                                    <field name="ttb_vendor_invoice_no_lstrip" optional="hide"/>
+                                    <field name="ttb_vendor_invoice_code" optional="hide"/>
+                                    <field name="ttb_vendor_invoice_date" optional="hide"/>
+                                    <field name="ttb_receipt_doc" filename="ttb_receipt_doc_name" readonly="1" widget="binary_preview" options="{'accepted_file_extensions': '.pdf'}"/>
+                                    <field name="ttb_receipt_doc_name" column_invisible="1"/>
+                                    <field name="ttb_vendor_doc" filename="ttb_vendor_doc_name" readonly="1" widget="binary_preview" options="{'accepted_file_extensions': '.pdf'}"/>
+                                    <field name="ttb_vendor_doc_name" column_invisible="1"/>
+                                    <field name="ttb_vendor_invoice" filename="ttb_vendor_invoice_name" readonly="1" widget="binary_preview" options="{'accepted_file_extensions': '.pdf'}"/>
+                                    <field name="ttb_vendor_invoice_name" column_invisible="1"/>
+                                    <field name="ttb_doc_user_id" column_invisible="1"/>
+                                    <field name="ttb_accountant_id" column_invisible="1"/>
+                                    <field name="ttb_document_done" column_invisible="1"/>
+                                    <button name="button_apply_nimbox_invoice" type="object" string="Áp dụng" class="btn btn-primary"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Đơn mua hàng cùng số tiền" name="page_po_map_ids" invisible="1"> #invisible="state== 'done' or not po_map_ids"
+                            <field name="po_map_ids" context="{'res_id': id}">
+                                <list limit="80">
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="ttb_vat"/>
+                                    <field name="received_amount_total" string="Tổng tiền"/>
+                                    <field name="ttb_product_ids" widget="many2many_tags"/>
+                                    <field name="count_ttb_product"/>
+                                    <field name="ttb_vendor_invoice_no_lstrip" optional="hide"/>
+                                    <field name="ttb_vendor_invoice_code" optional="hide"/>
+                                    <field name="ttb_vendor_invoice_date" optional="hide"/>
+                                    <field name="ttb_receipt_doc" filename="ttb_receipt_doc_name" readonly="1" widget="binary_preview" options="{'accepted_file_extensions': '.pdf'}"/>
+                                    <field name="ttb_receipt_doc_name" column_invisible="1"/>
+                                    <field name="ttb_vendor_doc" filename="ttb_vendor_doc_name" readonly="1" widget="binary_preview" options="{'accepted_file_extensions': '.pdf'}"/>
+                                    <field name="ttb_vendor_doc_name" column_invisible="1"/>
+                                    <field name="ttb_vendor_invoice" filename="ttb_vendor_invoice_name" readonly="1" widget="binary_preview" options="{'accepted_file_extensions': '.pdf'}"/>
+                                    <field name="ttb_vendor_invoice_name" column_invisible="1"/>
+                                    <field name="ttb_doc_user_id" column_invisible="1"/>
+                                    <field name="ttb_accountant_id" column_invisible="1"/>
+                                    <field name="ttb_document_done" column_invisible="1"/>
+                                    <button name="button_apply_nimbox_invoice" type="object" string="Áp dụng" class="btn btn-primary"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_nimbox_invoice_view_list" model="ir.ui.view">
+        <field name="name">ttb.nimbox.invoice.list</field>
+        <field name="model">ttb.nimbox.invoice</field>
+        <field name="arch" type="xml">
+            <list>
+                <header>
+                    <button string="Tự động khớp" type="object" name="button_auto_map_po" class="btn btn-primary" invisible="1"/>
+                </header>
+                <field name="ttb_vendor_invoice_no"/>
+                <field name="ttb_vendor_invoice_code"/>
+                <field name="ttb_price_unit"/>
+                <field name="ttb_vendor_vat"/>
+                <field name="ttb_vendor_invoice_date"/>
+                <field name="state"/>
+                <field name="po_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_nimbox_invoice_view_search" model="ir.ui.view">
+        <field name="name">ttb.nimbox.invoice.view.search</field>
+        <field name="model">ttb.nimbox.invoice</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="ttb_vendor_invoice_no"/>
+                <field name="ttb_vendor_invoice_code"/>
+                <field name="ttb_vendor_vat"/>
+                <filter string="Chưa khơp" name="state_not_matching_filter" domain="[('state', '=', 'not_matching')]"/>
+                <filter string="Có nhiều PO" name="state_many_po_filter" domain="[('state', '=', 'many_po')]"/>
+                <group string="Group By">
+                    <filter string="Trạng thái" name="groupby_state" context="{'group_by': 'state'}"/>
+                    <filter string="MST NCC" name="groupby_ttb_vendor_vat" context="{'group_by': 'ttb_vendor_vat'}"/>
+                    <filter string="Ngày" name="groupby_ttb_vendor_invoice_date" context="{'group_by': 'ttb_vendor_invoice_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_nimbox_invoice_pdf_preview" model="ir.ui.view">
+        <field name="name">ttb.nimbox.invoice.pdf.preview</field>
+        <field name="model">ttb.nimbox.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Xem trước PDF" create="0" edit="0">
+                <field name="pdf_file" filename="ttb_vendor_invoice_no" widget="pdf_viewer"/>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="ttb_nimbox_invoice_action" model="ir.actions.act_window">
+        <field name="name">Hoá đơn đầu vào</field>
+        <field name="res_model">ttb.nimbox.invoice</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="ttb_nimbox_invoice_menu"
+        name="Hoá đơn đầu vào"
+        parent="ttb_purchase.purchase_order_accounting_root_menu"
+        action="ttb_nimbox_invoice_action"
+        sequence="5"
+    />
+
+</odoo>

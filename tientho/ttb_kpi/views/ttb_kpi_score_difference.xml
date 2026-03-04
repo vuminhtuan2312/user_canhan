@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_kpi_score_difference_report_list" model="ir.ui.view">
+        <field name="name">ttb.kpi.score.difference.list</field>
+        <field name="model">ttb.kpi.score.difference</field>
+        <field name="arch" type="xml">
+            <list string="Phiếu chấm lệch giữa CS và TNKH" create="0">
+                <field name="reviewer_id" />
+                <field name="user_id"/>
+                <field name="area_id"/>
+                <field name="branch_id"/>
+                <field name="origin_report_id"/>
+                <field name="report_id"/>
+                <field name="name"/>
+                <field name="pass_cs"/>
+                <field name="fail_cs"/>
+                <field name="pass_manager"/>
+                <field name="fail_manager"/>
+                <field name="note_cs"/>
+                <field name="note_manager"/>
+                <field name="avg_score_cs" />
+                <field name="avg_score_manager" />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_kpi_score_diff" model="ir.actions.act_window">
+        <field name="name">Báo cáo so sánh CSKH</field>
+        <field name="res_model">ttb.kpi.score.difference</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

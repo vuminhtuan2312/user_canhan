@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_accountant" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="ttb_vendor_doc" readonly="ttb_accountant_accept == 'ok'" widget="image" invisible="1"/>
+                            <field name="ttb_vendor_doc_name" invisible="1"/>
+                            <field name="ttb_vendor_doc_ids" readonly="ttb_accountant_accept == 'ok'" widget="many2many_binary_camera"/>
+                            
+                            <field name="ttb_vendor_invoice" readonly="ttb_accountant_accept == 'ok'" widget="image" invisible="1"/>
+                            <field name="ttb_vendor_invoice_name" invisible="1"/>
+                            
+                            <field name="ttb_vendor_invoice_no" invisible="ttb_type == 'not_sale'"/>
+                            <field name="ttb_vendor_invoice_code" invisible="ttb_type == 'not_sale'"/>
+                            <field name="ttb_vendor_invoice_date" invisible="ttb_type == 'not_sale'"/>
+                            <field name="ttb_type" invisible="1"/>
+                            <field name="ttb_vendor_delivery" widget="image" invisible="ttb_type != 'not_sale'"/>
+                            <field name="ttb_acceptance_report" widget="image" invisible="ttb_type != 'not_sale'"/>
+                        </group>
+                        <group>
+                            <field name="ttb_accountant_accept" invisible="1"/>
+                            <field name="ttb_accountant_note" invisible="1"/>
+                            <field name="ttb_document_done" invisible="1"/>
+                            <field name="ttb_doc_user_id" force_save="1" invisible="1"/>
+                            <field name="ttb_sent_doc" force_save="1" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="ttb_stock_barcode_incoming_stock_picking_action" model="ir.actions.act_window">
+        <field name="name">Chứng từ kế toán</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context" eval="{'dialog_size': 'medium'}"/>
+        <field name="view_id" ref="ttb_stock_barcode_incoming.view_picking_form_accountant"/>
+    </record>
+
+    <record id="stock_picking_form_inherit_shelf_location" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.shelf.location</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ttb_partner_ref']" position="after">
+                <field name="shelf_location"  readonly="0"/>
+                <field name="mch_category_id"/>
+                <field name="period_inventory_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_picking_kanban_custom" model="ir.ui.view">
+        <field name="name">stock.picking.kanban.custom</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.stock_picking_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="inside">
+                <field name="shelf_location"/>
+                <field name="mch_category_id"/>
+                <field name="diff_product_rate"/>
+                <field name="min_products_to_check"/>
+                <field name="total_diff_qty"/>
+                <field name="inventory_scan_start_time"/>
+            </xpath>
+            <xpath expr="//div[@class='d-flex mb-1']" position="after">
+                <div class="text-muted small mt-1">
+                    <t t-if="record.shelf_location and record.shelf_location.value">
+                        <br/>Quầy/Kệ: <t t-esc="record.shelf_location.value"/>
+                    </t>
+                    <t t-if="record.mch_category_id and record.mch_category_id.value">
+                        <br/>Mã MCH2: <t t-esc="record.mch_category_id.value"/>
+                    </t>
+                    <t>
+                        <br/>Thời gian bắt đầu quét:
+                        <t t-esc="(record.inventory_scan_start_time and record.inventory_scan_start_time.value) or 0"/>
+                    </t>
+                    <t>
+                        <br/>Số lượng sản phẩm cần kiểm kê tối thiểu:
+                        <t t-esc="(record.min_products_to_check and record.min_products_to_check.value) or 0"/>
+                    </t>
+                    <t t-if="record.diff_product_rate and record.diff_product_rate.value">
+                        <br/>Tỉ lệ lệch: <t t-esc="record.diff_product_rate.value"/>%
+                    </t>
+                    <t t-if="record.total_diff_qty and record.total_diff_qty.value">
+                        <br/>Tổng số lượng lệch: <t t-esc="record.total_diff_qty.value"/>
+                    </t>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="inventory_picking_list_view" model="ir.ui.view">
+        <field name="name">inventory.picking.list</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="location_id"/>
+                <field name="location_dest_id"/>
+                <field name="shelf_location"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="ttb_inspector_id"/>
+                <field name="scheduled_date"/>
+<!--                <field name="inventory_time_minutes"/>-->
+                <field name="origin"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="inventory_picking_search_view" model="ir.ui.view">
+        <field name="name">stock.picking.search.inventory</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Số tham chiếu"/>
+                <field name="partner_id" string="Đối tác"/>
+                <field name="user_id" string="Người phụ trách"/>
+                <field name="ttb_inspector_id" string="Người kiểm hàng"/>
+                <field name="origin" string="Nguồn gốc"/>
+
+                <filter name="has_diff" string="Có chênh lệch" domain="[('has_diff_qty', '=', True)]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter name="group_by_state" string="Trạng thái" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_date" string="Ngày kiểm kê" context="{'group_by': 'scheduled_date'}"/>
+                    <filter name="group_by_has_diff" string="Chênh lệch" context="{'group_by': 'has_diff_qty'}"/>
+                    <filter name="group_by_partner" string="Đối tác" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="view_picking_form_inventory_counting" model="ir.ui.view">
+        <field name="name">stock.picking.form.inventory.counting</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='picking_type_id']" position="attributes">
+                <attribute name="domain">[('code', 'in', ('incoming', 'outgoing', 'internal', 'inventory_counting'))]</attribute>
+            </xpath>
+
+            <xpath expr="//header" position="inside">
+<!--                <field name="waiting_to_push_augges" invisible="1"/>-->
+<!--                <button name="action_push_augges"-->
+<!--                        type="object"-->
+<!--                        string="Đẩy Augges"-->
+<!--                        class="btn-primary"-->
+<!--                        invisible="state != 'done' or waiting_to_push_augges != True"/>-->
+                <button name="action_create_recheck"
+                        type="object"
+                        string="Sinh phiếu kiểm kê lại"
+                        class="btn-primary"
+                        invisible="state != 'done'"/>
+            </xpath>
+            
+            <xpath expr="//field[@name='date_done']" position="after">
+                <field name="inventory_scan_start_time" invisible="not inventory_scan_start_time"/>
+                <field name="inventory_time_minutes"/>
+                <field name="create_inventory_picking" invisible="not create_inventory_picking"/>
+                <field name="percent_products_to_check" readonly="state == 'done'"/>
+                <field name="min_products_to_check"/>
+<!--                <field name="disable_inventory"/>-->
+                <field name="inventory_origin_id"/>
+                <field name="is_recheck_inventory_origin" readonly="1"/>
+                <field name="recheck_inventory_id" invisible="not is_recheck_inventory_origin" readonly="1"/>
+                <field name="diff_product_rate" invisible="not inventory_origin_id"/>
+                <field name="create_inventory_picking" invisible="state != 'done' or not create_inventory_picking" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']//list" position="inside">
+                <field name="diff_qty"/>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="support_user_ids" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="inventory_picking_action" model="ir.actions.act_window">
+        <field name="name">Kiểm kê</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="inventory_picking_list_view"/>
+        <field name="search_view_id" ref="inventory_picking_search_view"/>
+        <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM')]</field>
+        <field name="context">{}</field>
+    </record>
+<!--    <menuitem-->
+<!--    id="inventory_picking_menu_root"-->
+<!--    name="Kiểm kê"-->
+
+<!--    sequence="2"-->
+<!--    action="inventory_picking_action"-->
+<!--    parent="stock.menu_stock_root"/>-->
+
+<!--    <menuitem-->
+<!--    id="inventory_picking_menu"-->
+<!--    name="Kiểm kê"-->
+<!--    sequence="1"-->
+<!--    action="inventory_picking_action"-->
+<!--    parent="inventory_picking_menu_root"/>-->
+
+
+    <record id="inventory_result_search_view" model="ir.ui.view">
+        <field name="name">inventory.result.search</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Số tham chiếu"/>
+                <field name="partner_id" string="Đối tác"/>
+                <field name="user_id" string="Người phụ trách"/>
+                <field name="ttb_inspector_id" string="Người kiểm hàng"/>
+                <field name="origin" string="Nguồn gốc"/>
+                <field name="shelf_location" string="Quầy/Kệ" filter_domain="[('shelf_location', 'ilike', self)]"/>
+
+                <filter name="has_diff" string="Có chênh lệch" domain="[('has_diff_qty', '=', True)]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter name="group_by_state" string="Trạng thái" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_date" string="Ngày kiểm kê" context="{'group_by': 'scheduled_date'}"/>
+                    <filter name="group_by_has_diff" string="Chênh lệch" context="{'group_by': 'has_diff_qty'}"/>
+                    <filter name="group_by_partner" string="Đối tác" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="stock_picking_form_view_inventory_generate" model="ir.ui.view">
+        <field name="name">stock.picking.form.inventory.generate</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[@name='button_box']" position="inside">
+                <button name="action_go_to_scanbarcode"
+                        type="object"
+                        string="ScanBarcode"
+                        class="oe_stat_button"
+                        icon="fa-barcode"
+                        invisible="state == 'done'">
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="inventory_result_action" model="ir.actions.act_window">
+        <field name="name">Hậu kiểm</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('shelf_location', 'ilike', 'HẬU KIỂM')]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="inventory_result_search_view"/>
+    </record>
+
+    <record id="view_product_template_form_require_scan" model="ir.ui.view">
+    <field name="name">product.template.form.require.scan</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_only_form_view"/>
+    <field name="arch" type="xml">
+         <xpath expr="//field[@name='barcode_k']" position="after">
+            <field name="require_scan"/>
+        </xpath>
+    </field>
+</record>
+
+<!--    <menuitem id="inventory_result_menu_stock_warehouse" name="Hậu kiểm" sequence="2" action="inventory_result_action" parent="inventory_picking_menu_root"/>-->
+</odoo>

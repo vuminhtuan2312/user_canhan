@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="action_store_list" model="ir.actions.act_window">
+        <field name="name">Cơ sở</field>
+        <field name="res_model">ttb.branch</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

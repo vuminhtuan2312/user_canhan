@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<record id="ttb_cei_score_view_search" model="ir.ui.view">
+		<field name="name">ttb.cei.score.view.search</field>
+		<field name="model">ttb.cei.score</field>
+		<field name="arch" type="xml">
+			<search>
+				<field name="user_branch_id" string="Cơ sở"/>
+				<filter name="date" string="Kỳ đánh giá"/>
+				<group string="Group By">
+					<filter name="date" string="Kỳ đánh giá"/>
+					<filter name="user_branch_id" string="Cơ sở"/>
+				</group>
+			</search>
+		</field>
+	</record>
+
+	<record id="ttb_cei_score_view_list" model="ir.ui.view">
+		<field name="name">ttb.cei.score.view.list</field>
+		<field name="model">ttb.cei.score</field>
+		<field name="arch" type="xml">
+			<list create='1' editable="top">
+				<header>
+					<button string="" title="Chọn thời gian" icon="fa-calendar" type="object" name="button_date_range" class="btn" display="always" />
+				</header>
+				<field name="date"/>
+				<field name="user_branch_id" widget="many2one"/>
+				<field name="manager_score"/>
+				<field name="branch_manager_score"/>
+			</list>
+		</field>
+	</record>
+
+	<record id="ttb_cei_score_action" model="ir.actions.act_window">
+		<field name="name">Đánh giá CEI</field>
+		<field name="res_model">ttb.cei.score</field>
+		<field name="search_view_id" ref="ttb_cei_score_view_search"/>
+		<field name="view_mode">list,search</field>
+	</record>
+</odoo>

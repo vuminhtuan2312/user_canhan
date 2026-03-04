@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_config_tree" model="ir.ui.view">
+        <field name="name">pos.self.pos.config.list.view</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_config_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="ttb_branch_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="pos_config_form_view_inherit" model="ir.ui.view">
+        <field name="name">pos.config.form.view.inherit</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='other_devices']" position="after">
+                <setting id="ttb_branch_id" string="Cơ sở" help="Cơ sở mặc định lấy trong kho hàng">
+                    <field name="ttb_branch_id"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

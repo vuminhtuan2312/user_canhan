@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="yeu-cau-tuyen-dung_form" model="ir.ui.view">
+        <field name="name">recruitment.requirements.form</field>
+        <field name="model">recruitment.requirements</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="sent_ok" invisible="1"/>
+                    <field name="approve_ok" invisible="1"/>
+                    <field name="can_edit_hr" invisible="1"/>
+                    <button string="Gửi yêu cầu" type="object" name="button_ready" class="btn btn-primary"
+                            invisible="not sent_ok or state != 'draft'"/>
+                    <button string="Duyệt yêu cầu" type="object" name="button_approve_request" class="btn btn-primary"
+                            invisible="not approve_ok or state != 'confirm'"/>
+                    <button string="Từ chối" type="object" name="action_reject" class="btn btn-primary"
+                            invisible="not approve_ok or state != 'confirm'"/>
+                    <button string="Hoàn thành" type="object" name="button_done_request" class="btn btn-primary"
+                            invisible="state != 'approve'"/>
+                    <button string="Hủy" type="object" name="button_cancel_request" class="btn btn-primary"
+                            invisible="state == 'done'"/>
+                    <button string="Duyệt tài liệu định biên" type="object" name="button_check_attached_documents" class="btn btn-primary"
+                            invisible="on_the_payroll == 'yes' or type_of_recruitment == 'replace'
+                             or check_attached_documents == True or state !='confirm'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="job_id"/>
+                        <field name="department_id"/>
+                        <field name="manager_id"/>
+                        <field name="no_of_recruitment"/>
+                        <field name="person_in_charge" invisible="state in ('draft','confirm')" readonly="not can_edit_hr"/>
+                        <field name="type_of_recruitment"/>
+                        <field name="on_the_payroll" invisible="type_of_recruitment == 'replace'"
+                               required="type_of_recruitment == 'new'"/>
+                        <field name="attached_documents" readonly="check_attached_documents == True"
+                               invisible="on_the_payroll == 'yes' or type_of_recruitment == 'replace'"
+                               widget="many2many_binary"/>
+                        <field name="check_attached_documents" invisible="1"/>
+                        <field name="time_recruitment"/>
+                        <field name="expected_number_of_days"/>
+                        <field name="date_send_requiment" invisible="1"/>
+                        <field name="date_check_attached_documents" invisible="1"/>
+                        <field name="desired_time" required="time_recruitment == 'urgent'"
+                               readonly="time_recruitment == 'normal' or state in ('approve', 'done')"/>
+                        <field name="reason" invisible="time_recruitment != 'urgent'"/>
+                    </group>
+                    <notebook>
+                        <page name="general_information" string="Chân dung ứng viên">
+                            <field name="job_responsibility_ids">
+                                <list limit="80" editable="bottom">
+                                    <field name="main_responsibility"/>
+                                    <field name="detail_responsibility"/>
+                                    <field name="proportion"/>
+                                </list>
+                            </field>
+                            <div class="clearfix">
+                                <group class="float-end">
+                                    <field class="text-lg-end" name="total_proportion"/>
+                                </group>
+                            </div>
+                            <div>
+                                <group string="Kinh nghiệm">
+                                    <field name="experience"/>
+                                </group>
+                                <field name="experience_for_job_ids" invisible="experience == False">
+                                    <list limit="80" editable="bottom">
+                                        <field name="job_position"/>
+                                        <field name="no_of_years"/>
+                                        <field name="company_size"/>
+                                    </list>
+                                </field>
+                                <group>
+                                    <field name="experience_for_category"/>
+                                </group>
+                                <field name="experience_for_category_ids"
+                                       invisible="experience_for_category == False">
+                                    <list limit="80" editable="bottom">
+                                        <field name="job_category"/>
+                                        <field name="no_of_years_for_category"/>
+                                        <field name="notice"/>
+                                    </list>
+                                </field>
+                            </div>
+                            <group>
+                                <group>
+                                    <div>
+                                        <group string="Trình độ học vấn">
+                                            <field name="education"/>
+                                            <field name="major" invisible="education in ('high_school', 'none')"
+                                                   required="education not in ('high_school', 'none')"/>
+                                            <field name="prioritize" invisible="education == 'none'"/>
+                                            <field name="graduation_results" invisible="education == 'none'"/>
+                                        </group>
+                                    </div>
+                                </group>
+                                <group string="Thông tin khác">
+                                    <field name="knowledge"/>
+                                    <field name="professional_skills"/>
+                                    <field name="soft_skills"/>
+                                    <field name="fit_core_value" widget="many2many_tags"/>
+                                    <field name="other_qualities"/>
+                                    <field name="style"/>
+                                    <div>
+                                        <group string="Nhu cầu khác">
+                                            <group>
+                                                <field name="min_old" string="Độ tuổi từ"/>
+                                            </group>
+                                            <group>
+                                                <field name="max_old" string="Đến"/>
+                                            </group>
+                                        </group>
+                                    </div>
+                                    <field name="gender_preference"/>
+                                    <field name="other_require"/>
+                                    <field name="time_job_recruitment"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="hr_information" string="Thông tin HR">
+                            <div>
+                                <field name="platform_infinfor_and_key_ids">
+                                    <list limit="80" editable="bottom">
+                                        <field name="name"/>
+                                        <field name="content" options="{'collaborative': true}"/>
+                                    </list>
+                                </field>
+                                <group>
+                                    <field name="key_word"/>
+                                </group>
+                            </div>
+                            <group>
+                                <group string="Dải lương">
+                                    <group>
+                                        <field name="salary_range_min" string="Từ"/>
+                                    </group>
+                                    <group>
+                                        <field name="salary_range_max" string="Đến"/>
+                                    </group>
+                                </group>
+                                <group>
+
+                                </group>
+                            </group>
+                        </page>
+                        <page name="plan_template_id" string="Kế hoạch tuyển dụng">
+                            <group>
+                                <field name="start_date"/>
+                                <separator string="Chi tiết kế hoạch"/>
+                                <div>
+                                    <field name="plan_detail_ids">
+                                        <list limit="80" editable="bottom">
+                                            <field name="name"/>
+                                            <field name="detail"/>
+                                            <field name="result"/>
+                                            <field name="start_date"/>
+                                            <field name="end_date"/>
+                                            <field name="no_of_start_days" column_invisible="1"/>
+                                            <field name="no_of_end_days" column_invisible="1"/>
+                                            <field name="date_done"/>
+                                            <field name="status"/>
+                                            <button name="button_swap_status" type="object" string="Chuyển trạng thái"
+                                                    class="btn btn-primary"/>
+                                        </list>
+                                    </field>
+                                </div>
+                            </group>
+                        </page>
+                        <page name="hr_applicant_ids" string="Hồ sơ ứng tuyển">
+                            <field name="hr_applicant_ids">
+                                <list limit="80" create="0" delete="0">
+                                    <field name="candidate_id"/>
+                                    <field name="email_from"/>
+                                    <field name="partner_phone"/>
+                                    <field name="stage_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Thông tin phê duyệt">
+                            <group>
+                                <group>
+                                    <field name="current_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="next_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="notif_user_ids" readonly="1" widget="many2many_tags"/>
+                                </group>
+                                <group groups="base.group_no_one">
+                                    <field name="process_id" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_sent" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_approved" readonly="1" groups="base.group_no_one"/>
+                                </group>
+                                <field name="rule_line_ids"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="yeu-cau-tuyen-dung_view" model="ir.ui.view">
+        <field name="name">recruitment.requirements.list</field>
+        <field name="model">recruitment.requirements</field>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="job_id" optional="show"/>
+                <field name="department_id" optional="show"/>
+                <field name="manager_id" optional="show"/>
+                <field name="time_recruitment" optional="show"/>
+                <field name="state" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="yeu-cau-tuyen-dung_action" model="ir.actions.act_window">
+        <field name="name">Yêu cầu tuyển dụng</field>
+        <field name="res_model">recruitment.requirements</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="yeu-cau-tuyen-dung_view"/>
+    </record>
+</odoo>

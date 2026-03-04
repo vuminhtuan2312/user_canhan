@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_advance_request_wizard_view_form" model="ir.ui.view">
+        <field name="name">purchase.order.advance.request.wizard.form</field>
+        <field name="model">purchase.order.advance.request.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Tạo phiếu tạm ứng">
+                <group>
+                    <field name="purchase_order_ids" widget="many2many_tags" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="action_create_advance_request" string="Tạo phiếu" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_order_advance_request_wizard" model="ir.actions.act_window">
+        <field name="name">Tạo phiếu tạm ứng</field>
+        <field name="res_model">purchase.order.advance.request.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_server_purchase_order_advance_request" model="ir.actions.server">
+        <field name="name">Tạo phiếu tạm ứng</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+action = env['ir.actions.act_window']._for_xml_id('ttb_purchase.action_purchase_order_advance_request_wizard')
+action['context'] = {'active_ids': records.ids}
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,75 @@
+/* Multi File Viewer Styles */
+.o_field_multi_file_viewer {
+    width: 100%;
+}
+
+.o_field_multi_file_viewer .o_file_viewer {
+    background-color: #f8f9fa;
+    position: relative;
+}
+
+.o_field_multi_file_viewer .btn-group-file-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.o_field_multi_file_viewer .file-counter {
+    min-width: 120px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.o_field_multi_file_viewer iframe {
+    display: block;
+    background: white;
+}
+
+.o_field_multi_file_viewer img {
+    display: block;
+    margin: 0 auto;
+    max-height: 650px;
+    object-fit: contain;
+}
+
+.o_field_multi_file_viewer .btn-secondary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Action buttons styling */
+.o_field_multi_file_viewer .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.o_field_multi_file_viewer .btn-group {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.o_field_multi_file_viewer .btn-group .btn {
+    border-radius: 0;
+}
+
+.o_field_multi_file_viewer .btn-group .btn:first-child {
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.o_field_multi_file_viewer .btn-group .btn:last-child {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+
+/* Hover effects */
+.o_field_multi_file_viewer .btn:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+
+/* File input hidden */
+.o_field_multi_file_viewer input[type="file"] {
+    display: none;
+}
+

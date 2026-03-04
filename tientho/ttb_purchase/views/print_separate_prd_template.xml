@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="template_print_separate_prd_document">
+        <t t-call="web.report_layout" class="container-fluid p-0">
+            <meta charset="utf-8"/>
+            <style>
+                @media only screen and (max-width: 576px) {
+                .responsive .table {
+                font-size: smaller;
+                white-space: nowrap;
+                }
+                .responsive-1 .responsive-table-1 {
+                white-space: nowrap;
+                font-size: smaller;
+                white-space: nowrap;
+                min-width: 100%;
+                }
+                .responsive-table-4 {
+                font-size: smaller;
+                white-space: nowrap;
+                font-size: smaller;
+                min-width: 800px;
+                }
+                }
+
+                @media only screen and (max-width: 800px) {
+                .responsive table {
+                font-size: smaller;
+                white-space: nowrap;
+                }
+                .responsive-1 .responsive-table-1 {
+                white-space: nowrap;
+                font-size: smaller;
+                min-width: 100%;
+                }
+                .responsive-table-4 {
+                font-size: smaller;
+                white-space: nowrap;
+                font-size: smaller;
+                min-width: 800px;
+                }
+                }
+                @media only screen and (max-width: 990px) {
+                .responsive table{
+                font-size: smaller;
+                white-space: nowrap;
+                }
+                .responsive-1 responsive-table-1 {
+                white-space: nowrap;
+                font-size: smaller;
+                min-width: 100%;
+                }
+                .responsive-table-4 {
+                font-size: smaller;
+                white-space: nowrap;
+                font-size: smaller;
+                width: 100%;
+                }
+                }
+                @media only screen and (max-width: 1200px) {
+                .responsive table{
+                font-size: smaller;
+                }
+                .responsive-table-4 {
+                font-size: smaller;
+                white-space: nowrap;
+                font-size: smaller;
+                width: 100%;
+                }
+                }
+                @media only screen and (min-width: 1200px) {
+                .responsive table{
+                font-size: smaller;
+                }
+                .responsive-1 .responsive-table-1 {
+                font-size: smaller;
+                white-space: nowrap;
+                font-size: smaller;
+                width: 100%;
+                }
+                }
+            </style>
+            <div class="page p-0"
+                 style="font-family :Time New Roman !important;margin-right:4%; margin-left:4%;">
+                <div class="oe_structure">
+
+                    <div class="col-sm-12 col-md-12 p-0">
+                        <h2 style="width:100%; text-align:center;font-weight: 550;font-size: 30px;text-transform: uppercase; margin: 25px 0px;"
+                            class="text-center bold">
+                            <center>Phiếu in sản phẩm tách mã</center>
+                        </h2>
+                    </div>
+                    <span class="text-center bold">
+                        <center>
+                            <t t-if="request_name">
+                                <span class="text-center bold">
+                                    <strong>Yêu cầu mua hàng:
+                                        <t t-esc="request_name"/>
+                                    </strong>
+                                </span>
+                            </t>
+                            <br/>
+                            <t t-if="po_name">
+                                <span class="text-center bold">
+                                    <strong>Đơn mua hàng:
+                                        <t t-esc="po_name"/>
+                                    </strong>
+                                </span>
+                            </t>
+                            <br/>
+                            <t t-if="partner">
+                                <span class="text-center bold">
+                                    <strong>Nhà cung cấp:
+                                        <t t-esc="partner"/>
+                                    </strong>
+                                </span>
+                            </t>
+                            <br/>
+                        </center>
+                    </span>
+                     <br/> <br/>
+                    <div>
+                        <div class="table-responsive-sm table-responsive-md responsive-1">
+                            <table class="table-bordered responsive-table-1"
+                                   style="border-collapse: collapse; border : border-box;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center;width :10%;background-color: #4cb1a7; color: #ffffff; border: 1px solid black;"
+                                            class="table-item">STT
+                                        </th>
+                                        <th style="text-align:center;width :10%;background-color: #4cb1a7; color: #ffffff; border: 1px solid black;"
+                                            class="table-item">Mã vạch
+                                        </th>
+                                        <th style="text-align:center;width :10%;background-color: #4cb1a7; color: #ffffff; border: 1px solid black;"
+                                            class="table-item">Mã hàng NCC
+                                        </th>
+                                        <th style="text-align:center;width :5%;background-color: #4cb1a7; color: #ffffff; border: 1px solid black;"
+                                            class="table-item">Mã nội bộ
+                                        </th>
+                                        <th style="text-align:center;width :15%;background-color: #4cb1a7; color: #ffffff; border: 1px solid black;"
+                                            class="table-item">Sản phẩm
+                                        </th>
+                                        <th style="text-align:center;width :10%;background-color: #4cb1a7; color: #ffffff; border: 1px solid black;"
+                                            class="table-item">Nhu cầu
+                                        </th>
+                                        <th style="text-align:center;width :10%;background-color: #4cb1a7; color: #ffffff; border: 1px solid black;"
+                                            class="table-item">Đơn vị
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="sale_tbody">
+                                    <t t-set="i" t-value="1"/>
+                                    <t t-foreach="docs" t-as="o">
+                                        <tr>
+                                            <td style="background-color: False; color: #000000; border: 1px solid black;">
+                                                <span t-esc="i"/>
+                                                <t t-set="i" t-value="i+1"/>
+                                            </td>
+                                            <td style="border: 1px solid black;text-align: left; background-color: False; color: #000000; !important;">
+                                                <span t-esc="o.product_id.barcode"/>
+                                            </td>
+                                            <td style="border: 1px solid black;text-align: left; background-color: False; color: #000000; !important;">
+                                                <span t-esc="o.product_id.barcode_vendor"/>
+                                            </td>
+                                            <td style="border: 1px solid black;text-align: left; background-color: False; color: #000000; !important;">
+                                                <span t-esc="o.product_id.default_code"/>
+                                            </td>
+                                            <td style="border: 1px solid black;text-align: center; background-color: False; color: #000000; !important;">
+                                                <span t-esc="o.product_id.name"/>
+                                            </td>
+                                            <td style="border: 1px solid black;text-align: center; background-color: False; color: #000000; !important;">
+                                                <span t-esc="o.product_uom_qty"/>
+                                            </td>
+                                            <td style="border: 1px solid black;text-align: center; background-color: False; color: #000000; !important;">
+                                                <span t-esc="o.product_uom.name"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

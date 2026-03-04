@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+<!--        Cài đặt nhiệm vụ ttb.task.template-->
+
+    <record id="ttb_task_template_user_rule" model="ir.rule">
+        <field name="name">Xem danh mục nhiệm vụ của vị trí của chính mình</field>
+        <field name="model_id" ref="model_ttb_task_template"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_user')), (4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager')), (4, ref('ttb_kpi.group_ttb_kpi_vhkd_director')), (4, ref('ttb_kpi.group_ttb_kpi_tnkh_manager')), (4, ref('ttb_kpi.group_ttb_kpi_brand_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">['|', ('job_ids', '=', False), ('job_ids', '=', user.employee_id.job_id.id)]</field>
+    </record>
+
+    <record id="ttb_task_template_sckh_rule" model="ir.rule">
+        <field name="name">Nhân viên CSKH xem danh mục nhiệm vụ CSKH</field>
+        <field name="model_id" ref="model_ttb_task_template"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_nv_cskh'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('kpi_type_id.code', '=', 'CSKH')]</field>
+    </record>
+
+    <record id="ttb_task_template_warehouse_manager_rule" model="ir.rule">
+        <field name="name">Các cấp quản lý có thể xem các cài đặt nhiệm vụ của nhân viên mình</field>
+        <field name="model_id" ref="model_ttb_task_template"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('job_ids.employee_ids', 'child_of', user.employee_id.id)]</field>
+    </record>
+
+    <record id="ttb_task_template_asm_rule" model="ir.rule">
+        <field name="name">Giám đốc vùng được full quyền xem</field>
+        <field name="model_id" ref="model_ttb_task_template"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_asm'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="ttb_task_template_manager_rule" model="ir.rule">
+        <field name="name">Cài đặt tất cả danh mục nhiệm vụ chỉ được tạo, thêm, sửa, xóa đối với danh mục mình tạo ra</field>
+        <field name="model_id" ref="model_ttb_task_template"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_vhkd_director')), (4, ref('ttb_kpi.group_ttb_kpi_tnkh_manager')), (4, ref('ttb_kpi.group_ttb_kpi_brand_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('create_uid','=', user.id)]</field>
+    </record>
+
+    <record id="ttb_task_template_tnkh_manager_rule" model="ir.rule">
+        <field name="name">Cài đặt tất cả danh mục nhiệm vụ: Trưởng nhóm trải nhiệm khách hàng có quyền tạo, thêm, sửa, xóa đối với loại CSKH</field>
+        <field name="model_id" ref="model_ttb_task_template"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_tnkh_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('kpi_type_id.code', '=', 'CSKH')]</field>
+    </record>
+
+    <record id="ttb_task_template_system_rule" model="ir.rule">
+        <field name="name">Quản trị thiết lập full quyền</field>
+        <field name="model_id" ref="model_ttb_task_template"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+        <!--    Quyền bổ sung theo vị trí -->
+
+    <record id="ttb_task_template_warehouse_manager_area_rule" model="ir.rule">
+        <field name="name">Quản lý cơ sở có thể xem các cài đặt nhiệm vụ theo vị trí</field>
+        <field name="model_id" ref="model_ttb_task_template"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('area_ids', 'in', user.ttb_area_ids.ids)]</field>
+    </record>
+
+<!--    Đánh giá nhiệm vụ ttb.task.report-->
+
+    <record id="ttb_task_report_user_rule" model="ir.rule">
+        <field name="name">Xem phiếu đánh giá của chính mình</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_user')), (4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('user_ids', '=', user.id)]</field>
+    </record>
+
+    <record id="ttb_task_report_cskh_rule" model="ir.rule">
+        <field name="name">Nhân viên CSKH xem, tạo mới phiếu đánh giá có loại là CSKH</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_nv_cskh'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('kpi_type_id.code', '=', 'CSKH')]</field>
+    </record>
+
+    <record id="ttb_task_report_cskh_write_rule" model="ir.rule">
+        <field name="name">Nhân viên CSKH sửa, xóa phiếu đánh giá có loại là CSKH và thuộc nhóm đánh giá cs</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_nv_cskh'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('kpi_type_id.code', '=', 'CSKH'), ('group', '=', 'cs')]</field>
+    </record>
+
+    <record id="ttb_task_report_cs_manager_write_rule" model="ir.rule">
+        <field name="name">Quản lý được ghi phiếu CS</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">
+            [('kpi_type_id.code', '=', 'CSKH'), ('group', '=', 'cs')]
+        </field>
+    </record>
+
+    <record id="ttb_task_report_manager_read_rule" model="ir.rule">
+        <field name="name">quản lý Tạo, xem phiếu đánh giá cho nhân viên cở sở dưới quyền của mình</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('user_id.employee_id', 'child_of', user.employee_id.id)]</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="ttb_task_report_manager_write_rule" model="ir.rule">
+        <field name="name">Quản lý Sửa, xóa phiếu mình tạo ra</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
+
+    <record id="ttb_task_report_director_rule" model="ir.rule">
+        <field name="name">Ban giám đốc, trưởng phòng TNKT,giám đốc ngành hàng được xem tất cả dữ liệu</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_vhkd_director')), (4, ref('ttb_kpi.group_ttb_kpi_tnkh_manager')), (4, ref('ttb_kpi.group_ttb_kpi_brand_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="ttb_task_report_asm_rule" model="ir.rule">
+        <field name="name">Giám đốc vùng được xem, tạo sửa xóa tất cả các phiếu</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_asm'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="ttb_task_report_system_rule" model="ir.rule">
+        <field name="name">Quản trị thiết lập full quyền</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!--    Quyền bổ sung dựa vào cơ sở và khu vực-->
+    <!--    Nếu dựa vào ('user.user_branch_id', 'in', user.ttb_branch_ids.ids) có thể nhân viên sau này đổi cơ sở sẽ ảnh hưởng đồng thời không xử lý được trường hợp user_ids-->
+
+    <record id="ttb_task_report_manager_branch_write_rule" model="ir.rule">
+        <field name="name">Quản lý Sửa, xóa phiếu tại cơ sở của mình và do mình tạo ra hoặc nhóm đánh giá là quản lý trực tiếp</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('user_branch_id', 'in', user.ttb_branch_ids.ids), '|', ('create_uid', '=', user.id), ('group', '=', 'manager')]</field>
+    </record>
+
+    <record id="ttb_task_report_manager_branch_read_rule" model="ir.rule">
+        <field name="name">Quản lý cơ sở xem các phiếu đánh giá cơ sở và quầy của mình</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('user_branch_id', 'in', user.ttb_branch_ids.ids)]</field>
+<!--        Tạm cmt đoạn dưới do chưa phân khu vực chuẩn-->
+<!--        <field name="domain_force">[('user_branch_id', 'in', user.ttb_branch_ids.ids), '|', ('area_id', '=', False), ('area_id', 'in', user.ttb_area_ids.ids)]</field>-->
+    </record>
+
+    <record id="ttb_task_report_director_branch_write_rule" model="ir.rule">
+        <field name="name">Giám đốc cơ sở sửa các phiếu đánh giá cơ sở của mình và có loại là quản lý cơ sở</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('user_branch_id', 'in', user.ttb_branch_ids.ids), ('group', '=', 'branch_mannager')]</field>
+    </record>
+
+
+    <record id="ttb_task_report_director_branch_read_rule" model="ir.rule">
+        <field name="name">Giám đốc cơ sở xem các phiếu đánh giá cơ sở của mình</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('user_branch_id', 'in', user.ttb_branch_ids.ids)]</field>
+    </record>
+
+<!--   Cài đặt KPI ttb.kpi.template-->
+
+    <record id="ttb_kpi_template_user_rule" model="ir.rule">
+        <field name="name">Xem được hệ số KPI cho vị trí của chính mình</field>
+        <field name="model_id" ref="model_ttb_kpi_template"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_user')), (4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager')), (4, ref('ttb_kpi.group_ttb_kpi_vhkd_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">['|', ('job_ids', '=', False), ('job_ids', '=', user.employee_id.job_id.id)]</field>
+    </record>
+
+    <record id="ttb_kpi_template_warehouse_manager_rule" model="ir.rule">
+        <field name="name">Các cấp quản lý có thể xem các cài đặt KPI của nhân viên mình</field>
+        <field name="model_id" ref="model_ttb_kpi_template"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('job_ids.employee_ids', 'child_of', user.employee_id.id)]</field>
+    </record>
+
+    <record id="ttb_kpi_template_asm_rule" model="ir.rule">
+        <field name="name">Giám đốc vùng được full quyền xem</field>
+        <field name="model_id" ref="model_ttb_kpi_template"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_asm'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="ttb_kpi_template_director_rule" model="ir.rule">
+        <field name="name">Ban giám đốc, Admin/IT tạo, thêm, sửa, xóa đối với các cài đặt KPI mình tạo ra</field>
+        <field name="model_id" ref="model_ttb_kpi_template"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_vhkd_director')), (4, ref('ttb_kpi.group_ttb_kpi_brand_director')), (4, ref('ttb_kpi.group_ttb_kpi_admin_it'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('create_uid','=', user.id)]</field>
+    </record>
+
+    <record id="ttb_kpi_template_system_rule" model="ir.rule">
+        <field name="name">Quản trị thiết lập full quyền</field>
+        <field name="model_id" ref="model_ttb_kpi_template"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+<!--   Cài đặt KPI ttb.kpi.target-->
+
+    <record id="ttb_kpi_target_user_rule" model="ir.rule">
+        <field name="name">Có quyền xem chỉ tiêu</field>
+        <field name="model_id" ref="model_ttb_kpi_target"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_user')), (4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager')),(4, ref('ttb_kpi.group_ttb_kpi_vhkd_director')), (4, ref('ttb_kpi.group_ttb_kpi_brand_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="ttb_kpi_target_director_rule" model="ir.rule">
+        <field name="name">Có quyền tạo, xem, sửa, xóa chỉ tiêu với các phiếu mình tạo ra</field>
+        <field name="model_id" ref="model_ttb_kpi_target"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_vhkd_director')), (4, ref('ttb_kpi.group_ttb_kpi_brand_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('create_uid','=', user.id)]</field>
+    </record>
+
+    <record id="ttb_kpi_target_system_rule" model="ir.rule">
+        <field name="name">Quản trị thiết lập full quyền</field>
+        <field name="model_id" ref="model_ttb_kpi_target"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+  <!--   Kết quả KPI ttb.kpi.result-->
+
+    <record id="ttb_kpi_result_user_rule" model="ir.rule">
+        <field name="name">Xem kết quả KPI của chính mình</field>
+        <field name="model_id" ref="model_ttb_kpi_result"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="ttb_kpi_result_manager_rule" model="ir.rule">
+        <field name="name">Quản lý xem kết quả KPI  cho nhân viên cở sở dưới quyền của mình</field>
+        <field name="model_id" ref="model_ttb_kpi_result"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('user_id.employee_id', 'child_of', user.employee_id.id)]</field>
+    </record>
+
+    <record id="ttb_kpi_result_full_read_rule" model="ir.rule">
+        <field name="name">Nhóm xem full kết quả KPI</field>
+        <field name="model_id" ref="model_ttb_kpi_result"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_nv_cskh')), (4, ref('ttb_kpi.group_ttb_kpi_asm')), (4, ref('ttb_kpi.group_ttb_kpi_vhkd_director')), (4, ref('ttb_kpi.group_ttb_kpi_tnkh_manager')), (4, ref('ttb_kpi.group_ttb_kpi_cb_manager')), (4, ref('ttb_kpi.group_ttb_kpi_brand_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="ttb_kpi_result_system_rule" model="ir.rule">
+        <field name="name">Quản trị thiết lập full quyền</field>
+        <field name="model_id" ref="model_ttb_kpi_result"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!--  Quyền bổ sung với nhân sự có cơ sở và quầy  -->
+    <record id="ttb_kpi_result_manager_branch_rule" model="ir.rule">
+        <field name="name">Quản lý cơ sở xem kết quả KPI của nhân viên cở sở và quầy của mình</field>
+        <field name="model_id" ref="model_ttb_kpi_result"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('user_id.ttb_branch_id', 'in', user.ttb_branch_ids.ids), ('user_id.ttb_area_id', 'in', user.ttb_area_ids.ids)]</field>
+    </record>
+
+    <record id="ttb_kpi_result_director_branch_rule" model="ir.rule">
+        <field name="name">Giám đốc cơ sở xem kết quả KPI của nhân viên cở sở của mình</field>
+        <field name="model_id" ref="model_ttb_kpi_result"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('user_id.ttb_branch_id', 'in', user.ttb_branch_ids.ids)]</field>
+    </record>
+
+    <!-- Quy tắc cho Công việc của tôi -->
+    <record id="my_task_processor_user_rule" model="ir.rule">
+        <field name="name">My Task: User can only see their own tasks</field>
+        <field name="model_id" ref="model_my_task"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('processor_id', '=', user.id)]</field>
+    </record>
+
+    <record id="my_task_manager_rule" model="ir.rule">
+        <field name="name">My Task: Manager can see tasks in their branch</field>
+        <field name="model_id" ref="model_my_task"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('task_report_id.user_branch_id', 'in', user.ttb_branch_ids.ids)]</field>
+    </record>
+
+    <record id="approval_task_branch_user_rule" model="ir.rule">
+        <field name="name">Approval Task: User can see tasks in their branch</field>
+        <field name="model_id" ref="model_my_task"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('task_report_id.user_branch_id', 'in', user.ttb_branch_ids.ids)]</field>
+    </record>
+
+<!--    <record id="approval_task_line_write_rule" model="ir.rule">-->
+<!--        <field name="name">Approval Task Line: User can write lines in their branch</field>-->
+<!--        <field name="model_id" ref="model_ttb_task_report_line"/>-->
+<!--        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_user'))]"/>-->
+<!--        <field name="perm_read" eval="True"/>-->
+<!--        <field name="perm_write" eval="True"/>-->
+<!--        <field name="perm_create" eval="False"/>-->
+<!--        <field name="perm_unlink" eval="False"/>-->
+<!--        <field name="domain_force">[('report_id.user_branch_id', 'in', user.ttb_branch_ids.ids)]</field>-->
+<!--    </record>-->
+
+</odoo>

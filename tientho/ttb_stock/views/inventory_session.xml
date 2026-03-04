@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="inventory_session_list" model="ir.ui.view">
+        <field name="name">inventory_session_list</field>
+        <field name="model">inventory.session</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="branch_id"/>
+                <field name="warehouse_location_id"/>
+                <field name="date_assign"/>
+<!--                <field name="user_created_id" optional="hide"/>-->
+<!--                <field name="state" optional="hide"/>-->
+            </list>
+        </field>
+    </record>
+
+    <record id="inventory_session_form" model="ir.ui.view">
+        <field name="name">inventory_session_form</field>
+        <field name="model">inventory.session</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="button_assign" string="Phân công" type="object" class="oe_highlight" invisible="state != 'new'"/>
+                    <button name="button_create" string="Tạo phiên" type="object" class="oe_highlight" invisible="not show_button_create"/>
+                    <button name="button_start_count" string="Tiến hành kiểm kê" type="object" class="oe_highlight" invisible="not show_button_start_count"/>
+                    <button name="button_start_check" string="Tiến hành hậu kiểm" type="object" class="oe_highlight" invisible="not show_button_start_check"/>
+                    <button name="button_done" string="Hoàn thành phiên" type="object" class="oe_highlight" invisible="not show_button_done"/>
+                    <field name="show_button_create" invisible="1"/>
+                    <field name="show_button_start_count" invisible="1"/>
+                    <field name="show_button_start_check" invisible="1"/>
+                    <field name="show_button_done" invisible="1"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="branch_id"/>
+                            <field name="warehouse_location_id" domain="domain_stock_location"/>
+                            <field name="check_percentage" widget="percentage"/>
+                            <field name="domain_stock_location" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="date_assign"/>
+                            <field name="user_created_id"/>
+                            <field name="code"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="inventory_session_line_ids" invisible="state == 'new' " nolabel="1">
+                            <list editable="bottom" create="0">
+                                <field name="pid_location_id" readonly="1"/>
+                                <field name="user_count_id" domain="domain_user"/>
+                                <field name="user_check_id" domain="domain_user"/>
+                                <field name="domain_user" column_invisible="1"/>
+                                <field name="status"/>
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="inventory_session_search" model="ir.ui.view">
+        <field name="name">inventory_session_search</field>
+        <field name="model">inventory.session</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|', ('code', 'ilike', self), ('name', 'ilike', self)]"/>
+                <filter name="filtered_user" string="Phiên kiểm kê của tôi" domain="['|', ('inventory_session_line_ids.user_count_id', '=', uid), ('inventory_session_line_ids.user_check_id', '=', uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Cơ sở" name="group_by_branch_id" context="{'group_by': 'branch_id'}"/>
+                    <filter string="Kho hàng" name="group_warehouse_location_id" context="{'group_by': 'warehouse_location_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="inventory_session_action" model="ir.actions.act_window">
+        <field name="name">Phiên kiểm kê</field>
+        <field name="res_model">inventory.session</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

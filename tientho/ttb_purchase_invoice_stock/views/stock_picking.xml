@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_picking_form" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="ttb_stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+<!--                <button name="ttb_send_accounting_info" string="Gửi tài liệu kế toán" type="object"-->
+<!--                invisible="ttb_stage and ttb_stage != '6'"/>-->
+            </header>
+            <div name="button_box" position="before">
+                <widget name="web_ribbon" title="Đang tạo Augges" bg_color="text-bg-danger" invisible="pending_sent_augges_action_done == False"/>
+                <widget name="web_ribbon" title="Đã tạo Augges" bg_color="text-bg-success" invisible="not id_augges"/>
+            </div>
+            <xpath expr="//field[@name='project_id']" position="after">
+                <field name="pending_sent_augges_action_done"/>
+            </xpath>
+            <xpath expr="//field[@name='ttb_vendor_invoice_name']" position="after">
+                <field name="ttb_vendor_invoice_no"/>
+                <field name="ttb_vendor_invoice_code"/>
+                <field name="has_invoice" invisible="no_invoice == True" readonly="state == 'done'"/>
+                <field name="invoice_ids" widget="many2many_tags" options="{'no_create': True}"
+                       invisible="has_invoice == True or no_invoice == True" readonly="state == 'done'"/>
+                <field name="nimbox_pdf_files" widget="many2many_binary" options="{'no_create': True}" string="File PDF hóa đơn Nimbox"
+                       invisible="has_invoice == True or no_invoice == True"/>
+                <field name="nibot_ids" string="Danh sách hoá đơn đỏ"
+                       widget="nibot_one2many"
+                       invisible="has_invoice == True or no_invoice == True or state =='done'" context="{'res_id': id, 'total': amount_total}">
+                    <list limit="80" create="0">
+                        <field name="ttb_vendor_invoice_no"/>
+                        <field name="ttb_vendor_invoice_code"/>
+                        <field name="ttb_price_unit" string="Số tiền"/>
+                        <field name="ttb_vendor_vat"/>
+                        <field name="ttb_vendor_invoice_date"/>
+                        <button name="action_view_pdf" type="object" string="Xem trước"/>
+                        <button name="button_apply_nimbox" type="object" string="Áp dụng"
+                                class="btn btn-primary"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="ttb_stock_barcode_incoming.view_picking_form_accountant"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <sheet>
+                    <group>
+                        <field name="has_invoice" invisible="no_invoice == True"/>
+                        <field name="ly_do_khong_co_hoa_don" invisible="not has_invoice" required="has_invoice == True" readonly="state == 'done'"/>
+                        <field name="invoice_ids" string="Hóa đơn đỏ" widget="many2many_tags" options="{'no_create': True}"
+                               invisible="has_invoice == True or no_invoice == True"/>
+                        <field name="nimbox_pdf_files" widget="many2many_binary" options="{'no_create': True}" string="File PDF hóa đơn đỏ"
+                               invisible="has_invoice == True or no_invoice == True"/>
+                        <field name="nibot_ids" string="Danh sách hoá đơn đỏ"
+                            invisible="has_invoice == True or no_invoice == True"
+                            context="{'res_id': id, 'total': amount_total, 'selected_invoice_ids': invoice_ids}">
+                            <kanban>
+                                <field name="ttb_vendor_invoice_no"/>
+                                <field name="ttb_vendor_invoice_code"/>
+                                <field name="ttb_vendor_invoice_date"/>
+                                <field name="ttb_vendor_vat"/>
+                                <field name="ttb_price_unit"/>
+                                <field name="pdf_file"/>
+                                <templates>
+                                <t t-name="kanban-box">
+                                    <div class="p-2" style="max-width:340px; min-width:220px; margin:0 auto;">
+                                        <div class="d-flex align-items-center">
+                                            <!-- Cột thông tin: căn trái -->
+                                            <div class="flex-grow-1 text-start">
+                                                <div><strong>Số hóa đơn:</strong> <t t-esc="record.ttb_vendor_invoice_no.value"/></div>
+                                                <div><strong>Ký hiệu:</strong> <t t-esc="record.ttb_vendor_invoice_code.value"/></div>
+                                                <div><strong>Ngày:</strong> <t t-esc="record.ttb_vendor_invoice_date.value"/></div>
+                                                <div><strong>MST:</strong> <t t-esc="record.ttb_vendor_vat.value"/></div>
+                                                <div><strong>Số tiền:</strong> <t t-esc="record.ttb_price_unit.value"/></div>
+                                            </div>
+                                            <!-- Cột nút: to, cân đối -->
+                                            <div class="d-flex flex-column align-items-center ms-3">
+                                                <button type="object" name="action_view_pdf" class="btn btn-secondary btn-lg mb-2 px-4" title="Xem PDF">
+                                                    <i class="fa fa-file-pdf-o me-1"/>PDF
+                                                </button>
+                                                <t t-if="context.selected_invoice_ids and context.selected_invoice_ids.includes(record.id.value)">
+                                                    <span class="badge bg-success text-center py-2 px-3 fs-6">Đã chọn</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <button type="object" name="button_apply_nimbox" class="btn btn-primary btn-lg mt-1 px-4" title="Chọn">
+                                                        <i class="fa fa-check me-1"/>Chọn
+                                                    </button>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                            </kanban>
+                        </field>
+                    </group>
+                </sheet>
+            </xpath>
+        </field>
+    </record>
+    <record id="inherit_stock_picking_form_add_surplus_images" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.surplus.images</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='operations']//field[@name='move_ids_without_package']" position="after">
+                <div>
+                    <label for="surplus_images" class="o_form_label" invisible="ttb_type == 'imported_goods'">Ảnh hàng thừa:</label>
+                    <field name="surplus_images" widget="many2many_binary" invisible="ttb_type == 'imported_goods'"/>
+                </div>
+<!--                <field name="surplus_images" widget="many2many_binary_camera" string="Ảnh hàng thừa">Ảnh hàng thừa</field>-->
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

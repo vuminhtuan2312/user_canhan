@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="binary_field_preview.Many2ManyPDFPreview.attachment_preview"
+       t-inherit="web.Many2ManyBinaryField.attachment_preview"
+       t-inherit-mode="extension">
+        <xpath expr="//div[contains(@class, 'o_image_box')]" position="before">
+            <button t-if="file.mimetype == 'application/pdf' and this.props.showPreview"
+                    class="btn btn-link preview-pdf-btn"
+                    t-on-click.stop="(ev) => this.onClickPreviewPDF(ev, file, files)"
+                    style="padding:0 4px;">
+                <i class="fa fa-eye"/>
+            </button>
+        </xpath>
+    </t>
+</templates> 

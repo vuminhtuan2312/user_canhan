@@ -1,0 +1,7 @@
+.o_section_search_value{
+    border: 2px solid #ccc;
+    width: 500px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    height: 40px;
+}

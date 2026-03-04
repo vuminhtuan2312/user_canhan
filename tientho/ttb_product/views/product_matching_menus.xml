@@ -1,0 +1,18 @@
+<odoo>
+    <!-- Menu gốc -->
+    <menuitem id="menu_product_matching_root" name="So khớp sản phẩm" sequence="10"/>
+
+    <!-- Menu tới tồn kho -->
+    <menuitem id="menu_product_stock_item"
+              name="Sản phẩm tồn kho gốc"
+              parent="menu_product_matching_root"
+              action="action_product_stock_item"
+              sequence="1"/>
+
+    <!-- Menu tới bán hàng -->
+    <menuitem id="menu_product_sale_item"
+              name="Sản phẩm bán ra"
+              parent="menu_product_matching_root"
+              action="action_product_sale_item"
+              sequence="2"/>
+</odoo>

@@ -1,0 +1,32 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) Quocent Pvt. Ltd.
+# All Rights Reserved
+{
+    'name': 'Instant Attachment Preview',
+    'version': '18.0.1.0.0',
+    'license': 'LGPL-3',
+    'depends': ['base', 'web', 'mail', 'sale_management'],
+    'summary': 'Easily preview PDFs, images, videos, and text files in Odoo records for Res Partner, Sales Orders, and Sales Order Lines.',
+    'description': """
+        - **Instant File Previews**: Quickly view attachments in a popup without the need for downloading.
+        - **Wide File Support**: Preview images (JPEG, PNG, SVG, etc.), videos (MP4, WebM, etc.), PDFs, and text documents.
+    """,
+    'category': 'Tools',
+    'author': "Quocent Pvt. Ltd.",
+    'website': "https://www.quocent.com",
+
+    'data': [
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'instant_attachment_preview/static/src/js/qcent_many2many_attachment_preview.js',
+            'instant_attachment_preview/static/src/xml/qcent_many2many_attachment_preview_template.xml',
+        ],
+    },
+    'images': [
+        'static/description/assets/banner.png',
+    ],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}

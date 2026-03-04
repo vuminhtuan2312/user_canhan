@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="report_product_zone" model="account.report">
+        <field name="name">Báo cáo sản phẩm theo zone</field>
+        <field name="filter_show_draft" eval="False"/>
+        <field name="filter_unfold_all" eval="True"/>
+        <field name="filter_unreconciled" eval="False"/>
+        <field name="filter_period_comparison" eval="False"/>
+        <field name="filter_multi_company">selector</field>
+        <field name="filter_hide_0_lines">never</field>
+        <field name="default_opening_date_filter">this_month</field>
+        <field name="search_bar" eval="True"/>
+        <field name="load_more_limit" eval="200"/>
+        <field name="custom_handler_model_id" ref="model_product_zone_report"/>
+    </record>
+
+    <record id="action_report_product_zone" model="ir.actions.client">
+        <field name="name">Báo cáo sản phẩm theo zone</field>
+        <field name="tag">account_report</field>
+        <field name="path">zone-product</field>
+        <field name="context" eval="{'report_id': ref('ttb_product.report_product_zone')}"/>
+    </record>
+    <menuitem id="menu_report_product_zone"
+          name="Báo cáo sản phẩm theo zone"
+          parent="stock.menu_warehouse_report"
+          action="action_report_product_zone"
+          sequence="10"/>
+</odoo>

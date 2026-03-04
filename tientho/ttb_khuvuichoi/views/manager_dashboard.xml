@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tổng quan quản lý (Dashboard Quản lý): Action + Menu -->
+    <record id="action_manager_dashboard_client" model="ir.actions.client">
+        <field name="name">Tổng quan quản lý</field>
+        <field name="tag">ttb_manager_dashboard</field>
+    </record>
+    <menuitem id="ttb_menu_manager_dashboard" name="Tổng quan quản lý" parent="ttb_menu_root" action="action_manager_dashboard_client" sequence="7"/>
+</odoo>

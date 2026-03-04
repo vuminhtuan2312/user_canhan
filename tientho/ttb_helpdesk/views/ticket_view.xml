@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_helpdesk_ticket_view_form" model="ir.ui.view">
+        <field name="name">ttb_helpdesk_ticket_view_form</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="priority">10000</field>
+        <field name="arch" type="xml">
+            <form position="inside">
+                <field name="can_edit_ticket" invisible="1"/>
+            </form>
+            <sheet position="attributes">
+                <attribute name="readonly">not can_edit_ticket</attribute>
+            </sheet>
+            <field name="stage_id" position="attributes">
+                <attribute name="readonly">not can_change_stage</attribute>
+            </field>
+            <xpath expr="//form" position="attributes">
+                <attribute name="class">o_helpdesk_ticket_crm</attribute>
+            </xpath>
+            <xpath expr="//page[@name='description']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Ẩn tất cả các group trong sheet -->
+            <xpath expr="//group" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Ẩn các trường khác ngoài notebook -->
+            <xpath expr="//div[@class='oe_title']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//div[@class='d-flex mb-4']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//div[@class='d-flex']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//notebook" position="before">
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" options="{'line_breaks': False}" widget="text" class="field_name"
+                               placeholder="e.g. Product arrived damaged"/>
+                    </h1>
+                </div>
+            </xpath>
+            <xpath expr="//page[@name='extra_info']" position="before">
+                <page name="content_infor" string="Nội dung">
+                    <group string="Thông tin chung">
+                        <field name="active" invisible="1"/>
+                        <field name="is_partner_phone_update" invisible="1"/>
+                        <field name="is_partner_email_update" invisible="1"/>
+                        <field name="happy_call_id" invisible="1"/>
+                        <field name="transaction_id" invisible="1"/>
+                        <field name="is_locked" invisible="1"/>
+
+                        <field name="ticket_ref" readonly="1"/>
+                        <label for="partner_phone" invisible="1"/>
+                        <div class="o_row o_row_readonly" invisible="1">
+                            <field name="partner_phone" widget="phone"/>
+                            <span class="fa fa-exclamation-triangle text-warning oe_edit_only"
+                                  title="Sau khi lưu thay đổi này, số điện thoại của khách hàng cũng sẽ được cập nhật"
+                                  invisible="not is_partner_phone_update"/>
+                        </div>
+                        <label for="partner_id"/>
+                        <div class="o_row">
+                            <field name="partner_id" readonly="1" class="field_partner_id"
+                                   domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+                                   widget="res_partner_many2one" context="{'default_phone': partner_phone}"
+                                   options="{'no_open': True}"/>
+                            <button name="action_view_partner" type="object" string="Xem" class="btn-link mb-1 px-0"
+                                    invisible="not partner_id"
+                                    context="{'cancelsave': True, 'partner_id_on_view': partner_id}"
+                                    groups="ttb_kpi.group_ttb_kpi_nv_cskh,ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager"
+                            />
+                        </div>
+
+                        <label for="partner_email"/>
+                        <div class="o_row o_row_readonly">
+                            <field name="partner_email" widget="email" readonly="can_edit_ticket == False"/>
+                            <span class="fa fa-exclamation-triangle text-warning oe_edit_only"
+                                  title="Sau khi lưu thay đổi này, email của khách hàng cũng sẽ được cập nhật"
+                                  invisible="not is_partner_email_update"/>
+                        </div>
+                        <field name="source_channel"
+                               readonly="happy_call_id or transaction_id or use_for not in ['Mới', 'Trao đổi nội bộ', 'Trễ hạn']"/>
+                        <field name="domain_user_ids" invisible="1"/>
+                        <field name="priority" widget="priority" readonly="can_edit_ticket == False"/>
+                        <field name="ticket_type" readonly="can_edit_ticket == False"/>
+                        <field name="user_ids" widget="many2many_avatar_user" options="{'no_create': True}" readonly="can_edit_ticket == False"/>
+                        <field name="last_order_name" readonly="can_edit_ticket == False"/>
+                        <field name="last_order_date" readonly="can_edit_ticket == False"/>
+                        <field name="last_order_cashier" readonly="can_edit_ticket == False"/>
+                        <field name="stage_id" widget="selection" readonly="can_edit_ticket == False"/>
+                        <field name="ticket_deadline"/>
+                    </group>
+                    <group string="Thông tin xử lý">
+                        <field name="use_for" invisible="1"/>
+                        <field name="show_under_control_content" invisible="1"/>
+                        <field name="show_out_control_content" invisible="1"/>
+                        <field name="show_other_control_content" invisible="1"/>
+                        <field name="ttb_branch_id" options="{'no_create': True}" readonly="can_edit_ticket == False"/>
+                        <field name="related_department_ids" widget="many2many_tags" options="{'no_create': True}" readonly="can_edit_ticket == False"/>
+                        <field name="has_related_user" readonly="can_edit_ticket == False"/>
+                        <field name="ttb_region_id" options="{'no_create': True}"/>
+<!--                        <field name="ttb_description_ids" widget="many2many_checkboxes"-->
+<!--                               readonly="happy_call_id or transaction_id or use_for not in ['Mới', 'Trao đổi nội bộ', 'Trễ hạn']"/>-->
+                        <field name="ttb_description_ids" widget="many2many_checkboxes" readonly="1"/>
+                        <field name="under_control_content_ids" widget="many2many_tags_unlimit"
+                               invisible="not show_under_control_content"
+                               options="{'no_create': True, 'no_edit': True, 'no_quick_create': True, 'no_open': True}" readonly="can_edit_ticket == False"/>
+                        <field name="out_control_content_ids" widget="many2many_tags_unlimit"
+                               invisible="not show_out_control_content"
+                               options="{'no_create': True, 'no_edit': True, 'no_quick_create': True, 'no_open': True}"/>
+                        <field name="other_control_content_ids" widget="many2many_tags_unlimit"
+                               invisible="not show_other_control_content"
+                               options="{'no_create': True, 'no_edit': True, 'no_quick_create': True, 'no_open': True}"/>
+                        <field name="customer_description" readonly="can_edit_ticket == False"/>
+                        <field name="support_description" readonly="can_edit_ticket == False"/>
+                        <field name="attachment_ids" widget="many2many_binary" readonly="can_edit_ticket == False"/>
+                    </group>
+                    <group string="Chi nhánh đánh giá">
+                        <field name="process_ttb_branch_id" options="{'no_create': True}" readonly="can_use_branch_fields == False"/>
+                        <field name="branch_response" widget="radio" readonly="can_use_branch_fields == False"/>
+                        <field name="user_department_ids" widget="many2many_tags" options="{'no_create': True}" readonly="can_use_branch_fields == False"/>
+                        <field name="related_employee_ids" widget="many2many_tags" invisible="branch_response != 'Đồng thuận'" options="{'no_create': True}" readonly="can_use_branch_fields == False"/>
+                        <field name="branch_response_description" readonly="can_use_branch_fields == False"/>
+                        <field name="branch_attchment_ids" widget="many2many_binary" readonly="can_use_branch_fields == False"/>
+                        <button name="action_confirm_branch_response"
+                            string="Xác nhận"
+                            type="object"
+                            class="oe_highlight"
+                            groups="ttb_kpi.group_ttb_kpi_warehouse_manager,ttb_kpi.group_ttb_kpi_warehouse_director,ttb_kpi.group_ttb_kpi_warehouse_user"
+                        />
+                    </group>
+                    <group string="CS phản hồi">
+                        <field name="cs_response" widget="radio" readonly="can_edit_ticket == False"/>
+                            <field name="cs_response_attachment" widget="radio" readonly="can_edit_ticket == False"/>
+                    </group>
+                </page>
+                <page name="interaction_history" string="Lịch sử tương tác" groups="!ttb_kpi.group_ttb_kpi_warehouse_manager,!ttb_kpi.group_ttb_kpi_warehouse_director,!ttb_kpi.group_ttb_kpi_warehouse_user">
+                    <field name="ttb_transaction_ids" readonly="1" nolabel="1"/>
+                </page>
+                <page name="ticket_history" string="Lịch sử ticket" groups="!ttb_kpi.group_ttb_kpi_warehouse_manager,!ttb_kpi.group_ttb_kpi_warehouse_director,!ttb_kpi.group_ttb_kpi_warehouse_user">
+                    <field name="ticket_ids" readonly="1" nolabel="1"/>
+                </page>
+                <page name="hpc_history" string="Lịch sử happy call" groups="!ttb_kpi.group_ttb_kpi_warehouse_manager,!ttb_kpi.group_ttb_kpi_warehouse_director,!ttb_kpi.group_ttb_kpi_warehouse_user">
+                    <field name="ttb_hpc_ids" readonly="1" nolabel="1"/>
+                </page>
+                 <page name="order_ids" string="Lịch sử đơn hàng" groups="!ttb_kpi.group_ttb_kpi_warehouse_manager,!ttb_kpi.group_ttb_kpi_warehouse_director,!ttb_kpi.group_ttb_kpi_warehouse_user">
+                    <field name="order_ids" readonly="1" nolabel="1"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="ttb_helpdesk_tickets_view_search" model="ir.ui.view">
+        <field name="name">ttb_helpdesk_tickets_view_search</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_search"/>
+        <field name="priority">200</field>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='sla_success']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='sla_inprogress']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='sla_failed']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='sla_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='sla_deadline']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='tag']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='team']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='message_needaction']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='properties']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='group_by_properties']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='properties']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='sla_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_ids"/>
+                <field name="ttb_branch_id"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="name" string="Tất cả" filter_domain="['|', '|', '|', '|', '|', ('name', 'ilike', self), ('ticket_ref', 'ilike', self), ('partner_id', 'ilike', self), ('last_order_id.name', 'ilike', self), ('partner_phone', 'ilike', self), ('partner_name', 'ilike', self)]"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="ticket_ref" string="Mã Ticket" filter_domain="[('ticket_ref','=',self)]"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="ttb_helpdesk_tickets_view_tree" model="ir.ui.view">
+        <field name="name">ttb_helpdesk_tickets_view_tree</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="priority">10000</field>
+        <field name="arch" type="xml">
+            <list string="Tickets" multi_edit="1" sample="1" default_order="id desc" js_class="helpdesk_ticket_list">
+                <field name="company_id" column_invisible="True"/>
+                <field name="team_id" column_invisible="True"/>
+                <field name="user_id" column_invisible="True"/>
+                <field name="use_for" column_invisible="True"/>
+
+                <field name="ticket_ref" readonly="1" optional="show"/>
+                <field name="priority" optional="show" widget="priority"/>
+                <field name="name" string="Tên"/>
+                <field name="user_ids" optional="show" widget="many2many_avatar_user" options="{'no_quick_create': True}"/>
+                <field name="partner_id" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]" optional="show" options="{'no_open': True}"/>
+                <field name="branch_response" optional="show"/>
+                <field name="cs_response" optional="show"/>
+                <field name="stage_id" optional="show" readonly="not context.get('default_team_id', False)" widget="badge" decoration-info="use_for == 'Trao đổi nội bộ'" decoration-success="use_for == 'Đồng thuận'" decoration-muted="use_for == 'Loại bỏ'" decoration-primary="use_for == 'Hoàn thành'" decoration-danger="use_for == 'Trễ hạn'"/>
+            </list>
+        </field>
+    </record>
+    <record id="helpdesk.helpdesk_ticket_action_main_tree_view" model="ir.actions.act_window.view">
+        <field name="view_id" ref="ttb_helpdesk_tickets_view_tree"/>
+    </record>
+
+</odoo>

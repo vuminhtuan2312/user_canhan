@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_barcode_change_reason_list" model="ir.ui.view">
+        <field name="name">barcode.change.reason.list</field>
+        <field name="model">barcode.change.reason</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="reason"/>
+                <field name="note"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_barcode_change_reason_form" model="ir.ui.view">
+        <field name="name">barcode.change.reason.form</field>
+        <field name="model">barcode.change.reason</field>
+        <field name="arch" type="xml">
+            <form string="Lý do chuyển mã">
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="active"/>
+                    </group>
+                    <group>
+                        <field name="reason"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_barcode_change_request_list" model="ir.ui.view">
+        <field name="name">barcode.change.request.list</field>
+        <field name="model">barcode.change.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="branch_id"/>
+                <field name="request_user_id"/>
+                <field name="request_date"/>
+                <field name="state"/>
+                <field name="approve_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_barcode_change_request_form" model="ir.ui.view">
+        <field name="name">barcode.change.request.form</field>
+        <field name="model">barcode.change.request</field>
+        <field name="arch" type="xml">
+            <form string="Yêu cầu chuyển mã">
+                <header>
+                    <button name="action_send_approve" string="Gửi duyệt" class="btn-primary" type="object" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Duyệt" invisible="not approve_ok or state != 'pending'" type="object" class="btn-primary"/>
+                    <button name="action_cancel" string="Từ chối" invisible="state != 'pending'" type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="branch_id" readonly="1"/>
+                            <field name="request_user_id" readonly="1"/>
+                            <field name="request_date" readonly="1"/>
+                            <field name="warehouse_export_id" readonly="state != 'draft'"/>
+                            <field name="warehouse_import_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="approve_date" readonly="1"/>
+                            <field name="description" readonly="state != 'draft'"/>
+                            <field name="note" readonly="state != 'draft'"/>
+                            <field name="import_stock_picking_id" readonly="1"/>
+                            <field name="export_stock_picking_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Chi tiết sản phẩm">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="barcode_from"/>
+                                    <field name="product_from_id"/>
+                                    <field name="barcode_to"/>
+                                    <field name="product_to_id"/>
+                                    <field name="uom_from"/>
+                                    <field name="uom_to"/>
+                                    <field name="qty_from"/>
+                                    <field name="qty_export"/>
+                                    <field name="qty_to"/>
+                                    <field name="qty_import"/>
+                                    <field name="reason_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Thông tin phê duyệt" name="approval_info">
+                            <group>
+                                <group>
+                                    <field name="current_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="next_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="notif_user_ids" readonly="1" widget="many2many_tags"/>
+                                </group>
+                                <group groups="base.group_no_one">
+                                    <field name="process_id" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_sent" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_approved" readonly="1" groups="base.group_no_one"/>
+                                </group>
+                            </group>
+                            <field name="rule_line_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_barcode_change_reason" model="ir.actions.act_window">
+        <field name="name">Lý do chuyển mã</field>
+        <field name="res_model">barcode.change.reason</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_barcode_change_request" model="ir.actions.act_window">
+        <field name="name">Yêu cầu chuyển mã</field>
+        <field name="res_model">barcode.change.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_stock_picking_barcode_change_list" model="ir.ui.view">
+        <field name="name">stock.picking.barcode.change.list</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <list string="Phiếu chuyển mã">
+                <field name="name"/>
+                <field name="location_id"/>
+                <field name="location_dest_id"/>
+                <field name="scheduled_date"/>
+                <field name="origin"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-info="state not in ('done', 'cancel', 'draft')" decoration-muted="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_picking_barcode_export" model="ir.actions.act_window">
+        <field name="name">Phiếu xuất chuyển mã</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('barcode_request_id', '!=', False), ('picking_type_code', '=', 'outgoing')]</field>
+        <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('view_stock_picking_barcode_change_list')})]"/>
+    </record>
+
+    <record id="action_picking_barcode_import" model="ir.actions.act_window">
+        <field name="name">Phiếu nhập chuyển mã</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('barcode_request_id', '!=', False), ('picking_type_code', '=', 'incoming')]</field>
+        <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('view_stock_picking_barcode_change_list')})]"/>
+    </record>
+
+    <menuitem id="menu_barcode_change_export" name="Phiếu xuất chuyển mã" parent="ttb_stock.menu_barcode_change_root" action="action_picking_barcode_export" sequence="13"/>
+    <menuitem id="menu_barcode_change_import" name="Phiếu nhập chuyển mã" parent="ttb_stock.menu_barcode_change_root" action="action_picking_barcode_import" sequence="14"/>
+
+</odoo>

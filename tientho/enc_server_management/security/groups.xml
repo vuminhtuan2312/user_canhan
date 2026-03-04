@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="all_server_categ" model="ir.module.category">
+        <field name="name">Server</field>
+        <field name="sequence" eval="1"/>
+    </record>
+
+    <record id="server_user" model="res.groups">
+        <field name="name">Người dùng</field>
+        <field name="category_id" ref="all_server_categ"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="users" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="server_manager" model="res.groups">
+        <field name="name">Quản lý</field>
+        <field name="category_id" ref="all_server_categ"/>
+        <field name="implied_ids" eval="[(4, ref('enc_server_management.server_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+</odoo>

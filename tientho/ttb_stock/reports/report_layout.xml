@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="ttb_report_stock_layout_header">
+        <div t-attf-class="header o_company_#{o.company_id.id}_layout">
+            <table style="border-color: white;font-size:11px;font-family:Cambria;width:100%;">
+                <colgroup width="4%"></colgroup>
+                <colgroup width="13%"></colgroup>
+                <colgroup width="11%"></colgroup>
+                <colgroup width="24%"></colgroup>
+                <colgroup width="5%"></colgroup>
+                <colgroup width="5%"></colgroup>
+                <colgroup width="10%"></colgroup>
+                <colgroup width="11%"></colgroup>
+                <colgroup width="5%"></colgroup>
+                <colgroup width="12%"></colgroup>
+                <tr>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                </tr>
+                <tr>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="3">
+                         <b t-out="o.picking_type_id.warehouse_id.partner_id.name"/>
+                    </td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="2">Điện thoại</td>
+                    <td colspan="3">
+                        <span t-out="o.picking_type_id.warehouse_id.partner_id.phone"/>
+                    </td>
+                </tr>
+                <tr style="border-bottom:1px solid black;">
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="3">
+                         <span>Địa chỉ: <t t-out="o.picking_type_id.warehouse_id.partner_id._display_address(True)"/></span>
+                    </td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="2">Email</td>
+                    <td colspan="3">
+                       <span t-out="o.picking_type_id.warehouse_id.partner_id.email"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </template>
+    <template id="ttb_report_stock_layout_footer">
+        <div t-attf-class="footer o_company_#{o.company_id.id}_layout">
+        </div>
+    </template>
+
+    <template id="ttb_report_stock_layout">
+        <t t-call="ttb_stock.ttb_report_stock_layout_header"/>
+        <t t-call="web.html_container">
+            <t t-if="not o" t-set="o" t-value="doc"/>
+            <div class="article" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+                <t t-out="0"/>
+            </div>
+        </t>
+        <t t-call="ttb_stock.ttb_report_stock_layout_footer"/>
+    </template>
+</odoo>

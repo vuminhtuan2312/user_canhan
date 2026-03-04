@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="stock_barcode.MainComponent" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o_validate_page')]" position="before">
+            <button t-if="env.model.displayAccountantButton" class="btn btn-secondary" t-on-click="onOpenAccountantForm">
+                Chứng từ kế toán
+            </button>
+        </xpath>
+        <xpath expr="//footer[hasclass('o_barcode_control', 'o_action_buttons')]" position="inside">
+            <div class="d-flex justify-content-end gap-2 px-2 py-2">
+                <button type="button"
+                        class="btn btn-sm btn-primary"
+                        t-on-click="onClickRefresh">
+                    Làm mới
+                </button>
+<!--                <button type="button"-->
+<!--                        class="btn btn-sm btn-primary"-->
+<!--                        style="padding: 1px 6px; font-size: 12px;"-->
+<!--                        t-on-click="onMoveProductDuplicate">-->
+<!--                    Lọc sản phẩm-->
+<!--                </button>-->
+            </div>
+        </xpath>
+        <xpath expr="//div[hasclass('o_barcode_lines_header py-3 px-1 text-bg-800')]" position="before">
+            <!-- Hiển thị số lượng sản phẩm đã quét -->
+            <div class="o_ttb_scanned_count px-2 py-2 border-bottom d-flex justify-content-between align-items-center"
+                 t-if="state.view === 'barcodeLines'">
+                <span class="fw-bold">Đã quét:</span>
+                <span class="badge bg-white text-danger fs-5 border border-danger">
+                    <t t-esc="getTotalQuantity()"/> / <t t-esc="getMinProductToCheck()"/>
+                </span>
+            </div>
+        </xpath>
+    </t>
+</templates>

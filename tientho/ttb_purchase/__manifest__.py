@@ -1,0 +1,87 @@
+{
+    'name': 'Tiến Thọ - Mua hàng',
+    'version': '18.0.0.1',
+    'category': 'Tools',
+    'summary': "Quy trình mua hàng",
+    'depends': ['base', 'ttb_approval', 'purchase_stock', 'ttb_product', 'sale_stock', 'web_grid', 'base_view_inheritance_extension',
+                'ttb_stock', 'binary_field_preview', 'point_of_sale', 'base_import',],
+    'data': [
+        # data always first
+        'data/ir_sequence.xml',
+        'data/ir_cron.xml',
+        'data/ttb_currency.xml',
+
+        'reports/report_layout.xml',
+        'reports/report_purchaseorder.xml',
+        'reports/report_purchasequotation.xml',
+        'reports/report_purchase_excel.xml',
+        # group -> access -> rule
+        'security/res_groups.xml',
+        'security/ir.model.access.csv',
+        'security/ir_rule.xml',
+
+        # reports
+
+        # wizards
+        'wizards/purchase_batch_select_pr.xml',
+        'wizards/product_allocation_select_partner.xml',
+        'wizards/purchase_order_add_discount.xml',
+        'wizards/purchase_order_add_tax.xml',
+        'wizards/header_template.xml',
+        'wizards/print_goods_distribution_document.xml',
+        'wizards/print_goods_distribution.xml',
+        'wizards/import_code_imported_goods.xml',
+        'wizards/purchase_order_advance_request_wizard_views.xml',
+        'wizards/mau_in_tam_ung_wizard.xml',
+        'wizards/stock_picking_confirm_wizard.xml',
+        'wizards/goods_distribution_confirm_wizard.xml',
+        'wizards/advance_request_shortage_wizard_views.xml',
+
+        # views
+        'views/purchase_request.xml',
+        'views/purchase_request_line.xml',
+        'views/purchase_batch.xml',
+        'views/product_allocation.xml',
+        'views/res_partner.xml',
+        'views/purchase_order.xml',
+        'views/purchase_price.xml',
+        'views/goods_distribution_ticket.xml',
+        'views/prioritize_branch.xml',
+        'views/complaint_ticket.xml',
+        'views/print_separate_prd_template.xml',
+        'views/template_print_estimated_costs_document.xml',
+        'views/stock_picking.xml',
+        'views/purchase_approval.xml',
+        'views/res_config_settings.xml',
+        'views/hang_ton_kho_views.xml',
+        'views/auto_purchase_request_views.xml',
+        'views/product_supplierinfo_views.xml',
+        'views/purchase_order_imported_goods.xml',
+        'views/stock_picking_imported_goods.xml',
+        'views/shipping_stock_setting.xml',
+        'views/res_company.xml',
+        'views/delivery_order.xml',
+        'views/ttb_purchase_request_line.xml',
+        'views/advance_request.xml',
+
+        # menu always last
+        'views/menu.xml',
+        'views/menu_imported_goods.xml',
+    ],
+    'assets': {
+        'web.assets_backend_lazy': [
+            'ttb_purchase/static/src/**/*',
+        ],
+        'web.assets_backend': [
+            'ttb_purchase/static/src/allocation_grid/branch_products_widget.js',
+            'ttb_purchase/static/src/allocation_grid/branch_products_widget.scss',
+            'ttb_purchase/static/src/allocation_grid/branch_products_widget.xml',
+            'ttb_purchase/static/src/allocation_grid/binary_preview_widget.js',
+            'ttb_purchase/static/src/allocation_grid/binary_preview_widget.xml',
+            'ttb_purchase/static/src/components/multi_file_viewer.js',
+            'ttb_purchase/static/src/components/multi_file_viewer.xml',
+            'ttb_purchase/static/src/components/multi_file_viewer.css',
+        ],
+    },
+    'license': 'LGPL-3',
+}

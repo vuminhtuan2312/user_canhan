@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="cskpi_missing_evaluation_report" model="account.report">
+        <field name="name">Báo cáo số phiếu chấm thiếu CSKH</field>
+        <field name="filter_show_draft" eval="False"/>
+        <field name="filter_account_type" eval="False"/>
+        <field name="filter_partner" eval="False"/>
+        <field name="filter_unfold_all" eval="True"/>
+        <field name="filter_unreconciled" eval="False"/>
+        <field name="filter_period_comparison" eval="False"/>
+        <field name="filter_multi_company">selector</field>
+        <field name="filter_hide_0_lines">never</field>
+        <field name="default_opening_date_filter">this_month</field>
+        <field name="search_bar" eval="True"/>
+        <field name="load_more_limit" eval="200"/>
+        <field name="custom_handler_model_id" ref="model_cskpi_missing_evaluation_report"/>
+    </record>
+
+    <record id="action_cskpi_missing_evaluation_report" model="ir.actions.client">
+        <field name="name">Báo cáo số phiếu chấm thiếu CSKH</field>
+        <field name="tag">account_report</field>
+        <field name="path">cskpi_report</field>
+        <field name="context" eval="{'report_id': ref('cskpi_missing_evaluation_report')}"/>
+    </record>
+
+    <record id="vmkpi_missing_evaluation_report" model="account.report">
+        <field name="name">Báo cáo số chấm thiếu VM</field>
+        <field name="filter_show_draft" eval="False"/>
+        <field name="filter_account_type" eval="False"/>
+        <field name="filter_partner" eval="False"/>
+        <field name="filter_unfold_all" eval="True"/>
+        <field name="filter_unreconciled" eval="False"/>
+        <field name="filter_period_comparison" eval="False"/>
+        <field name="filter_multi_company">selector</field>
+        <field name="filter_hide_0_lines">never</field>
+        <field name="default_opening_date_filter">this_month</field>
+        <field name="search_bar" eval="True"/>
+        <field name="load_more_limit" eval="200"/>
+        <field name="custom_handler_model_id" ref="model_vmkpi_missing_evaluation_report"/>
+    </record>
+
+    <record id="action_vmkpi_missing_evaluation_report" model="ir.actions.client">
+        <field name="name">Báo cáo số chấm thiếu VM</field>
+        <field name="tag">account_report</field>
+        <field name="path">vmkpi_report</field>
+        <field name="context" eval="{'report_id': ref('vmkpi_missing_evaluation_report')}"/>
+    </record>
+
+
+    <record id="vskpi_missing_evaluation_report" model="account.report">
+        <field name="name">Báo cáo số chấm thiếu VS</field>
+        <field name="filter_show_draft" eval="False"/>
+        <field name="filter_account_type" eval="False"/>
+        <field name="filter_partner" eval="False"/>
+        <field name="filter_unfold_all" eval="True"/>
+        <field name="filter_unreconciled" eval="False"/>
+        <field name="filter_period_comparison" eval="False"/>
+        <field name="filter_multi_company">selector</field>
+        <field name="filter_hide_0_lines">never</field>
+        <field name="default_opening_date_filter">this_month</field>
+        <field name="search_bar" eval="True"/>
+        <field name="load_more_limit" eval="200"/>
+        <field name="custom_handler_model_id" ref="model_vskpi_missing_evaluation_report"/>
+    </record>
+
+    <record id="action_vskpi_missing_evaluation_report" model="ir.actions.client">
+        <field name="name">Báo cáo số chấm thiếu VS</field>
+        <field name="tag">account_report</field>
+        <field name="path">vskpi_report</field>
+        <field name="context" eval="{'report_id': ref('vskpi_missing_evaluation_report')}"/>
+    </record>
+
+
+
+
+</odoo>

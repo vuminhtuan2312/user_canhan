@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="approval_process_search" model="ir.ui.view">
+        <field name="name">Quy trình duyệt</field>
+        <field name="model">ttb.approval.process</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="model_id"/>
+                <group string="Group By">
+                    <filter string="Loại chứng từ" name="groupby_model_id" domain="[]" context="{'group_by': 'model_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="approval_process_list" model="ir.ui.view">
+        <field name="name">Quy trình duyệt</field>
+        <field name="model">ttb.approval.process</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="purchase_type"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="approval_process_form" model="ir.ui.view">
+        <field name="name">Quy trình duyệt</field>
+        <field name="model">ttb.approval.process</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" nolabel="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="model_id" options="{'no_create': True, 'no_edit': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                            <field name="model" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="purchase_type"/>
+                        </group>
+                        <group>
+                            <field name="domain" widget="domain" options="{'model': 'model', 'in_dialog': True}"/>
+                            <field name="max_line_sequence" invisible="1"/>
+                            <field name="active" widget="boolean_toggle" options="{'autosave': False}" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Quy tắc" name="rule">
+                            <field name="rule_ids" context="{'default_sequence': max_line_sequence}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="approval_process_action" model="ir.actions.act_window">
+        <field name="name">Quy trình duyệt</field>
+        <field name="res_model">ttb.approval.process</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

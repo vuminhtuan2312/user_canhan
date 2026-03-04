@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="aggregate_purchase_orders_view_kanban" model="ir.ui.view">
+        <field name="name">aggregate.ttb.branchs.kanban</field>
+        <field name="model">ttb.branch</field>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile o_stock_barcode_operations_kanban_view" create="0">
+                sample="1" type="object" group_create="false">
+                <field name="name"/>
+                <templates>
+                    <t t-name="card" class="o_barcode_picking_type">
+                        <div style="font-weight: bold; font-size: 18px; color: #007272;">
+                            <field name="name"/>
+                        </div>
+                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                            <a name="get_so_don_khop" type="object"
+                               context="{'branch_id': id}">
+                                <field name="so_don_khop"/>
+                                đơn khớp
+                            </a>
+                            <span style="color: #888;">|</span>
+                            <span>
+                                <field name="sotien_khop"/>đ
+                            </span>
+                        </div>
+                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                            <a name="get_so_don_lech_tien" type="object"
+                               context="{'branch_id': id}">
+                                <field name="so_don_lech_tien"/>
+                                đơn lệch tiền
+                            </a>
+                            <span style="color: #888;">|</span>
+                            <span>
+                                <field name="sotien_lechtien"/>đ
+                            </span>
+                        </div>
+
+                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                            <a name="get_so_don_lech_sluong" type="object"
+                               context="{'branch_id': id}">
+                                <field name="so_don_lech_so_luong"/>
+                                đơn lệch số lượng
+                            </a>
+                            <span style="color: #888;">|</span>
+                            <span>
+                                <field name="sotien_lechsoluong"/>đ
+                            </span>
+                        </div>
+                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                            <a name="get_so_don_chua_co_hoa_don" type="object"
+                               context="{'branch_id': id}">
+                                <field name="so_don_chua_co_hoa_don"/>
+                                đơn chưa có hóa đơn
+                            </a>
+                            <span style="color: #888;">|</span>
+                            <span>
+                                <field name="sotien_chuacohoadon"/>đ
+                            </span>
+                        </div>
+                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px; color: red;">
+                            <a name="get_so_don_lech_alert" type="object" style="color: red;"
+                               context="{'branch_id': id}">
+                                <field name="sodon_alert"/>
+                                đơn sắp đến hạn
+                            </a>
+                            <span style="color: #888;">|</span>
+                            <span>
+                                <field name="sotien_alert"/>đ
+                            </span>
+                        </div>
+                        <field name="graph_dashboard" widget="branch_dashboard_graph" graph_type="bar"/>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <record id="aggregate_purchase_orders_action" model="ir.actions.act_window">
+        <field name="name">Tổng hợp đơn mua hàng</field>
+        <field name="res_model">ttb.branch</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="aggregate_purchase_orders_view_kanban"/>
+    </record>
+
+    <menuitem
+        id="followup_purchase_orders_menu"
+        name="Theo dõi đơn hàng"
+        sequence="2"
+        parent="purchase.menu_purchase_root"
+    />
+
+    <menuitem
+            id="purchase.aggregate_purchase_orders_menu"
+            name="Tổng hợp đơn mua hàng"
+            action="aggregate_purchase_orders_action"
+            sequence="30"
+            parent="followup_purchase_orders_menu"
+    />
+</odoo>

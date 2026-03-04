@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="pos_order_action" model="ir.actions.act_window">
+        <field name="name">Đơn hàng</field>
+        <field name="res_model">pos.order</field>
+        <field name="path">einvoice-pos-orders</field>
+        <field name="view_mode">list,form,kanban,pivot</field>
+        <field name="domain">[('lines.purchase_invoiced_qty','&gt;',0)]</field>
+    </record>
+
+    <record id="view_pos_pos_form_inherit_ctkm_after_uom" model="ir.ui.view">
+        <field name="name">pos.order.form.ctkm.after.uom</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+
+          <!-- Thêm cột CTKM sau cột ĐVT (product_uom_id) -->
+              <xpath expr="//field[@name='lines']/list/field[@name='product_uom_id']" position="after">
+                <field name="promotion_program_name" string="CTKM" readonly="1"/>
+              </xpath>
+
+        </field>
+  </record>
+</odoo>

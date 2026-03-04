@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="stock_barcode.MainComponent" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_barcode_lines_header py-3 px-1 text-bg-800')]" position="before">
+            <div class="o_ttb_quick_barcode px-2 py-2 border-bottom"
+                 t-if="state.view === 'barcodeLines'">
+              <BarcodeInput onSubmit.bind="onBarcodeSubmitted"/>
+            </div>
+        </xpath>
+    </t>
+</templates>

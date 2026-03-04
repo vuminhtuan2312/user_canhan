@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_report_coverage_month_form" model="ir.ui.view">
+        <field name="name">report.coverage.month.view.form</field>
+        <field name="model">report.coverage.month</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="branch"/>
+                        </h1>
+                    </div>
+                    <notebook>
+                        <page string="Chi tiết sản phẩm">
+                        <field name="coverage_line_ids" nolabel="1">
+                            <list>
+                                <field name="mch1" />
+                                <field name="mch2" />
+                                <field name="mch3" />
+                                <field name="mch4" />
+                                <field name="mch5" />
+                                <field name="product_id" />
+                                <field name="sales_month" />
+                                <field name="sales_same_month" />
+                                <field name="sales_same_year" />
+                                <field name="growth_month" />
+                                <field name="growth_year" />
+                                <field name="stock_qty" />
+                                <field name="stock_value" />
+                                <field name="avg_day" />
+                                <field name="avg_stock_days" />
+                                <field name="min_qty" />
+                                <field name="covered" />
+                            </list>
+                        </field>
+                    </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_report_coverage_month_list" model="ir.ui.view">
+        <field name="name">report.coverage.month.list</field>
+        <field name="model">report.coverage.month</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="branch" />
+                <field name="sales_month" />
+                <field name="sales_same_month" />
+                <field name="sales_same_year" />
+                <field name="growth_month" widget="percentage"/>
+                <field name="growth_year" widget="percentage"/>
+                <field name="avg_day" />
+                <field name="stock_qty" />
+                <field name="avg_stock_days" />
+                <field name="total_value" />
+                <field name="num_covered"/>
+                <field name="num_not_covered"/>
+                <field name="coverage_percent" widget="percentage"/>
+            </list>
+        </field>
+    </record>
+    <record id="wizard_coverage_month_action" model="ir.actions.act_window">
+        <field name="name">Báo cáo độ phủ theo tháng</field>
+        <field name="res_model">wizard.coverage.month</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

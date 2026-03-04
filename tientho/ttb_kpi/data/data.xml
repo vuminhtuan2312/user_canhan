@@ -1,0 +1,51 @@
+<odoo>
+    <record id="ttb_kpi_type_dt" model="ttb.kpi.type">
+        <field name="name">Doanh thu</field>
+        <field name="code">DT</field>
+    </record>
+
+    <record id="ttb_kpi_type_cp" model="ttb.kpi.type">
+        <field name="name">Chi Phí</field>
+        <field name="code">CP</field>
+    </record>
+
+    <record id="ttb_kpi_type_vs" model="ttb.kpi.type">
+        <field name="name">Vệ sinh</field>
+        <field name="code">VS</field>
+    </record>
+
+    <record id="ttb_kpi_type_vm" model="ttb.kpi.type">
+        <field name="name">Trưng bày hàng hóa</field>
+        <field name="code">VM</field>
+    </record>
+
+    <record id="ttb_kpi_type_cskh" model="ttb.kpi.type">
+        <field name="name">Chăm sóc khách hàng</field>
+        <field name="code">CSKH</field>
+    </record>
+
+    <record id="ttb_kpi_type_osa" model="ttb.kpi.type">
+        <field name="name">Đảm bảo tồn kho</field>
+        <field name="code">OSA</field>
+    </record>
+
+    <record id="ttb_kpi_type_anat" model="ttb.kpi.type">
+        <field name="name">Check list ANAT</field>
+        <field name="code">ANAT</field>
+    </record>
+
+    <record id="ttb_kpi_type_pccc" model="ttb.kpi.type">
+        <field name="name">Check list PCCC</field>
+        <field name="code">PCCC</field>
+    </record>
+
+    <record id="ttb_kpi_type_kvc" model="ttb.kpi.type">
+        <field name="name">Chất lượng KVC</field>
+        <field name="code">KVC</field>
+    </record>
+
+    <record id="ttb_kpi_type_vs_kvc" model="ttb.kpi.type">
+        <field name="name">Chất lượng VS KVC</field>
+        <field name="code">VSKVC</field>
+    </record>
+</odoo>

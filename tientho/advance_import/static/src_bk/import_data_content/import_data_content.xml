@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="ImportDataContentFieldOption" 
+       t-inherit="ImportDataContent" 
+       t-inherit-mode="extension">
+
+        <!-- Đổi tiêu đề cột từ "Check trùng" -> "Field Option" -->
+        <xpath expr="//thead/tr/th[2]" position="after">
+            <th scope="col">Field Option</th>
+        </xpath>
+
+        <!-- Thêm cột chứa checkbox và input vào từng dòng dữ liệu -->
+        <xpath expr="//tbody//tr/td[2]" position="after">
+            <td class="text-center">
+                <!-- Checkbox với label "Check trùng" -->
+                <label class="d-flex align-items-center">
+                    <input type="checkbox"
+                           t-att-name="`check_duplicate_${column.id}`"
+                           t-att-checked="column.checkDuplicate"
+                           t-on-change="(ev) => this.onCheckDuplicateChanged(column, ev.target.checked)" />
+                    <span class="ms-2">Check trùng</span>
+                </label>
+
+                <!-- Textbox nhập tên trường liên kết, chỉ hiển thị nếu là Relation Field -->
+                <input t-if="column.fieldInfo &amp;&amp; column.fieldInfo.type === 'many2one'"
+                       type="text"
+                       class="form-control mt-1"
+                       placeholder="Nhập tên trường liên kết..."
+                       t-att-value="column.selectedRelationField || ''"
+                       t-on-input="(ev) => this.onRelationFieldInput(column, ev.target.value)" />
+            </td>
+        </xpath>
+
+    </t>
+</templates>

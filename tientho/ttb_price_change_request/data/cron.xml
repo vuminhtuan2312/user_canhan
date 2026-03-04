@@ -1,0 +1,42 @@
+<odoo>
+    <record id="cron_notify_unapproved_before_4h" model="ir.cron">
+        <field name="name">PCR: Nhắc chưa duyệt trước áp dụng 4h</field>
+        <field name="model_id" ref="model_ttb_price_change_request"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_notify_unapproved_before_4h()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="cron_notify_before_apply_10m" model="ir.cron">
+        <field name="name">PCR: Nhắc trước áp dụng 10 phút</field>
+        <field name="model_id" ref="model_ttb_price_change_request"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_notify_before_apply_10m()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="cron_notify_overdue_after_5m" model="ir.cron">
+        <field name="name">PCR: Cảnh báo quá áp dụng 5 phút</field>
+        <field name="model_id" ref="model_ttb_price_change_request"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_notify_overdue_after_5m()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="cron_pcr_auto_update_by_effective_time" model="ir.cron">
+        <field name="name">PCR: Auto update Augges theo thời gian áp dụng</field>
+        <field name="model_id" ref="model_ttb_price_change_request"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_auto_update_by_effective_time()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">False</field>
+    </record>
+
+</odoo>

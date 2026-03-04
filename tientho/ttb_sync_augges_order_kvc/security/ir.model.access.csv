@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ttb_bizcrm_customer_map,access_ttb_bizcrm_customer_map,model_ttb_bizcrm_customer_map,,1,1,1,0
+access_ttb_bizcrm_order_map,access_ttb_bizcrm_order_map,model_ttb_bizcrm_order_map,,1,1,1,0
+access_ttb_bizcrm_connector,access_ttb_bizcrm_connector,model_ttb_bizcrm_connector,,1,1,1,0

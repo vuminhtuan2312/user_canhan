@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+    <template id="survey_form_inherit_enctype" inherit_id="survey.survey_fill_form">
+        <xpath expr="//form" position="attributes">
+            <attribute name="enctype">multipart/form-data</attribute>
+        </xpath>
+    </template>
+    <!-- views/survey_templates.xml -->
+    <template id="survey_question_inherit_upload_image" inherit_id="survey.question_simple_choice">
+        <xpath expr="//t[@t-foreach='question.suggested_answer_ids']" position="after">
+
+                <div class="upload-container d-none" t-attf-id="image_attachments_{{ question.id }}" style="margin-top: 10px;">
+                    <label>Upload ảnh minh chứng:</label>
+                    <input type="file" multiple="true" name="files[]" accept="image/*" class="form-control"/>
+                </div>
+
+        </xpath>
+    </template>
+
+    <template id="question_container_inherit" inherit_id="survey.question_container">
+        <xpath expr="//div[@t-field='question.description']" position="attributes">
+            <attribute name="class" add="d-none" separator=" "/>
+        </xpath>
+        <xpath expr="//span[@t-field='question.title']" position="after">
+            <span class="toggle-description"><i class="fa fa-question-circle fa-2xs"></i></span>
+        </xpath>
+    </template>
+
+    <template id="question_image_upload">
+        <div class="o_survey_comment_container h-auto p-0">
+            <t t-if="answer_lines[0].value_image_upload">
+                <t t-foreach="answer_lines[0].value_image_upload" t-as="image">
+                    <img t-attr-src="'data:image/png;base64,%s' % image.image_src" />
+                </t>
+            </t>
+        </div>
+    </template>
+
+    <template id="question_simple_choice_inherit" inherit_id="survey.question_simple_choice">
+        <xpath expr="//t[@t-set='comment_line']" position="after">
+            <t t-set="image_lines" t-value="answer_lines.filtered(lambda line: line.value_image_upload)"/>
+        </xpath>
+        <xpath expr="//div[@t-if='question.comments_allowed and not question.comment_count_as_answer']" position="after">
+            <t t-if="image_lines">
+                <t t-foreach="image_lines" t-as="image_line">
+                    <t t-foreach="image_line.value_image_upload" t-as="image_attachment">
+                        <div class="o_survey_image_upload" style="display: flex;
+                                                                  justify-content: center,
+                                                                  align-items: center,
+                                                                  padding: 1rem;">
+                            <img t-attf-src="/web/image/{{image_attachment.id}}" style=" max-width: 95%;
+                                                                                                      max-height: 60vh;
+                                                                                                      width: auto;
+                                                                                                      height: auto;
+                                                                                                      object-fit: contain;"/>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="user_input_session_inherit" inherit_id="survey.user_input_session">
+        <xpath expr="//head/t[@t-call-assets][last()]" position="after">
+            <t t-call-assets="survey.survey_assets" lazy_load="True"/>
+            <t t-call-assets="survey.survey_user_input_session_assets" lazy_load="True"/>
+        </xpath>
+    </template>
+
+</data>
+</odoo>

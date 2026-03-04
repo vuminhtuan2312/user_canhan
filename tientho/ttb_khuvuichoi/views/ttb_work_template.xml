@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Mẫu công việc: List + Form + Action + Menu -->
+
+    <record id="view_ttb_work_template_list" model="ir.ui.view">
+        <field name="name">ttb.work.template.list</field>
+        <field name="model">ttb.work.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" width="40%"/>
+                <field name="frequency_minutes" width="15%"/>
+                <field name="duration_minutes" width="15%"/>
+                <field name="area_ids" width="20%" widget="many2many_tags"/>
+                <field name="is_active" width="10%" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ttb_work_template_form" model="ir.ui.view">
+        <field name="name">ttb.work.template.form</field>
+        <field name="model">ttb.work.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="frequency_minutes" help="Bao lâu sinh phiếu 1 lần"/>
+                            <field name="duration_minutes" help="Thời gian để hoàn thành việc này"/>
+                        </group>
+                        <group>
+                            <field name="area_ids" widget="many2many_tags"/>
+                            <field name="is_active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Nội dung hướng dẫn">
+                            <field name="description"/>
+                            <separator string="Kết quả mong đợi"/>
+                            <field name="expected_result"/>
+                            <separator string="Lỗi cần tránh"/>
+                            <field name="avoid_errors"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_config_work_template" model="ir.actions.act_window">
+        <field name="name">Mẫu công việc</field>
+        <field name="res_model">ttb.work.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="ttb_menu_config_template" name="Mẫu công việc" parent="ttb_menu_configuration" action="action_config_work_template" sequence="10"/>
+</odoo>

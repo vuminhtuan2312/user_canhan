@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="purchase_order_imported_goods_action" model="ir.actions.act_window">
+        <field name="name">Đơn mua hàng nhập khẩu</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+        <field name="view_id" ref="purchase_order_kpis_tree"/>
+        <field name="domain">[('ttb_type', '=', 'imported_goods')]</field>
+        <field name="search_view_id" ref="view_purchase_order_filter"/>
+        <field name="context">{'quotation_only': True,'display_default_code': False, 'default_ttb_type': 'imported_goods' }</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            No request for quotation found. Let's create one!
+          </p><p>
+            Requests for quotation are documents that will be sent to your suppliers to request prices for different products you consider buying.
+            Once an agreement has been found with the supplier, they will be confirmed and turned into purchase orders.
+          </p>
+        </field>
+    </record>
+
+    <record id="ttb_advance_payment_action" model="ir.actions.act_window">
+        <field name="name">Tạm ứng</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+        <field name="view_id" ref="purchase_order_kpis_tree"/>
+        <field name="domain">[('ttb_type', '=', 'imported_goods'),('purchase_order_status', '=', 'advance_payment')]</field>
+        <field name="search_view_id" ref="view_purchase_order_filter"/>
+        <field name="context">{'quotation_only': True,'display_default_code': False, 'default_ttb_type': 'imported_goods' }</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            No request for quotation found. Let's create one!
+          </p><p>
+            Requests for quotation are documents that will be sent to your suppliers to request prices for different products you consider buying.
+            Once an agreement has been found with the supplier, they will be confirmed and turned into purchase orders.
+          </p>
+        </field>
+    </record>
+
+    <record id="ttb_china_supplier_order_action" model="ir.actions.act_window">
+        <field name="name">Mua hàng NCC Trung Quốc</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+        <field name="view_id" ref="purchase_order_kpis_tree"/>
+        <field name="domain">[('ttb_type', '=', 'imported_goods'),('purchase_order_status', '=', 'ordered')]</field>
+        <field name="search_view_id" ref="view_purchase_order_filter"/>
+        <field name="context">{'quotation_only': True,'display_default_code': False, 'default_ttb_type': 'imported_goods' }</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            No request for quotation found. Let's create one!
+          </p><p>
+            Requests for quotation are documents that will be sent to your suppliers to request prices for different products you consider buying.
+            Once an agreement has been found with the supplier, they will be confirmed and turned into purchase orders.
+          </p>
+        </field>
+    </record>
+
+    <record id="ttb_waiting_china_supplier_shipping_action" model="ir.actions.act_window">
+        <field name="name">Chờ NCC Trung Quốc phát hàng</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+        <field name="view_id" ref="purchase_order_kpis_tree"/>
+        <field name="domain">[('ttb_type', '=', 'imported_goods'),('purchase_order_status', '=', 'waiting')]</field>
+        <field name="search_view_id" ref="view_purchase_order_filter"/>
+        <field name="context">{'quotation_only': True,'display_default_code': False, 'default_ttb_type': 'imported_goods' }</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            No request for quotation found. Let's create one!
+          </p><p>
+            Requests for quotation are documents that will be sent to your suppliers to request prices for different products you consider buying.
+            Once an agreement has been found with the supplier, they will be confirmed and turned into purchase orders.
+          </p>
+        </field>
+    </record>
+
+    <record id="ttb_china_supplier_payment_action" model="ir.actions.act_window">
+        <field name="name">Thanh toán NCC</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+        <field name="view_id" ref="purchase_order_kpis_tree"/>
+        <field name="domain">[('ttb_type', '=', 'imported_goods'),('purchase_order_status', '=', 'supplier_payment')]</field>
+        <field name="search_view_id" ref="view_purchase_order_filter"/>
+        <field name="context">{'quotation_only': True,'display_default_code': False, 'default_ttb_type': 'imported_goods' }</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            No request for quotation found. Let's create one!
+          </p><p>
+            Requests for quotation are documents that will be sent to your suppliers to request prices for different products you consider buying.
+            Once an agreement has been found with the supplier, they will be confirmed and turned into purchase orders.
+          </p>
+        </field>
+    </record>
+
+</odoo>

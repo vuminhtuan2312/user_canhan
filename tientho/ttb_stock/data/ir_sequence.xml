@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_stock_transfer_request" model="ir.sequence">
+        <field name="name">Mã đề nghị điều chuyển</field>
+        <field name="code">stock.transfer.request</field>
+        <field name="prefix">CH</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_stock_consume_request" model="ir.sequence">
+        <field name="name">Mã đề nghị xuất dùng</field>
+        <field name="code">stock.consume.request</field>
+        <field name="prefix">XD</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_barcode_change_reason" model="ir.sequence">
+        <field name="name">Mã lý do chuyển mã</field>
+        <field name="code">barcode.change.reason</field>
+        <field name="prefix">CR</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_barcode_change_request" model="ir.sequence">
+        <field name="name">Mã yêu cầu chuyển mã</field>
+        <field name="code">barcode.change.request</field>
+        <field name="prefix">BCR</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

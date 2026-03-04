@@ -1,0 +1,7 @@
+<odoo>
+    <menuitem id="menu_purchase_grid"
+              name="Dự trù mua bán"
+              parent="purchase.menu_purchase_rfq"
+              action="action_purchase_grid"
+              sequence="50"/>
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+	<t t-name="ImportDataCheckBox">
+		<div class="d-flex flex-column align-self-center gap-1">
+			<div t-if="['many2one', 'many2many', 'one2many'].includes(props.fieldInfo.type)" class="d-flex gap-2">
+				<label for="linking">Linking</label>
+				<input value="linking" type="checkbox" t-on-change="onLinkingChecked"/>
+				<div t-if="state.isLinking and state.availableFields[props.fieldInfo.fieldPath]">
+					<select t-on-change="onLinkingSelectionChanged" class="form-select form-select-sm px-2 border border-secondary max-width: 100%; padding-right: 2rem">
+						<option value="" disabled="true" selected="true">Chọn trường liên kết</option>
+						<option t-foreach="Object.keys(state.availableFields[props.fieldInfo.fieldPath])" t-as="field" t-key="field" t-att-value="field.name">
+							<t t-esc="field"/>
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="d-flex gap-1">
+				<label for="check_for_duplicates">Check trùng</label>
+				<input value="check_for_duplicates" type="checkbox" t-on-change="onCheckForDuplicatesChecked"/>
+			</div>
+		</div>
+	</t>
+</templates>

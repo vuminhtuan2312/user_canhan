@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard: Quản lý xác nhận tạm hoãn -->
+    <record id="view_ttb_task_delay_confirm_wizard_form" model="ir.ui.view">
+        <field name="name">ttb.task.delay.confirm.wizard.form</field>
+        <field name="model">ttb.task.delay.confirm.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Xác nhận Tạm hoãn">
+                <div class="alert alert-warning" role="alert">
+                    Vui lòng xem xét lý do sự cố và thiết lập thời gian dự kiến hoạt động trở lại.
+                </div>
+                <group>
+                    <group string="Thông tin từ Nhân viên">
+                        <field name="reason_id"/>
+                        <field name="note"/>
+                    </group>
+                    <group string="Thiết lập thời gian">
+                        <field name="delay_until"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_confirm_manager" string="Lưu &amp; Xác nhận" type="object" class="btn-primary"/>
+                    <button string="Đóng" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

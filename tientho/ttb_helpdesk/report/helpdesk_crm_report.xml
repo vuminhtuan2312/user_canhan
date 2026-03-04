@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<odoo>
+<!--  báo cáo dashboard -->
+    <record id="helpdesk_crm_report_form_view" model="ir.ui.view">
+        <field name="name">helpdesk_crm_report_form_view</field>
+        <field name="model">helpdesk.crm.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="name" invisible="1"/>
+                    <separator string="Báo cáo điểm trải nghiệm khách hàng (CEI)"/>
+                    <button name="btn_open_filtter_cei" string="Mở bộ lọc" type="object" class="oe_highlight" context="{'default_report_id': id}"/>
+                    <field name="cei_report_ids" nolabel="1">
+                        <list limit="2000">
+                            <field name="branch_id"/>
+                            <field name="top"/>
+                            <field name="cei" avg="cei"/>
+                            <field name="camera" avg="camera"/>
+                            <field name="complain" avg="complain"/>
+                            <field name="csat" avg="csat"/>
+                            <field name="nps" avg="nps"/>
+                        </list>
+                    </field>
+                    <separator string="Thống kê camera"/>
+                    <button name="btn_open_filtter_camera" string="Mở bộ lọc" type="object" class="oe_highlight" context="{'default_report_id': id}"/>
+                    <field name="camera_report_ids" nolabel="1" widget="one2many_result_check">
+                        <list limit="2000">
+                            <field name="branch_id"/>
+                            <field name="deducted_point" sum="deducted_point"/>
+                            <field name="total" avg="total"/>
+                        </list>
+                    </field>
+                    <separator string="Báo cáo Thống kê than phiền"/>
+                    <button name="btn_open_filtter_thanphien" string="Mở bộ lọc" type="object" class="oe_highlight" context="{'default_report_id': id}"/>
+                    <field name="complain_report_ids" nolabel="1" widget="one2many_result_check">
+                        <list limit="2000">
+                            <field name="branch_id"/>
+                            <field name="total_partner" sum="total_partner"/>
+                            <field name="in_control" sum="in_control"/>
+                            <field name="out_control" sum="out_control"/>
+                            <field name="out_control_error" sum="out_control_error"/>
+                            <field name="out_control_no_error" sum="out_control_no_error"/>
+                            <field name="out_control_heavy_error" sum="out_control_heavy_error"/>
+                            <field name="out_control_light_error" sum="out_control_light_error"/>
+                            <field name="in_control_score" avg="in_control_score"/>
+                            <field name="out_control_score" avg="out_control_score"/>
+                            <field name="complain_score" avg="complain_score"/>
+                        </list>
+                    </field>
+                    <separator string="Báo cáo theo câu trả lời của KH - CSAT"/>
+                    <button name="btn_open_filtter_csat" string="Mở bộ lọc" type="object" class="oe_highlight" context="{'default_report_id': id}"/>
+                    <field name="csat_report_ids" nolabel="1" widget="one2many_result_check">
+                        <list limit="2000">
+                            <field name="branch_id"/>
+                            <field name="count_very" sum="count_very" widget="ttb_clickable_number"/>
+                            <field name="count_good" sum="count_good" widget="ttb_clickable_number"/>
+                            <field name="count_normal" sum="count_normal" widget="ttb_clickable_number"/>
+                            <field name="count_bad" sum="count_bad" widget="ttb_clickable_number"/>
+                            <field name="count_total" sum="count_total"/>
+                        </list>
+                    </field>
+                    <separator string="Báo cáo theo câu trả lời của KH - NPS"/>
+                    <button name="btn_open_filtter_nps" string="Mở bộ lọc" type="object" class="oe_highlight" context="{'default_report_id': id}"/>
+                    <field name="nps_report_ids" nolabel="1" widget="one2many_result_check">
+                        <list limit="2000">
+                            <field name="branch_id"/>
+                            <field name="very_willing" sum="very_willing" widget="ttb_clickable_number"/>
+                            <field name="willing" sum="willing" widget="ttb_clickable_number"/>
+                            <field name="consider_passive" sum="consider_passive" widget="ttb_clickable_number"/>
+                            <field name="unwilling" sum="unwilling" widget="ttb_clickable_number"/>
+                            <field name="total" sum="total"/>
+                        </list>
+                    </field>
+                    <separator string="Thống kê kết quả theo khảo sát trung tâm"/>
+                    <button name="btn_open_filtter_kstt" string="Mở bộ lọc" type="object" class="oe_highlight" context="{'default_report_id': id}"/>
+                    <field name="survey_report_ids" nolabel="1" widget="one2many_result_check">
+                        <list limit="2000">
+                            <field name="branch_id"/>
+                            <field name="hpc_success" sum="hpc_success" widget="ttb_clickable_number"/>
+                            <field name="not_contactable" sum="not_contactable" widget="ttb_clickable_number"/>
+                            <field name="not_answered" sum="not_answered" widget="ttb_clickable_number"/>
+                            <field name="customer_error" sum="customer_error" widget="ttb_clickable_number"/>
+                            <field name="refused_interview" sum="refused_interview" widget="ttb_clickable_number"/>
+                            <field name="total" sum="total"/>
+                        </list>
+                    </field>
+                    <separator string="Báo cáo Thống kê theo năng suất của NV CSKH"/>
+                    <button name="btn_open_filtter_cskh" string="Mở bộ lọc" type="object" class="oe_highlight" context="{'default_report_id': id}"/>
+                    <field name="kpi_report_ids" nolabel="1" widget="one2many_result_check">
+                        <list limit="2000">
+                            <field name="user_id"/>
+                            <field name="hpc_success" sum="hpc_success" widget="ttb_clickable_number"/>
+                            <field name="customer_error" sum="customer_error" widget="ttb_clickable_number"/>
+                            <field name="refused_interview" sum="refused_interview" widget="ttb_clickable_number"/>
+<!--                            <field name="count_uncontact" sum="count_uncontact"/>-->
+<!--                            <field name="count_nocall" sum="count_nocall"/>-->
+<!--                            <field name="count_follow" sum="count_follow"/>-->
+                            <field name="total" sum="total"/>
+                        </list>
+                    </field>
+                    <separator string="[HPC] Khách hàng góp ý ngoài tầm kiểm soát"/>
+                    <button name="btn_open_filtter_hpc" string="Mở bộ lọc" type="object" class="oe_highlight" context="{'default_report_id': id}"/>
+                    <field name="hpc_out_report_ids" nolabel="1" widget="x2many_2d_matrix" field_x_axis="ttb_related_content_id" field_y_axis="branch_id" field_value="total">
+                        <list limit="2000">
+                            <field name="branch_id"/>
+                            <field name="ttb_related_content_id"/>
+                            <field name="total" sum="total"/>
+                        </list>
+                    </field>
+                    <separator string="[Tương tác] Khách hàng góp ý ngoài tầm kiểm soát"/>
+                    <button name="btn_open_filtter_dltt" string="Mở bộ lọc" type="object" class="oe_highlight" context="{'default_report_id': id}"/>
+                    <field name="transaction_out_report_ids" nolabel="1" widget="x2many_2d_matrix" field_x_axis="ttb_related_content_id" field_y_axis="branch_id" field_value="total">
+                        <list limit="2000">
+                            <field name="branch_id"/>
+                            <field name="ttb_related_content_id"/>
+                            <field name="total" sum="total"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="helpdesk_crm_report_kanban_action" model="ir.actions.act_window">
+        <field name="name">Báo cáo</field>
+        <field name="res_model">helpdesk.crm.report</field>
+        <field name="view_mode">form</field>
+        <field name="domain">[]</field>
+        <field name="view_id" ref="ttb_helpdesk.helpdesk_crm_report_form_view"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="tuyen_dung_item"
+              name="Tuyển dụng"
+              parent="hr_recruitment.menu_hr_recruitment_root"
+              sequence="0">
+    </menuitem>
+
+    <menuitem action="yeu-cau-tuyen-dung_action" id="yeu_cau_tuyen-dung_item"
+              parent="tuyen_dung_item"
+              sequence="0">
+    </menuitem>
+
+     <menuitem action="ke_hoach_mau_action" id="ke_hoach_mau_item"
+              parent="hr_recruitment.menu_hr_recruitment_config_jobs"
+              sequence="0">
+    </menuitem>
+</odoo>

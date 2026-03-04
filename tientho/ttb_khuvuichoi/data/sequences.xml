@@ -1,0 +1,15 @@
+<odoo>
+    <record id="seq_ttb_shift_assignment" model="ir.sequence">
+        <field name="name">Mã phiếu phân công ca</field>
+        <field name="code">ttb.shift.assignment</field>
+        <field name="prefix">PC%(day)s%(month)s%(year)s-</field>
+        <field name="padding">5</field>
+    </record>
+
+    <record id="seq_ttb_post_audit" model="ir.sequence">
+        <field name="name">Mã phiếu hậu kiểm</field>
+        <field name="code">ttb.post.audit</field>
+        <field name="prefix">HK</field>
+        <field name="padding">5</field>
+    </record>
+</odoo>

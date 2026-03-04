@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_voucher_view_form" model="ir.ui.view">
+        <field name="name">ttb.voucher.view.form</field>
+        <field name="model">ttb.voucher</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="ttb_branch_id" />
+                        <field name="code"/>
+                        <field name="voucher_type_id"/>
+                        <field name="issue_datetime" readonly="1"/>
+                        <field name="expire_date"/>
+                        <field name="issued" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_voucher_view_list" model="ir.ui.view">
+        <field name="name">ttb.voucher.view.list</field>
+        <field name="model">ttb.voucher</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="ttb_branch_id" />
+                <field name="code"/>
+                <field name="voucher_type_id"/>
+                <field name="issue_datetime"/>
+                <field name="expire_date"/>
+                <field name="issued"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_voucher" model="ir.actions.act_window">
+        <field name="name">Mã ưu đãi</field>
+        <field name="res_model">ttb.voucher</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

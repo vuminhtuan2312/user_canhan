@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="approval_task_checklist_view_list" model="ir.ui.view">
+        <field name="name">approval.task.view.list</field>
+        <field name="model">my.task</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="kpi_type_id"/>
+                <field name="task_report_id"/>
+                <field name="name"/>
+                <field name="requirement"/>
+                <field name="image_ids" widget="many2many_binary"/>
+                <field name="solution_plan"/>
+                <field name="urgency_level"/>
+                <field name="processor_id"/>
+                <field name="process_status"/>
+                <field name="processing_deadline"/>
+                <field name="result_image_ids" widget="many2many_binary"/>
+                <button name="action_approve_task" type="object" string="Duyệt" invisible="process_status != 'waiting_for_approval'"/>
+                <button name="action_reject_task" type="object" string="Không duyệt" invisible="process_status != 'waiting_for_approval'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="approval_task_checklist_action" model="ir.actions.act_window">
+        <field name="name">Duyệt công việc hoàn thành checklist</field>
+        <field name="res_model">my.task</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="approval_task_checklist_view_list"/>
+        <field name="domain">[('process_status', 'in', ['waiting_for_approval', 'done']), '|', ('kpi_type_id.is_checklist', '=', True), ('kpi_type_id.is_checklist_restaurant', '=', True)]</field>
+        <field name="context">{'group_by': ['branch_id', 'process_status']}</field>
+    </record>
+
+    <record id="approval_task_kvc_action" model="ir.actions.act_window">
+        <field name="name">Duyệt công việc hoàn thành KVC</field>
+        <field name="res_model">my.task</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="approval_task_checklist_view_list"/>
+        <field name="domain">[('process_status', 'in', ['waiting_for_approval', 'done']), ('kpi_type_id.code', 'in', ['KVC', 'VSKVC'])]</field>
+       <field name="context">{'group_by': ['branch_id', 'process_status']}</field>
+    </record>
+
+    <record id="approval_task_vm_action" model="ir.actions.act_window">
+        <field name="name">Duyệt công việc hoàn thành VM</field>
+        <field name="res_model">my.task</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="approval_task_checklist_view_list"/>
+        <field name="domain">[('process_status', 'in', ['waiting_for_approval', 'done']), ('kpi_type_id.code', '=', 'VM')]</field>
+       <field name="context">{'group_by': ['branch_id', 'process_status']}</field>
+    </record>
+
+        <record id="approval_task_vs_action" model="ir.actions.act_window">
+        <field name="name">Duyệt công việc hoàn thành VS</field>
+        <field name="res_model">my.task</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="approval_task_checklist_view_list"/>
+        <field name="domain">[('process_status', 'in', ['waiting_for_approval', 'done']), ('kpi_type_id.code', '=', 'VS')]</field>
+       <field name="context">{'group_by': ['branch_id', 'process_status']}</field>
+    </record>
+</odoo>

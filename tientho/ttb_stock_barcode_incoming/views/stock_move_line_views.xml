@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Kế thừa form Product Selector (module: stock_barcode) -->
+    <record id="stock_move_line_product_selector_inherit_similar_codes" model="ir.ui.view">
+        <field name="name">stock.product.selector.inherit.similar.codes</field>
+        <field name="model">stock.move.line</field>
+        <!-- Lưu ý: dùng ref đúng id view gốc bạn đưa -->
+        <field name="inherit_id" ref="stock_barcode.stock_move_line_product_selector"/>
+        <field name="arch" type="xml">
+            <!-- Chèn ngay sau block product -->
+            <xpath expr="//div[@name='location_dest']" position="after">
+                <div name="similar_codes" class="row my-2">
+                    <div class="col">
+                        <label for="similar_product_codes" string="Mã sản phẩm tương tự" class="p-0"/>
+                        <!-- Widget custom để bắt barcode và tự append -->
+                        <field name="similar_product_codes"
+                               placeholder="Quét hoặc nhập, lưu ý mỗi mã 1 dòng"/>
+                    </div>
+                    <div class="col">
+                        <label for="reason_diff" string="Lý do lệch" class="p-0"/>
+                        <field name="reason_diff"/>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

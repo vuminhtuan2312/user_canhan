@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_order_form_inherit_sale_stock" model="ir.ui.view">
+        <field name="name">sale.order.form.sale.stock</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="attributes">
+                <attribute name="domain" operation="domain_add" join_operator="AND">
+                    ['|',('product_status_ids', 'any', [('branch_id', '=', parent.ttb_branch_id), ('state', 'in', ['zz','z0'])]),'&amp;',('product_status_ids', 'not any', [('branch_id', '=', parent.ttb_branch_id)]), ('ttb_product_status', 'in', ['zz','z0'])]
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_template_id']" position="attributes">
+                <attribute name="domain" operation="domain_add" join_operator="AND">
+                    ['|',('product_status_ids', 'any', [('branch_id', '=', parent.ttb_branch_id), ('state', 'in', ['zz','z0'])]),'&amp;',('product_status_ids', 'not any', [('branch_id', '=', parent.ttb_branch_id)]), ('ttb_product_status', 'in', ['zz','z0'])]
+                </attribute>
+            </xpath>
+            <xpath expr="//page[@name='other_information']//field[@name='warehouse_id']" position="before">
+                <field name="ttb_branch_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

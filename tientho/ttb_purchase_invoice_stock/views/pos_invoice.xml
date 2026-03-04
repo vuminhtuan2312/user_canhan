@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_pos_invoice_view_form" model="ir.ui.view">
+        <field name="name">ttb.pos.invoice.form</field>
+        <field name="model">ttb.pos.invoice</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Tạm tính tồn kho" type="object" name="button_ready" class="btn btn-primary" invisible="state != 'new' or is_auto"/>
+
+                    <button string="Tạm tính tồn kho (phiên tự động)" type="object" name="button_ready_auto" class="btn btn-primary" invisible="state != 'new' or not is_auto or pos_transfer_type=='cash'"/>
+                    
+                    <button string="Xác nhận" type="object" name="button_done" class="btn btn-primary" invisible="state != 'waiting_approve' or is_auto"/>
+                    <button string="Xác nhận (phiên tự động)" type="object" name="button_done_auto" class="btn btn-primary" invisible="state != 'waiting_approve'"/>
+
+                    <button string="Huỷ" type="object" name="button_cancel" class="btn btn-primary" invisible="state not in ['waiting', 'waiting_approve']"/>
+                    <field name="show_button_einvoice" invisible="1"/>
+                    <button string="Xuất HĐĐT" type="object" name="button_create_public_einvoice"
+                        class="btn btn-danger" 
+                        invisible="not show_button_einvoice"
+                    />
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_cheet_waiting_approve" type="object"
+                        string="Chuyển trạng thái chờ xác nhận" 
+                        help="Cái này dùng cho admin các bạn bình thường cần hiểu rõ mới sử dụng" 
+                        groups="base.group_no_one"
+                        invisible="state != 'new'"
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="branch_id" required="1"/>
+                            <field name="pos_transfer_type"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="user_id" readonly="state != 'new'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note"/>
+                    </group>
+                    <notebook>
+                        <page name="page_pos_ids" string="DS đơn hàng">
+                            <field name="domain_pos_ids" invisible="1"/>
+                            <field name="pos_ids"  domain="domain_pos_ids" nolabel="1" readonly="state != 'new'" context="{'list_view_ref':'ttb_purchase_invoice_stock.pos_order_invoice_view_list', 'search_default_today_date_order': 1, 'search_default_group_ttb_branch_id': 1, 'create': 0}">
+<!--                                pos_order_invoice_action-->
+                                <list>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="id" optional="hide"/>
+                                    <field name="name"/>
+                                    <field name="partner_id" optional="show"/>
+                                    <field name="date_order" optional="show"/>
+                                    <field name="sp_augges" optional="show"/>
+                                    <field name="ttb_branch_id" optional="show"/>
+                                    <field name="id_quay_augges" optional="show"/>
+                                    <field name="amount_total" sum="Amount total" widget="monetary" decoration-bf="1" optional="show"/>
+                                    <field name="ttb_einvoice_state" optional="show"/>
+                                    <field name="ttb_einvoice_message" optional="hide"/>
+                                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state not in ('draft','cancel')" optional="show"/>
+                                </list>
+                            </field>
+                        <group class="oe_subtotal_footer" colspan="2" name="group_amount_total">
+                            <field name="amount_total" class="h3"/>
+                        </group>
+                        </page>
+                         <page name="page_product_change_ids" string="DS sản phẩm thay thế">
+                             <field name="product_change_ids">
+                                 <list create="0" delete="0" editable="bottom" limit="1000" decoration-danger="change_tax_ids_amount == 0" decoration-warning="change_tax_ids_amount == 10" decoration-success="change_tax_ids_amount == 5" decoration-info="change_tax_ids_amount == 8">
+                                    <field name="pos_id" readonly="1" optional="show"/>
+                                    <field name="pos_line_id" column_invisible="1"/>
+                                    <field name="product_origin_id" readonly="1" optional="show"/>
+                                    <field name="origin_tax_ids" widget="many2many_tags" readonly="1" optional="show"/>
+                                    <field name="origin_tax_ids_amount" optional="show"/>
+                                    <field name="qty_origin" readonly="1" optional="show"/>
+                                    <field name="qty_needed" readonly="1" optional="show"/>
+                                    <field name="product_change_id"/>
+                                    <field name="change_tax_ids" widget="many2many_tags" readonly="0" optional="show"/>
+                                    <field name="change_tax_ids_amount" optional="show"/>
+                                    <field name="qty"/>
+                                    <field name="diff_name" optional="hide"/>
+                                    <field name="stock_name_number" optional="hide"/>
+                                 </list>
+                             </field>
+                         </page>
+                         <page name="page_product_not_change_ids" string="DS không tìm thấy sản phẩm thay thế">
+                            <button name="action_self_product_alternative" string="Thay thế bằng sản phẩm gốc nếu chưa điền" 
+                                invisible="state != 'waiting_approve'"
+                                type="object"
+                                help="Điền sản phẩm thay thế bằng Sản phẩm gốc tại tab Danh sách sản phẩm không tìm thấy sp thay thế (Nếu chưa chọn sản phẩm thay thế)"
+                                class="btn btn-primary"
+                            />
+                             <field name="product_not_change_ids">
+                                 <list create="0" delete="0" editable="bottom" limit="1000" decoration-danger="change_tax_ids_amount == 0" decoration-warning="change_tax_ids_amount == 10" decoration-success="change_tax_ids_amount == 5" decoration-info="change_tax_ids_amount == 8">
+                                    <field name="pos_id" readonly="1"/>
+                                    <field name="pos_line_id" optional="hide"/>
+                                    <field name="product_origin_id" readonly="1" optional="show"/>
+                                    <field name="origin_tax_ids" widget="many2many_tags" readonly="1" optional="show"/>
+                                    <field name="origin_tax_ids_amount" optional="show"/>
+                                    <field name="origin_product_price" optional="show"/>
+                                    <field name="qty_origin" readonly="1" optional="show"/>
+                                    <field name="qty_needed" readonly="1" optional="show"/>
+                                    <field name="location_id" column_invisible="1"/>
+                                    <field name="product_change_id" context="{'location': location_id}"/>
+                                    <field name="change_tax_ids" widget="many2many_tags" readonly="0" optional="show"/>
+                                    <field name="change_tax_ids_amount" optional="show"/>
+                                    <field name="qty"/>
+                                    <field name="diff_name" optional="hide"/>
+                                    <field name="stock_name_number" optional="hide"/>
+                                 </list>
+                             </field>
+                         </page>
+                         <page name="page_product_delete_ids" string="DS sản phẩm xoá">
+                             <field name="product_delete_ids" readonly="1">
+                                 <list>
+                                    <field name="pos_id"/>
+                                    <field name="pos_line_id" column_invisible="1"/>
+                                     <field name="product_origin_id"/>
+                                    <field name="qty_origin"/>
+                                 </list>
+                             </field>
+                         </page>
+                        <!-- <page name="page_product_notax_ids" string="DS dòng đơn hàng không thuế"> -->
+                            <!-- <button name="action_auto_tax" type="object" string="Lấy thuế từ phiếu gần nhất nếu chưa điền" class="btn btn-primary"/> -->
+                            <!-- <field name="product_notax_ids" readonly="state != 'waiting_approve'"> -->
+                                <!-- <list create="0" delete="0" editable="bottom"> -->
+                                    <!-- <field name="pos_id"/> -->
+                                    <!-- <field name="pos_line_id" column_invisible="1"/> -->
+                                    <!-- <field name="product_origin_id"/> -->
+                                    <!-- <field name="qty_origin"/> -->
+                                    <!-- <field name="origin_product_price"/> -->
+                                    <!-- <field name="tax_ids" widget="many2many_tags"/> -->
+                                    <!-- <field name="tax_ids_amount" optional="show"/> -->
+                                <!-- </list> -->
+                            <!-- </field> -->
+                         <!-- </page> -->
+                         <page name="page_pos_line_ids" string="Danh sách dòng đơn hàng" invisible="state in ('new', 'waiting_approve')">
+                            <field name="pos_line_ids" readonly="1">
+                                <list limit="1000" default_order="tax_ids_amount" decoration-danger="tax_ids_amount == 0" decoration-warning="tax_ids_amount == 10" decoration-success="tax_ids_amount == 5" decoration-info="tax_ids_amount == 8">
+                                    <field name="order_id"/>
+                                    <field name="product_id"/>
+                                    <field name="tax_ids" widget="many2many_tags"/>
+                                    <field name="tax_case"/>
+                                    <field name="tax_ids_amount"/>
+                                </list>
+                                <form string="POS Line Detail">
+                                    <group>
+                                        <field name="order_id"/>
+                                        <field name="product_id"/>
+                                        <field name="tax_ids" widget="many2many_tags"/>
+                                        <field name="tax_case"/>
+                                    </group>
+                                </form>
+                            </field>
+                         </page>
+                        <page name="einvoice_job" string="Tiến trình xuất hoá đơn">
+                            <group>
+                                <field name="einvoice_job_id"/>
+                                <field name="einvoice_job_uuid"/>
+                                <field name="einvoice_job_state"/>
+                                <field name="processed_number"/>
+                                <field name="success_number"/>
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_pos_invoice_view_list" model="ir.ui.view">
+        <field name="name">ttb.pos.invoice.list</field>
+        <field name="model">ttb.pos.invoice</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="user_id" optional="show"/>
+                <field name="branch_id" optional="show"/>
+                <field name="note" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_pos_invoice_view_search" model="ir.ui.view">
+        <field name="name">ttb.pos.invoice.view.search</field>
+        <field name="model">ttb.pos.invoice</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="user_id"/>
+                <filter string="Mới" name="state_new" domain="[('state', '=', 'new')]"/>
+                <filter string="Chờ xuất" name="state_waiting" domain="[('state', '=', 'waiting')]"/>
+                <group string="Group By">
+                    <filter string="Trạng thái" name="groupby_state" context="{'group_by': 'state'}"/>
+                    <filter string="Người xuất" name="groupby_user_id" context="{'group_by': 'user_id'}"/>
+                    <filter string="Ngày xuất" name="groupby_date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ttb_pos_invoice_action" model="ir.actions.act_window">
+        <field name="name">Xuất hoá đơn điện tử</field>
+        <field name="res_model">ttb.pos.invoice</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="ttb_pos_invoice_menu"
+        name="Xuất hoá đơn điện tử"
+        parent="ttb_purchase.purchase_order_accounting_root_menu"
+        action="ttb_pos_invoice_action"
+        sequence="10"
+    />
+
+</odoo>

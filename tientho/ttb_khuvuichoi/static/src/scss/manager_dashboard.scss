@@ -1,0 +1,74 @@
+.o_ttb_manager_dashboard {
+  &.o_ttb_dashboard_scroll {
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .o_ttb_table_scroll {
+    max-height: 55vh;
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+
+  .o_ttb_kpi_card {
+    cursor: pointer;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+    background-color: #ffffff;
+  }
+
+  .o_ttb_kpi_card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
+  }
+
+  .o_ttb_kpi_assigned {
+    border-left: 4px solid #0d6efd;
+  }
+  .o_ttb_kpi_assigned:hover {
+    background-color: rgba(13, 110, 253, 0.06);
+  }
+
+  .o_ttb_kpi_done {
+    border-left: 4px solid #198754;
+  }
+  .o_ttb_kpi_done:hover {
+    background-color: rgba(25, 135, 84, 0.06);
+  }
+
+  .o_ttb_kpi_not_done {
+    border-left: 4px solid #ffc107;
+  }
+  .o_ttb_kpi_not_done:hover {
+    background-color: rgba(255, 193, 7, 0.10);
+  }
+
+  .o_ttb_kpi_late {
+    border-left: 4px solid #dc3545;
+  }
+  .o_ttb_kpi_late:hover {
+    background-color: rgba(220, 53, 69, 0.08);
+  }
+
+  .o_ttb_area_header {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.04);
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.07);
+    }
+  }
+
+  .o_ttb_area_chevron {
+    display: inline-block;
+    width: 1em;
+    text-align: center;
+  }
+
+  .o_ttb_employee_header {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.02);
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+

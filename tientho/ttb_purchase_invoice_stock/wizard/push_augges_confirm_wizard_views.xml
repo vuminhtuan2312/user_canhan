@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_push_augges_confirm_wizard_form" model="ir.ui.view">
+            <field name="name">push.augges.confirm.wizard.form</field>
+            <field name="model">push.augges.confirm.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Xác nhận đẩy lên Augges">
+                    <p><field name="message"/></p>
+                    <group>
+                        <field name="purchase_id" readonly="1" force_save="1"/>
+                        <field name="pending_invoice_ids" readonly="1" force_save="1">
+                            <list>
+                                <field name="ten_hien_thi"/>
+                                <field name="ttb_price_unit"/>
+                                <field name="status_mapping"/>
+                            </list>
+                        </field>
+                    </group>
+                    <footer>
+                        <button name="action_confirm_push" string="Xác nhận" type="object" class="btn-primary"/>
+                        <button string="Hủy" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

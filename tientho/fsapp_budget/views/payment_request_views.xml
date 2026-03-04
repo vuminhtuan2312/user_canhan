@@ -1,0 +1,199 @@
+<odoo>
+  <data noupdate="1">
+        <record id="seq_payment_request" model="ir.sequence">
+            <field name="name">Payment Request</field>
+            <field name="code">seq_payment_request</field>
+            <field name="prefix">PA</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_payment_advance" model="ir.sequence">
+            <field name="name">Payment advance</field>
+            <field name="code">seq_payment_advance</field>
+            <field name="prefix">TA</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+    </data>
+<!-- Form View -->
+<record id="view_payment_request_form" model="ir.ui.view">
+  <field name="name">fsapp.payment.request.form</field>
+  <field name="model">fsapp.payment.request</field>
+  <field name="arch" type="xml">
+    <form string="Đề xuất thanh toán">
+      <header>
+        <field name="state" widget="statusbar" statusbar_visible="draft,waiting,approved,rejected,cancelled"/>
+        <field name="can_submit" invisible="1"/>
+        <field name="can_approve" invisible="1"/>
+        <field name="can_cancel" invisible="1"/>
+        <field name="can_reset" invisible="1"/>
+
+        <button name="action_submit" string="Gửi duyệt" type="object" class="btn-primary"
+                invisible="not can_submit"/>
+        <button name="action_approve" string="Duyệt" type="object" class="btn-primary"
+                invisible="not can_approve"/>
+        <button name="action_reject" string="Không duyệt" type="object"
+                invisible="not can_approve"/>
+        <button name="action_cancel" string="Hủy" type="object"
+                invisible="not can_cancel"/>
+        <button name="action_reset_to_draft" string="Về mới" type="object"
+                invisible="not can_reset"/>
+        <button name="action_refund_advance"
+          string="Hoàn ứng"
+          type="object"
+          class="btn-secondary"
+          invisible="payment_type != 'advance' or state != 'approved'"/>
+
+      </header>
+
+
+
+      <sheet>
+
+        <div class="oe_button_box" name="button_box">
+          <button type="object"
+                  name="open_payment"
+                  class="oe_stat_button"
+                  icon="fa-money"
+                  invisible="not payment_ids">
+            <field name="payment_ids" invisible="1"/>
+            <div class="o_stat_info">
+              <span class="o_stat_text">Phiếu chi</span>
+              <span class="o_stat_number">
+                <field name="payment_ids" widget="statinfo"/>
+              </span>
+            </div>
+          </button>
+
+          <button type="object"
+              name="open_refund_payments"
+              class="oe_stat_button"
+              icon="fa-undo"
+              invisible="not refund_payment_ids">
+            <field name="refund_payment_ids" invisible="1"/>
+            <div class="o_stat_info">
+              <span class="o_stat_text">Hoàn ứng</span>
+              <span class="o_stat_number">
+                <field name="refund_payment_ids" widget="statinfo"/>
+              </span>
+            </div>
+          </button>
+          <button type="object" name="action_view_purchase_orders" class="oe_stat_button" icon="fa-shopping-cart" invisible="purchase_order_count == 0" >
+              <field name="purchase_order_count" widget="statinfo" string="Đơn mua hàng"/>
+          </button>
+        </div>
+
+
+      
+       
+
+
+
+        <h1><field name="name"/></h1>
+
+        <group>
+
+
+          <group string="Thông tin đề xuất">
+            <field name="proposer_id" readonly="1"/>
+<!--            <field name="department_id" required="1"/>-->
+            <field name="payment_type"/>
+            <field name="advance_request_id" domain="[('payment_type','=','advance'), ('state','=','approved')]" invisible="payment_type == 'advance'"/>
+            <field name="purchase_order_ids" domain="[('state', '=', 'purchase')]" widget="many2many_tags" invisible="payment_type == 'advance'" required="payment_type != 'advance'"/>
+            <field name="amount_total" required="1"/>
+            <field name="amount_paid"/>
+            <field name="refund_payment_amount" readonly="1" invisible="payment_type != 'advance'"/>
+            <field name="note"/>
+          </group>
+
+          <group string="Thông tin duyệt">
+            <field name="approver_id" readonly="1"/>
+            <field name="approve_date" readonly="1"/>
+            <field name="payment_date" readonly="1"/>
+          </group>
+
+          <group string="Thông tin thanh toán">
+            <field name="account_type_from"/>
+            <field name="due_date" required="1"/>
+            <field name="payment_method" required="1"/>
+            <field name="partner_id" domain="[('user_ids','!=',[])]" invisible="payment_type != 'advance'" required="1"/>
+            <field name="partner_id" invisible="payment_type == 'advance'" required="1"/>
+            <field name="bank_account_name" required="1"/>
+            <field name="bank_account_number" required="1"/>
+            <field name="bank_name" required="1"/>
+          </group>
+
+          <group string="Chứng từ">
+            <field name="invoice"/>
+            <field name="contract"/>
+            <field name="delivery_note"/>
+            <field name="contract_clearance"/>
+            <field name="commitment"/>
+          </group>
+
+        </group>
+        <div class="oe_chatter">
+          <field name="message_follower_ids" widget="mail_followers"/>
+          <field name="message_ids" widget="mail_thread"/>
+        </div>
+
+      </sheet>
+    </form>
+  </field>
+</record>
+
+<!-- List View -->
+<record id="view_payment_request_tree" model="ir.ui.view">
+  <field name="name">fsapp.payment.request.tree</field>
+  <field name="model">fsapp.payment.request</field>
+  <field name="arch" type="xml">
+    <list string="Đề xuất thanh toán">
+      <field name="name"/>
+<!--      <field name="department_id"/>-->
+      <field name="purchase_order_ids" widget="many2many_tags"/>
+      <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+      <field name="state"/>
+      <field name="can_approve" invisible="1"/>
+      <button name="action_approve" string="Duyệt" type="object" class="btn-primary" invisible="not can_approve"/>
+      <button name="action_reject" string="Không duyệt" type="object" invisible="not can_approve"/>
+    </list>
+  </field>
+</record>
+
+<!-- Actions -->
+<record id="action_payment_request" model="ir.actions.act_window">
+  <field name="name">Đề xuất thanh toán</field>
+  <field name="res_model">fsapp.payment.request</field>
+  <field name="view_mode">list,form</field>
+  <field name="domain">[('payment_type','=','request')]</field>
+</record>
+
+<record id="action_payment_advance" model="ir.actions.act_window">
+  <field name="name">Tạm ứng</field>
+  <field name="res_model">fsapp.payment.request</field>
+  <field name="view_mode">list,form</field>
+  <field name="domain">[('payment_type','=','advance')]</field>
+  <field name="context">{'default_payment_type': 'advance'}</field>
+</record>
+
+<!-- Menus -->
+<menuitem id="menu_fsapp_payment_root" name="Thanh toán" parent="menu_fsapp_budget_root" sequence="40"/>
+<menuitem id="menu_fsapp_payment_request" name="Đề xuất thanh toán" parent="menu_fsapp_payment_root" action="action_payment_request"/>
+<menuitem id="menu_fsapp_payment_advance" name="Tạm ứng" parent="menu_fsapp_payment_root" action="action_payment_advance"/>
+
+<record id="view_account_payment_form_inherit_request" model="ir.ui.view">
+  <field name="name">account.payment.form.inherit.fsapp</field>
+  <field name="model">account.payment</field>
+  <field name="inherit_id" ref="account.view_account_payment_form"/>
+  <field name="arch" type="xml">
+    <!-- <xpath expr="//field[@name='move_id']" position="after"> -->
+    <!-- Không có trường move_id ở view cha. Thiện đổi sang trường khác -->
+    <xpath expr="//field[@name='journal_id']" position="after">
+      <field name="payment_request_id" readonly="1"/>
+    </xpath>
+  </field>
+</record>
+</odoo>

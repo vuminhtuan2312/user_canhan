@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="imported_goods_request_line_list" model="ir.ui.view">
+        <field name="name">ttb.purchase.request.line.list</field>
+        <field name="model">ttb.purchase.request.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="false" delete="false">
+                <header>
+                    <button name="action_mapping_product" type="object" string="Khớp mã sản phẩm"
+                            class="oe_highlight"/>
+                </header>
+                <field name="request_id" optional="show" readonly="1"/>
+                <field name="default_code" optional="show"/>
+                <field name="product_id" optional="show"/>
+                <field name="item" optional="show"/>
+                <field name="product_image" widget="image" options="{'size': 50}" optional="show" readonly="1"/>
+                <field name="demand_qty" optional="show" readonly="1"/>
+                <field name="quantity" optional="show" readonly="1"/>
+                <field name="price_cn" optional="show" readonly="1"/>
+                <field name="uom_id" optional="show" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="imported_goods_request_line_search" model="ir.ui.view">
+        <field name="name">Khớp mã sản phẩm</field>
+        <field name="model">ttb.purchase.request.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="request_id" />
+                <field name="default_code" />
+                <field name="item" />
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Yêu cầu mua hàng" name="groupby_request_id" context="{'group_by': 'request_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="imported_goods_request_line_action" model="ir.actions.act_window">
+        <field name="name">Khớp mã sản phẩm</field>
+        <field name="res_model">ttb.purchase.request.line</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="imported_goods_request_line_list"/>
+        <field name="domain">[('request_id.type', '=', 'imported_goods'), ('request_id.state', '=', 'approved'), ('product_id', '=', False)]</field>
+        <field name="context">{'search_default_groupby_request_id': 1}</field>
+    </record>
+</odoo>

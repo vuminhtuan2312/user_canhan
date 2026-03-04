@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates id="template" xml:space="preserve">
+
+    <t t-inherit="stock_barcode.LineComponent" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_barcode_line')]" position="after">
+            <div t-if="isSelected" class="d-grid numpad-container row-gap-2 column-gap-2 py-2 px-2 mt-2 ml-2">
+                <div class="layout-number d-block ml-10">
+                    <div class="row-number d-flex" style="gap: 10px;">
+                        <div class="number">
+                            <button type="button" class="numpad-btn btn btn-light rounded fs-3" t-on-click="() => this.addQuantityByDigit(1)" >
+                                1
+                            </button>
+                        </div>
+                        <div class="number">
+                            <button type="button" class="numpad-btn btn btn-light rounded fs-3" t-on-click="() => this.addQuantityByDigit(2)">
+                                2
+                            </button>
+                        </div>
+                        <div class="number">
+                            <button type="button" class="numpad-btn btn btn-light rounded fs-3" t-on-click="() => this.addQuantityByDigit(3)">
+                                3
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row-number d-flex"
+                         style="padding-top: 10px;
+                                gap: 10px">
+                        <div class="number">
+                            <button type="button" class="numpad-btn btn btn-light rounded fs-3" t-on-click="() => this.addQuantityByDigit(4)">
+                                4
+                            </button>
+                        </div>
+                        <div class="number">
+                            <button type="button" class="numpad-btn btn btn-light rounded fs-3" t-on-click="() => this.addQuantityByDigit(5)">
+                                5
+                            </button>
+                        </div>
+                        <div class="number">
+                            <button type="button" class="numpad-btn btn btn-light rounded fs-3" t-on-click="() => this.addQuantityByDigit(6)">
+                                6
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row-number d-flex"
+                         style="padding-top: 10px;
+                                gap: 10px;">
+                        <div class="number">
+                            <button type="button" class="numpad-btn btn btn-light rounded fs-3" t-on-click="() => this.addQuantityByDigit(7)">
+                                7
+                            </button>
+                        </div>
+                        <div class="number">
+                            <button type="button" class="numpad-btn btn btn-light rounded fs-3" t-on-click="() => this.addQuantityByDigit(8)">
+                                8
+                            </button>
+                        </div>
+                        <div class="number">
+                            <button type="button" class="numpad-btn btn btn-light rounded fs-3" t-on-click="() => this.addQuantityByDigit(9)">
+                                9
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row-number d-flex"
+                         style="padding-top: 10px;
+                                padding-bottom: 10px;
+                                gap: 10px;">
+                        <div class="number" style="visibility: hidden;">
+                            <button class="numpad-btn btn btn-light rounded fs-3"><![CDATA[&nbsp;]]></button>
+                        </div>
+                        <div class="number">
+                            <button type="button" class="numpad-btn btn btn-light rounded fs-3" t-on-click="() => this.addQuantityByDigit(0)">
+                                0
+                            </button>
+                        </div>
+                        <div class="number" style="visibility: hidden;">
+                            <button class="numpad-btn btn btn-light rounded fs-3"><![CDATA[&nbsp;]]></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

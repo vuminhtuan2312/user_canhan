@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kanban view used by the Barcode app (Operations) -->
+
+    <record id="stock_barcode_kanban_inventory_counting" model="ir.ui.view">
+        <field name="name">stock.picking.type.kanban</field>
+        <field name="model">stock.picking.type</field>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <kanban highlight_color="color" class="o_kanban_mobile o_stock_barcode_operations_kanban_view" create="0" sample="1" action="get_action_inventory_counting_tree_ready_kanban" type="object" group_create="false">
+                <field name="color"/>
+                <field name="code"/>
+                <templates>
+                    <t t-name="card" class="o_barcode_picking_type">
+                        <div class="d-flex justify-content-between py-3">
+                            <div class="fw-bold fs-5 o_kanban_record_title">
+                                <field name="warehouse_id" readonly="1" class="text-uppercase"/>
+                            </div>
+
+                            <div class="badge rounded-pill bg-secondary float-end align-self-center p-1 px-2 fs-6"
+                                 t-attf-class="{{ record.count_inventory_counting_ready.value == 0 ? 'text-muted' : 'fw-bold' }}"
+                                 name="get_action_inventory_counting_tree_ready_kanban" type="object">
+                                <span name="pickings_count"><field name="count_inventory_counting_ready"/></span> 
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="stock_barcode_action_search_inventory_counting" model="ir.ui.view">
+        <field name="name">stock.picking.search.inventory.counting</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm kiểm kê">
+                <field name="shelf_location"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="stock_barcode_action_kanban_inventory_counting" model="ir.actions.act_window">
+        <field name="name">Kiểm kê</field>
+        <field name="res_model">stock.picking.type</field>
+        <field name="view_mode">kanban</field>
+        <field name="domain">[('code', '=', 'inventory_counting'), ('warehouse_id.is_inventory_counting', '=', True)]</field>
+        <field name="view_id" ref="stock_barcode_kanban_inventory_counting"/>
+        <field name="target">fullscreen</field>
+    </record>
+
+    <record id="stock_barcode_kanban_inventory_recheck" model="ir.ui.view">
+        <field name="name">stock.picking.type.kanban</field>
+        <field name="model">stock.picking.type</field>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <kanban highlight_color="color" class="o_kanban_mobile o_stock_barcode_operations_kanban_view" create="0" sample="1" action="get_action_inventory_recheck_tree_ready_kanban" type="object" group_create="false">
+                <field name="color"/>
+                <field name="code"/>
+                <templates>
+                    <t t-name="card" class="o_barcode_picking_type">
+                        <div class="d-flex justify-content-between py-3">
+                            <div class="fw-bold fs-5 o_kanban_record_title">
+                                <field name="warehouse_id" readonly="1" class="text-uppercase"/>
+                            </div>
+
+                            <div class="badge rounded-pill bg-secondary float-end align-self-center p-1 px-2 fs-6"
+                                 t-attf-class="{{ record.count_inventory_recheck_ready.value == 0 ? 'text-muted' : 'fw-bold' }}"
+                                 name="get_action_inventory_recheck_tree_ready_kanban" type="object">
+                                <span name="pickings_count"><field name="count_inventory_recheck_ready"/></span> 
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="stock_barcode_action_kanban_inventory_recheck" model="ir.actions.act_window">
+        <field name="name">Hậu kiểm</field>
+        <field name="res_model">stock.picking.type</field>
+        <field name="view_mode">kanban</field>
+        <field name="domain">[('code', '=', 'inventory_counting'), ('warehouse_id.is_inventory_counting', '=', True)]</field>
+        <field name="view_id" ref="stock_barcode_kanban_inventory_recheck"/>
+        <field name="target">fullscreen</field>
+    </record>
+</odoo>

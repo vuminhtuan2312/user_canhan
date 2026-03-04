@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem
+            id="menu_stock_check_root"
+            name="Kiểm tồn khu bán lẻ"
+            sequence="30" >
+        <menuitem id="menu_stock_check_session" name="Kiểm tồn khu bán lẻ" sequence="1" action="ttb_stock_check_session.action_stock_check_session"/>
+    </menuitem>
+<!--    <menuitem id="menu_check_session_book_root" name="Sách giáo khoa"  sequence="40" >-->
+<!--        <menuitem id="menu_check_session_book" name="Sách giáo khoa" sequence="1" action="ttb_stock_check_session.action_check_session_book" />-->
+<!--        <menuitem id="menu_sgk_images_by_name" name="Ảnh barcode theo SGK" sequence="2" action="ttb_stock_check_session.action_sgk_images_by_name" />-->
+<!--    </menuitem>-->
+    <menuitem id="menu_stock_check_sgk_book_root" name="Kiểm tồn sách giáo khoa" sequence="30" >
+        <menuitem id="menu_stock_check_sgk_book" name="Kiểm tồn sách giáo khoa" sequence="1" action="ttb_stock_check_session.action_stock_check_sgk_book"/>
+    </menuitem>
+    <menuitem id="menu_check_session_kvc_root" name="Kiểm kê khu vui chơi" sequence="50">
+        <menuitem id="menu_check_session_kvc" name="Kiểm kê khu vui chơi" sequence="1" action="ttb_stock_check_session.action_check_session_kvc" />
+        <menuitem id="menu_stock_template_kvc" name="Cấu hình KVC" sequence="2" action="ttb_stock_check_session.action_kvc_inventory_config" />
+    </menuitem>
+</odoo>

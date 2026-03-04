@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Định nghĩa mẫu in -->
+        <template id="report_payment_request_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ttb_payment_request.report_payment_request_document" t-lang="doc.user_id.lang"/>
+                </t>
+            </t>
+        </template>
+
+        <!-- Bố cục chi tiết của phiếu in -->
+        <template id="report_payment_request_document">
+            <div class="article o_report_layout_standard" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
+                <div class="header">
+                    <div class="row">
+                        <div class="col-3 mb4">
+                            <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="max-height: 80px;" alt="Logo"/>
+                        </div>
+                        <div class="col-9 text-right">
+                            <h4 class="mt0" t-field="res_company.name"/>
+                            <div t-field="res_company.partner_id"
+                                t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h2 class="mt16">
+                                <strong>PHIẾU ĐỀ NGHỊ THANH TOÁN</strong>
+                            </h2>
+                            <p>
+                                <span>Ngày:</span>
+                                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
+                                <br/>
+                                <span>Số:</span>
+                                <span t-field="doc.name"/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <p><strong>Kính gửi:</strong> Ban Giám đốc, Phòng Kế toán</p>
+                    <table class="table table-sm table-bordered mt-4">
+                        <tr>
+                            <td style="width: 25%;"><strong>Người đề nghị</strong></td>
+                            <td><span t-field="doc.user_id.name"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nội dung thanh toán</strong></td>
+                            <td>
+                                <span>Thanh toán <t t-if="doc.payment_type == 'advance'">Tạm ứng</t><t t-if="doc.payment_type == 'request'">Tất toán</t> cho Đơn mua hàng </span>
+                                <span t-field="doc.purchase_order_id.name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ghi chú thêm</strong></td>
+                            <td><span t-field="doc.note"/></td>
+                        </tr>
+                    </table>
+
+                    <h5 class="mt-4"><strong>Chi tiết số tiền</strong></h5>
+                    <table class="table table-sm table-bordered">
+                        <tr>
+                            <td style="width: 25%;">Số tiền đề nghị đợt này</td>
+                            <td class="text-right">
+                                <span t-field="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Số tiền đã thanh toán trước</td>
+                            <td class="text-right">
+                                <span t-field="doc.amount_paid" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                            </td>
+                        </tr>
+                        <tr class="table-active">
+                            <td><strong>Tổng cộng</strong></td>
+                            <td class="text-right">
+                                <strong><span t-esc="doc.amount_total + doc.amount_paid" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></strong>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td>Tổng giá trị đơn mua hàng</td>
+                            <td class="text-right">
+                                <span t-field="doc.amount_total_purchase" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <h5 class="mt-4"><strong>Thông tin nhận thanh toán</strong></h5>
+                    <table class="table table-sm table-bordered">
+                        <tr>
+                            <td style="width: 25%;">Người nhận</td>
+                            <td><span t-field="doc.partner_id.name"/></td>
+                        </tr>
+                        <tr>
+                            <td>Tên chủ tài khoản</td>
+                            <td><span t-field="doc.bank_account_name"/></td>
+                        </tr>
+                        <tr>
+                            <td>Số tài khoản</td>
+                            <td><span t-field="doc.bank_account_number"/></td>
+                        </tr>
+                        <tr>
+                            <td>Ngân hàng</td>
+                            <td><span t-field="doc.bank_id.name"/></td>
+                        </tr>
+                    </table>
+
+                    <h5 class="mt-4"><strong>Chứng từ đính kèm</strong></h5>
+                    <ul>
+                        <li t-if="doc.file_contract">Hợp đồng</li>
+                        <t t-if="doc.file_others">
+                            <li t-foreach="doc.file_others" t-as="attachment">
+                                <span t-field="attachment.name"/>
+                            </li>
+                        </t>
+                        <li t-if="not doc.file_contract and not doc.file_others">Không có</li>
+                    </ul>
+
+                    <div class="row mt-5" style="page-break-inside: avoid;">
+                        <div class="col-3 text-center">
+                            <strong>Người lập phiếu</strong><br/>
+                            (Ký, họ tên)<br/><br/><br/><br/>
+                            <span t-field="doc.user_id.name"/>
+                        </div>
+                        <div class="col-3 text-center">
+                            <strong>Phụ trách bộ phận</strong><br/>
+                            (Ký, họ tên)
+                        </div>
+                        <div class="col-3 text-center">
+                            <strong>Kế toán trưởng</strong><br/>
+                            (Ký, họ tên)
+                        </div>
+                        <div class="col-3 text-center">
+                            <strong>Giám đốc</strong><br/>
+                            (Ký, họ tên)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </data>
+</odoo>

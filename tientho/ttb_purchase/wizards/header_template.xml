@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="ttb_form_layout_header">
+        <div t-attf-class="header o_company_#{o.company_id.id}_layout">
+            <table style="width: 100%; border: none; border-collapse: collapse; margin-bottom: 20px;">
+                <tbody style="border: none;">
+                    <tr style="border: none;">
+                        <!-- Logo bên trái -->
+                        <td style="width: 15%; vertical-align: middle; border: none; text-align: left; padding: 0;">
+                            <img t-if="o.company_id.logo"
+                                 t-att-src="image_data_uri(o.company_id.logo)"
+                                 style="max-height: 50px;"
+                                 alt="Logo"/>
+                        </td>
+
+                        <!-- Tiêu đề ở giữa -->
+                        <td style="vertical-align: middle; border: none; text-align: center; padding: 0;">
+                            <h2 style="font-weight: 550; font-size: 40px; text-transform: uppercase; margin: 0;">
+                                Phiếu chia hàng
+                            </h2>
+                        </td>
+
+                        <!-- Cột trống bên phải để cân bằng -->
+                        <td style="width: 15%; vertical-align: middle; border: none; padding: 0;">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,13 @@
+<odoo>
+    <!-- views/survey_question_view.xml -->
+    <record id="view_survey_question_form_inherit" model="ir.ui.view">
+        <field name="name">survey.question.form.inherit.upload</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='options']//field[@name='comments_allowed']" position="after">
+                <field name="images_on_fail_allowed"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

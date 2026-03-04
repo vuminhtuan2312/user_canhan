@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ttb_stock_barcode_incoming.MainMenu" t-inherit="stock_barcode.MainMenu" t-inherit-mode="extension">
+        <xpath expr="//footer/button[hasclass('o_button_operations')]" position="after">
+            <button class="o_button_inventory btn btn-block btn-warning mb-3 p-3 w-100"
+                    t-on-click="() => this.actionService.doAction('ttb_stock_barcode_incoming.stock_barcode_action_kanban_inventory_counting')">
+                Kiểm kê
+            </button>
+            <button class="o_button_inventory_recheck btn btn-block btn-success mb-3 p-3 w-100"
+                    t-on-click="() => this.actionService.doAction('ttb_stock_barcode_incoming.stock_barcode_action_kanban_inventory_recheck')">
+                Hậu kiểm
+            </button>
+        </xpath>
+    </t>
+</templates>

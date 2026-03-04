@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.rule" id="approval_process_company_rule">
+        <field name="name">Approval Process: multi-company</field>
+        <field name="model_id" ref="ttb_approval.model_ttb_approval_process"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record model="ir.rule" id="approval_rule_company_rule">
+        <field name="name">Approval Rule: multi-company</field>
+        <field name="model_id" ref="ttb_approval.model_ttb_approval_rule"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+</odoo>

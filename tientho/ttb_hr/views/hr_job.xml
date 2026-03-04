@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_hr_job_form" model="ir.ui.view">
+        <field name="name">hr.job.form</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_form"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <xpath expr="(//page[@name='recruitment_page'])[1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="(//page[@name='recruitment_page'])[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <group>
+                    <group>
+                        <field name="ttb_user_template_id"/>
+                    </group>
+                    <group></group>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="after">
+                <div>
+                    <group>
+                        <field name="department_id"/>
+                    </group>
+                </div>
+                <field name="job_responsibility_ids">
+                    <list limit="80" editable="bottom">
+                        <field name="main_responsibility"/>
+                        <field name="detail_responsibility"/>
+                        <field name="proportion"/>
+                    </list>
+                </field>
+                <div class="clearfix">
+                    <group class="float-end">
+                        <field class="text-lg-end" name="total_proportion"/>
+                    </group>
+                </div>
+                <div>
+                    <group>
+                        <field name="experience"/>
+                    </group>
+                    <field name="experience_for_job_ids" invisible="experience == False" no_label="1">
+                        <list limit="80" editable="bottom">
+                            <field name="job_position"/>
+                            <field name="no_of_years"/>
+                            <field name="company_size"/>
+                        </list>
+                    </field>
+                    <group>
+                        <field name="experience_for_category"/>
+                    </group>
+                    <field name="experience_for_category_ids" invisible="experience_for_category == False">
+                        <list limit="80" editable="bottom">
+                            <field name="job_category"/>
+                            <field name="no_of_years_for_category"/>
+                            <field name="notice"/>
+                        </list>
+                    </field>
+                </div>
+                <group>
+                    <group>
+                        <div>
+                            <group string="Trình độ học vấn">
+                                <field name="education"/>
+                                <field name="major" invisible="education in ('high_school', 'none')"
+                                       required="education not in ('high_school', 'none')"/>
+                                <field name="prioritize" invisible="education == 'none'"/>
+                                <field name="graduation_results" invisible="education == 'none'"/>
+                            </group>
+                        </div>
+                    </group>
+                    <group string="Thông tin khác">
+                        <field name="knowledge"/>
+                        <field name="professional_skills"/>
+                        <field name="soft_skills"/>
+                        <field name="fit_core_value" widget="many2many_tags"/>
+                        <field name="other_qualities"/>
+                        <field name="style"/>
+                        <div>
+                            <group string="Nhu cầu khác">
+                                <group>
+                                    <field name="min_old" string="Độ tuổi từ"/>
+                                </group>
+                                <group>
+                                    <field name="max_old" string="Đến"/>
+                                </group>
+                            </group>
+                        </div>
+                        <field name="gender_preference"/>
+                        <field name="other_require"/>
+                        <field name="time_recruitment"/>
+                    </group>
+                </group>
+            </xpath>
+            <notebook>
+                <page name="hr_information" string="Thông tin HR">
+                    <div>
+                        <field name="platform_infinfor_and_key_ids">
+                            <list limit="80" editable="bottom">
+                                <field name="name"/>
+                                <field name="content" options="{'collaborative': true}"/>
+                            </list>
+                        </field>
+                        <group>
+                            <field name="key_word"/>
+                        </group>
+                    </div>
+                    <group>
+                        <group string="Dải lương">
+                            <group>
+                                <field name="salary_range_min" string="Từ"/>
+                            </group>
+                            <group>
+                                <field name="salary_range_max" string="Đến"/>
+                            </group>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                </page>
+                <page name="recruitment_stage_ids" string="Vòng tuyển dụng ">
+                    <group>
+                        <group>
+                            <field name="stage_ids" widget="many2many_tags"/>
+                            <div/>
+                            <div/>
+                            <div>
+                                <field name="recruitment_stage_ids" string="Vòng tuyển dụng">
+                                    <list limit="80" editable="bottom" create="0" delete="0">
+                                        <field name="criteria_show"/>
+                                        <field name="hr_recruitment_stage_id" widget="many2many_tags"
+                                               domain="[('id', 'in', parent.stage_ids)]"/>
+                                    </list>
+                                    <form>
+                                        <field name="criteria" invisible="1"/>
+                                    </form>
+                                </field>
+                            </div>
+                        </group>
+                        <group>
+                            <div>
+                                <field name="reviewed_ids" string="Phân quyền phỏng vấn">
+                                    <list limit="80" editable="bottom">
+                                        <field name="stage_id" domain="[('id', 'in', parent.stage_ids)]"/>
+                                        <field name="hr_job_ids" widget="many2many_tags"/>
+                                        <field name="employee_ids" widget="many2many_tags"/>
+                                    </list>
+                                </field>
+                            </div>
+                        </group>
+                    </group>
+                </page>
+                <page name="plan_template_id" string="Kế hoạch tuyển dụng">
+                            <group>
+                                <field name="plan_template_id"/>
+                                <div>
+                                    <field name="plan_detail_ids">
+                                        <list limit="80" editable="bottom">
+                                            <field name="name"/>
+                                            <field name="detail"/>
+                                            <field name="no_of_start_days"/>
+                                            <field name="no_of_end_days"/>
+                                            <field name="result"/>
+                                        </list>
+                                    </field>
+                                </div>
+                            </group>
+                        </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="view_hr_job_tree" model="ir.ui.view">
+        <field name="name">hr.job.list</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="ttb_user_template_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

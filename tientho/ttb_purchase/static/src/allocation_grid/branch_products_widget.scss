@@ -1,0 +1,124 @@
+.o_goods_distribution_widget {
+    .table {
+        font-size: 0.9rem;
+
+        th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        td {
+            vertical-align: middle;
+            white-space: nowrap;
+
+            img {
+                max-width: 40px;
+                max-height: 40px;
+                object-fit: contain;
+            }
+        }
+
+        input[type="number"] {
+            border: 1px solid #dee2e6;
+            background: #fff;
+            width: 100%;
+            text-align: center;
+            transition: all 0.2s ease;
+
+            &:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+                outline: none;
+            }
+
+            &:hover {
+                border-color: #007bff;
+            }
+
+            &:read-only {
+                background: #f8f9fa;
+                cursor: not-allowed;
+                border-color: #dee2e6;
+            }
+        }
+
+        .form-control-sm {
+            padding: 0.375rem 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .sticky-col-1 {
+            position: sticky;
+            left: 0;
+            z-index: 15;
+            background-color: inherit;
+            min-width: 200px;
+            max-width: 250px;
+        }
+
+        .sticky-col-2 {
+            position: sticky;
+            left: 200px;
+            z-index: 15;
+            background-color: inherit;
+            min-width: 100px;
+            max-width: 120px;
+        }
+
+        .sticky-col-3 {
+            position: sticky;
+            left: 300px;
+            z-index: 15;
+            background-color: inherit;
+            min-width: 100px;
+            max-width: 120px;
+        }
+
+        tbody {
+            .sticky-col-1,
+            .sticky-col-2,
+            .sticky-col-3 {
+                background-color: #fff;
+            }
+        }
+
+        thead {
+            .sticky-col-1,
+            .sticky-col-2,
+            .sticky-col-3 {
+                background-color: #212529;
+            }
+
+            .total-column {
+                z-index: 16;
+            }
+        }
+
+        .total-column {
+            background-color: #dc3545 !important;
+            color: white !important;
+            font-weight: bold;
+            position: sticky;
+            right: 0;
+            z-index: 5;
+        }
+
+        .total-row {
+            background-color: #dc3545 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+    }
+
+    .table-responsive {
+        max-height: 600px;
+        overflow-y: auto;
+        overflow-x: auto;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+    }
+}

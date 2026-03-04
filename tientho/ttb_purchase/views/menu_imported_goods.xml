@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="menu_import_goods" name="Dự trù nhập khẩu"
+              sequence="90"
+              web_icon="ttb_purchase,static/description/icon_import_goods.png">
+        <menuitem id="ttb_imported_goods_request_menu"
+                  name="Yêu cầu mua hàng"
+                  action="purchase_request_imported_goods_action"
+                  sequence="1"/>
+        <menuitem id="ttb_purchase_request_line_menu"
+                  name="Khớp mã sản phẩm"
+                  action="imported_goods_request_line_action"
+                  sequence="2"/>
+        <menuitem id="ttb_imported_goods_order_menu_root"
+                  name="Đơn mua hàng"
+                  sequence="3">
+            <menuitem id="ttb_imported_goods_order_menu"
+                      name="Đơn mua hàng"
+                      action="purchase_order_imported_goods_action"
+                      sequence="1"/>
+            <menuitem id="ttb_advance_payment_menu"
+                      name="Tạm ứng"
+                      action="ttb_advance_payment_action"
+                      sequence="2"/>
+            <menuitem id="ttb_china_supplier_order_menu"
+                      name="Mua hàng NCC Trung Quốc"
+                      action="ttb_china_supplier_order_action"
+                      sequence="3"/>
+            <menuitem id="ttb_supplier_payment_menu"
+                      name="Thanh toán NCC"
+                      action="ttb_china_supplier_payment_action"
+                      sequence="4"/>
+            <menuitem id="ttb_waiting_china_supplier_shipping_menu"
+                      name="Chờ NCC Trung Quốc phát hàng"
+                      action="ttb_waiting_china_supplier_shipping_action"
+                      sequence="5"/>
+        </menuitem>
+        <menuitem id="ttb_imported_goods_shipping_menu_1"
+                  name="Nhập kho quốc tế"
+                  action="ttb_imported_goods_shipping_action_1"
+                  sequence="5"/>
+        <menuitem id="ttb_imported_goods_shipping_menu_2"
+                  name="Vận chuyển quốc tế"
+                  action="ttb_imported_goods_shipping_action_2"
+                  sequence="6"/>
+        <menuitem id="ttb_imported_goods_shipping_menu_3"
+                  name="Nhập kho nội địa"
+                  action="ttb_imported_goods_shipping_action_3"
+                  sequence="7"/>
+        <menuitem id="ttb_imported_goods_shipping_menu_4"
+                  name="Nhập kho DC"
+                  action="ttb_imported_goods_shipping_action_4"
+                  sequence="8"/>
+        <menuitem id="ttb_imported_goods_shipping_menu_5"
+                  name="Vận chuyển cơ sở"
+                  action="ttb_imported_goods_shipping_action_5"
+                  sequence="9"/>
+        <menuitem id="ttb_imported_goods_shipping_menu_6"
+                  name="Nhập kho cơ sở"
+                  action="ttb_imported_goods_shipping_action_6"
+                  sequence="10"/>
+        <menuitem id="action_delivery_orders_menu"
+                  name="Lệnh chuyển hàng"
+                  action="action_delivery_orders"
+                  sequence="11"/>
+        <menuitem id="ttb_setting_menu"
+                  name="Cấu hình"
+                  sequence="12">
+            <menuitem id="ttb_imported_goods_shipping_stock_setting_menu"
+                      name="Công ty"
+                      action="ttb_imported_goods_shipping_stock_setting_action"
+                      sequence="1"/>
+            <menuitem id="goods_distribution_ticket_template_menu"
+                      name="Mẫu tỷ lệ phiếu chia hàng"
+                      action="goods_distribution_ticket_template_action"
+                      sequence="2"/>
+        </menuitem>
+    </menuitem>
+    <menuitem
+        name="Tạm ứng"
+        id="purchase_advance_menu"
+        action="purchase_advance_action"
+        sequence="4"
+        web_icon="ttb_purchase,static/description/tam_ung_icon.png"
+    />
+</odoo>

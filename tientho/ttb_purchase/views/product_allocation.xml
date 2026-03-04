@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="product_allocation_form" model="ir.ui.view">
+        <field name="name">Sản phẩm phân bổ</field>
+        <field name="model">ttb.product.allocation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_selected" type="object" string="Lấy danh sách sản phẩm" class="btn-primary" invisible="state != 'new'"/>
+                    <button name="action_product_allocate" type="object" string="Phân bổ" class="btn-primary" invisible="state != 'selected'"/>
+                    <button name="action_pr_created" type="object" string="Tạo PR" class="btn-primary" invisible="state != 'selected'"/>
+                    <button name="%(ttb_purchase.product_allocation_select_partner_action)d" context="{'default_partner_id':partner_id}" type="action" string="Tạo PO" class="btn-primary" invisible="state != 'selected'"/>
+                    <button name="action_cancel" type="object" invisible="state not in ['new','selected']" string="Hủy"/>
+                    <button name="action_new" type="object" invisible="state not in ['cancel']" string="Thiết lập về mới"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,selected"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_to_pr"
+                                class="oe_stat_button"
+                                icon="fa-credit-card" invisible="pr_count == 0">
+                            <field name="pr_count" widget="statinfo" string="Yêu cầu mua hàng"/>
+                            <field name='pr_ids' widget="many2many_tags" invisible="1"/>
+                        </button>
+                        <button type="object" name="action_to_po"
+                                class="oe_stat_button"
+                                icon="fa-credit-card" invisible="po_count == 0">
+                            <field name="po_count" widget="statinfo" string="Đơn mua hàng"/>
+                            <field name='po_ids' widget="many2many_tags" invisible="1"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" nolabel="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Điều kiện sản phẩm">
+                            <field name="partner_id" readonly="state != 'new'" widget="res_partner_many2one" context="{'res_partner_search_mode': 'supplier', 'show_vat': True}"/>
+                            <field name="product_domain" widget="domain" options="{'model':'product.product', 'in_dialog': True}" readonly="state != 'new'"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="state != 'new'"/>
+                            <field name="user_id" readonly="state != 'new'"/>
+                            <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Danh sách cơ sở">
+                            <field name="branch_ids" widget="many2many_tags" readonly="state != 'new'"/>
+                        </group>
+                        <group></group>
+                    </group>
+                    <notebook>
+                        <page string="Chi tiết yêu cầu" name="detail">
+                            <button name="action_import_product" type="object" string="Nhập sản phẩm" class="btn-primary" invisible="state != 'new'"/>
+                            <field name="line_ids" readonly="state not in ['new','selected']">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="product_code"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                </list>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="product_code"/>
+                                            <field name="product_id"/>
+                                        </group>
+                                        <group>
+                                            <field name="quantity"/>
+                                            <field name="uom_id"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="product_allocation_list" model="ir.ui.view">
+        <field name="name">Sản phẩm phân bổ</field>
+        <field name="model">ttb.product.allocation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="branch_ids" widget="many2many_tags"/>
+                <field name="user_id"/>
+                <field name="date"/>
+                <field name="state"/>
+                <field name="company_id" column_invisible="1" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="product_allocation_search" model="ir.ui.view">
+        <field name="name">Sản phẩm phân bổ</field>
+        <field name="model">ttb.product.allocation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="date"/>
+                <field name="user_id"/>
+                <field name="branch_ids"/>
+                <filter string="Công việc của tôi" name="my_request" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Đang thực hiện" name="state_po_creating" domain="[('state','=','selected')]"/>
+                <filter string="Đã hoàn thành" name="state_po_created" domain="[('state','in',['pr_created','po_created'])]"/>
+
+                <group expand="1" string="Group By">
+                    <filter string="Ngày thực hiện" name="groupby_date" context="{'group_by': 'date:month'}"/>
+                    <filter string="Người thực hiện" name="groupby_user_id" context="{'group_by':'user_id'}"/>
+                    <filter string="Trạng thái" name="groupby_state" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="product_allocation_detail_grid" model="ir.ui.view">
+        <field name="name">Phân bổ</field>
+        <field name="model">ttb.product.allocation.detail</field>
+        <field name="arch" type="xml">
+            <grid string="Phân bổ" editable="1" js_class="ttb_allocation_grid" create_inline="0">
+                <field name="product_id" type="row"/>
+                <field name="order_id" type="row"/>
+                <field name="branch_id" type="col"/>
+                <field name="quantity" type="measure" widget="float"/>
+            </grid>
+        </field>
+    </record>
+
+    <record id="product_allocation_action" model="ir.actions.act_window">
+        <field name="name">Phân bổ sản phẩm</field>
+        <field name="res_model">ttb.product.allocation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="return_request_add_discount_form" model="ir.ui.view">
+        <field name="name">Chọn Chiết khấu</field>
+        <field name="model">return.request.add.discount.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="discount"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string='Xác nhận' name="do" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_update_discount" model="ir.actions.act_window">
+        <field name="name">Chọn Chiết khấu (theo %)</field>
+        <field name="res_model">return.request.add.discount.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

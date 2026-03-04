@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem
+        id="ttb_kpi_menu_root"
+        name="KPI"
+        web_icon="ttb_kpi,static/description/icon.png"
+        sequence="10"/>
+
+    <menuitem
+        id="ttb_kpi_menu"
+        name="KPI"
+        parent="ttb_kpi_menu_root"
+        sequence="1"/>
+    <menuitem
+        id="ttb_kpi_result_menu"
+        name="Kết quả KPI"
+        parent="ttb_kpi_menu"
+        action="ttb_kpi.ttb_kpi_result_action"
+        sequence="1"/>
+    <menuitem
+        id="ttb_kpi_result_branch_menu"
+        name="Kết quả KPI cơ sở"
+        parent="ttb_kpi_menu"
+        action="ttb_kpi.ttb_kpi_result_branch_action"
+        sequence="11"/>
+
+    <menuitem
+        id="ttb_kpi_result_manager_menu"
+        name="Kết quả KPI quản lý"
+        parent="ttb_kpi_menu"
+        action="ttb_kpi.ttb_kpi_result_manager_action"
+        sequence="21"/>
+
+    <menuitem
+        id="ttb_kpi_result_kvc_menu"
+        name="Kết quả KPI KVC"
+        parent="ttb_kpi_menu"
+        action="ttb_kpi.ttb_kpi_result_kvc_action"
+        sequence="31"/>
+    <menuitem
+        id="ttb_kpi_template_menu"
+        name="Cài đặt KPI"
+        parent="ttb_kpi_menu"
+        action="ttb_kpi.ttb_kpi_template_action"
+        sequence="41"/>
+
+    <menuitem
+        id="ttb_task_menu"
+        name="Nhiệm vụ"
+        parent="ttb_kpi_menu_root"
+        sequence="11"/>
+    <menuitem
+        id="ttb_hr_employee_custom"
+        name="Danh sách nhân sự"
+        parent="ttb_task_menu"
+        action="ttb_kpi.action_hr_employee_custom_v3"
+        sequence="1"/>
+    <menuitem
+        id="ttb_cei_score_menu"
+        name="Đánh giá điểm CEI"
+        parent="ttb_task_menu"
+        action="ttb_kpi.ttb_cei_score_action"
+        sequence="2"/>
+    <menuitem
+        id="ttb_task_report_menu"
+        name="Đánh giá nhiệm vụ"
+        parent="ttb_task_menu"
+        sequence="11"/>
+    <menuitem
+        id="ttb_task_report_vm_menu"
+        name="Trưng bày hàng hóa"
+        parent="ttb_task_report_menu"
+        action="ttb_kpi.ttb_task_report_vm_action"
+        sequence="1"/>
+    <menuitem
+        id="ttb_task_report_vs_menu"
+        name="Vệ sinh"
+        parent="ttb_task_report_menu"
+        action="ttb_kpi.ttb_task_report_vs_action"
+        sequence="11"/>
+    <menuitem
+        id="ttb_task_report_cskh_menu"
+        name="Chăm sóc khách hàng"
+        parent="ttb_task_report_menu"
+        action="ttb_kpi.ttb_task_report_cskh_action"
+        sequence="21"/>
+    <menuitem
+        id="ttb_task_template_menu"
+        name="Cài đặt nhiệm vụ"
+        parent="ttb_task_menu"
+        sequence="21"/>
+    <menuitem
+        id="ttb_task_template_vm_menu"
+        name="Trưng bày hàng hóa"
+        parent="ttb_task_template_menu"
+        action="ttb_kpi.ttb_task_template_vm_action"
+        sequence="1"/>
+    <menuitem
+        id="ttb_task_template_vs_menu"
+        name="Vệ sinh"
+        parent="ttb_task_template_menu"
+        action="ttb_kpi.ttb_task_template_vs_action"
+        sequence="11"/>
+    <menuitem
+        id="ttb_task_template_cskh_menu"
+        name="Chăm sóc khách hàng"
+        parent="ttb_task_template_menu"
+        action="ttb_kpi.ttb_task_template_cskh_action"
+        sequence="21"/>
+
+    <menuitem
+        id="my_task_menu"
+        name="Công việc của tôi"
+        parent="ttb_kpi_menu_root"
+        action="action_my_task_own"
+        sequence="12"/>
+
+    <menuitem
+        id="approval_task_menu"
+        name="Duyệt công việc hoàn thành"
+        parent="ttb_kpi_menu_root"
+        sequence="13"/>
+    <menuitem
+        id="approval_task_checklist_menu"
+        name="Duyệt công việc checklist"
+        parent="approval_task_menu"
+        action="approval_task_checklist_action"
+        sequence="13"/>
+    <menuitem
+        id="approval_task_kvc_menu"
+        name="Duyệt công việc KVC"
+        parent="approval_task_menu"
+        action="approval_task_kvc_action"
+        sequence="13"/>
+    <menuitem
+        id="approval_task_vm_menu"
+        name="Duyệt công việc VM"
+        parent="approval_task_menu"
+        action="approval_task_vm_action"
+        sequence="13"/>
+    <menuitem
+        id="approval_task_vs_menu"
+        name="Duyệt công việc VS"
+        parent="approval_task_menu"
+        action="approval_task_vs_action"
+        sequence="13"/>
+    <menuitem
+        id="ttb_kpi_target_menu"
+        name="Chỉ tiêu"
+        parent="ttb_kpi_menu_root"
+        action="ttb_kpi.ttb_kpi_target_action"
+        sequence="21"/>
+
+    <menuitem
+        id="ttb_kpi_report_menu"
+        name="Báo cáo"
+        parent="ttb_kpi_menu_root"
+        sequence="25"/>
+    <menuitem
+        id="tttb_task_report_line_menu"
+        name="Kết quả chấm"
+        parent="ttb_kpi_report_menu"
+        action="ttb_kpi.ttb_task_report_line_action"
+        sequence="1"/>
+    <menuitem
+        id="ttb_task_report_line_check_list_menu"
+        name="Kết quả chấm check list"
+        parent="ttb_kpi_report_menu"
+        action="ttb_kpi.ttb_task_report_line_check_list_action"
+        sequence="1"/>
+    <menuitem
+        id="ttb_task_report_line_kvc_menu"
+        name="Kết quả chấm KVC"
+        parent="ttb_kpi_report_menu"
+        action="ttb_kpi.ttb_task_report_line_kvc_action"
+        sequence="1"/>
+    <menuitem
+        id="ttb_task_report_line_vm_vs_menu"
+        name="Kết quả chấm VM và VS"
+        parent="ttb_kpi_report_menu"
+        action="ttb_kpi.ttb_task_report_line_vm_vs_action"
+        sequence="1"/>
+    <menuitem
+        id="tttb_task_report_kpi_menu"
+        name="Điểm chấm"
+        parent="ttb_kpi_report_menu"
+        action="ttb_kpi.ttb_task_report_kpi_action"
+        sequence="11"/>
+    <menuitem
+        id="ttb_kpi_result_line_menu"
+        name="Kết quả KPI"
+        parent="ttb_kpi_report_menu"
+        action="ttb_kpi.ttb_kpi_result_line_action"
+        sequence="21"/>
+    <menuitem
+        id="ttb_kpi_report_result_menu"
+        name="Báo cáo kết quả chấm"
+        parent="ttb_kpi_report_menu"
+        sequence="31"/>
+    <menuitem
+        id="ttb_kpi_report_result_cskh_menu"
+        name="Báo cáo kết quả chấm CSKH"
+        parent="ttb_kpi_report_result_menu"
+        sequence="1"/>
+    <menuitem
+        id="ttb_kpi_report_result_cskh_menu_area"
+        name="Báo cáo kết quả chấm CSKH theo khu vực"
+        parent="ttb_kpi_report_result_cskh_menu"
+        action="cskpi_evaluation_report_action"
+        sequence="1"/>
+    <menuitem
+        id="ttb_kpi_report_result_cskh_menu_employee"
+        name="Báo cáo kết quả chấm CSKH theo nhân viên"
+        parent="ttb_kpi_report_result_cskh_menu"
+        action="cskpi_evaluation_report_action_employee"
+        sequence="1"/>
+    <menuitem
+        id="ttb_kpi_report_result_tnkh_t2_menu"
+        name="Báo cáo kết quả chấm TNKH phiếu T2"
+        parent="ttb_kpi_report_result_cskh_menu"
+        action="tnkh_t2_report_action"
+        sequence="1"/>
+    <menuitem
+        id="ttb_kpi_report_result_vm_menu"
+        name="Báo cáo kết quả chấm VM"
+        parent="ttb_kpi_report_result_menu"
+        action="action_kpi_vm_result_report"
+        sequence="2"/>
+    <menuitem
+        id="ttb_kpi_report_result_vs_menu"
+        name="Báo cáo kết quả chấm VS"
+        parent="ttb_kpi_report_result_menu"
+        action="action_kpi_vs_result_report"
+        sequence="3"/>
+
+    <menuitem
+        id="kpi_missing_evaluation_report_menu"
+        name="Báo cáo số phiếu chấm thiếu"
+        parent="ttb_kpi_report_menu"
+        sequence="55"/>
+
+    <menuitem
+        id="cskpi_missing_evaluation_report_menu"
+        name="Báo cáo kết quả chấm CSKH"
+        parent="kpi_missing_evaluation_report_menu"
+        action="ttb_kpi.action_cskpi_missing_evaluation_report"
+        sequence="1"/>
+
+    <menuitem
+        id="vskpi_missing_evaluation_report_menu"
+        name="Báo cáo số chấm thiếu VS"
+        parent="kpi_missing_evaluation_report_menu"
+        action="ttb_kpi.action_vskpi_missing_evaluation_report"
+        sequence="5"/>
+
+    <menuitem
+        id="vmkpi_missing_evaluation_report_menu"
+        name="Báo cáo số chấm thiếu VM"
+        parent="kpi_missing_evaluation_report_menu"
+        action="ttb_kpi.action_vmkpi_missing_evaluation_report"
+        sequence="10"/>
+    <menuitem
+        id="menu_cs_gs_score_difference"
+        name="Báo cáo so sánh CSKH"
+        parent="kpi_missing_evaluation_report_menu"
+        action="ttb_kpi.action_kpi_score_diff"
+        sequence="10"/>
+    <menuitem
+        id="ttb_kpi_check_list_kvc_menu"
+        name="Khu vui chơi"
+        parent="ttb_kpi_menu_root"
+        sequence="41"/>
+    <menuitem
+        id="ttb_kvc_report_menu"
+        name="Đánh giá nhiệm vụ"
+        parent="ttb_kpi_check_list_kvc_menu"
+        sequence="1"/>
+    <menuitem
+        id="ttb_kpi_kvc_menu"
+        name="Chất lượng KVC"
+        parent="ttb_kvc_report_menu"
+        action="ttb_kpi.ttb_task_report_kvc_action"
+        sequence="11"/>
+    <menuitem
+        id="ttb_kpi_vs_kvc_menu"
+        name="Chất lượng VS KVC"
+        parent="ttb_kvc_report_menu"
+        action="ttb_kpi.ttb_task_report_vs_kvc_action"
+        sequence="12"/>
+    <menuitem
+        id="ttb_kvc_template_menu"
+        name="Cài đặt nhiệm vụ"
+        parent="ttb_kpi_check_list_kvc_menu"
+        sequence="2"/>
+    <menuitem
+        id="ttb_kpi_kvc_template_menu"
+        name="Chất lượng KVC"
+        parent="ttb_kvc_template_menu"
+        action="ttb_kpi.ttb_task_template_kvc_action"
+        sequence="21"/>
+    <menuitem
+        id="ttb_kpi_vs_kvc_template_menu"
+        name="Chất lượng VS KVC"
+        parent="ttb_kvc_template_menu"
+        action="ttb_kpi.ttb_task_template_vs_kvc_action"
+        sequence="22"/>
+    <menuitem
+        id="ttb_kpi_check_list_menu"
+        name="Check list"
+        parent="ttb_kpi_menu_root"
+        sequence="21"/>
+    <menuitem
+        id="ttb_check_list_report_menu"
+        name="Đánh giá nhiệm vụ"
+        parent="ttb_kpi_check_list_menu"
+        sequence="1"/>
+    <menuitem
+        id="ttb_kpi_atan_menu"
+        name="Check list ATAN"
+        parent="ttb_check_list_report_menu"
+        action="ttb_kpi.ttb_task_report_anat_action"
+        sequence="11"/>
+    <menuitem
+        id="ttb_kpi_atan_gdns_menu"
+        name="Check list ATAN cho GĐNS"
+        parent="ttb_check_list_report_menu"
+        action="ttb_kpi.ttb_task_report_anat_gdns_action"
+        sequence="12"/>
+    <menuitem
+        id="ttb_kpi_pccc_menu"
+        name="Check list PCCC"
+        parent="ttb_check_list_report_menu"
+        action="ttb_kpi.ttb_task_report_pccc_action"
+        sequence="13"/>
+    <menuitem
+        id="ttb_kpi_pccc_gdns_menu"
+        name="Check list PCCC cho GĐNS"
+        parent="ttb_check_list_report_menu"
+        action="ttb_kpi.ttb_task_report_pccc_gdns_action"
+        sequence="14"/>
+    <menuitem
+        id="ttb_check_list_template_menu"
+        name="Cài đặt nhiệm vụ checklist"
+        parent="ttb_kpi_seting_menu"
+        sequence="99"/>
+    <menuitem
+        id="ttb_kpi_atan_template_menu"
+        name="Check list ATAN"
+        parent="ttb_check_list_template_menu"
+        action="ttb_kpi.ttb_task_template_anat_action"
+        sequence="21"/>
+    <menuitem
+        id="ttb_kpi_pccc_template_menu"
+        name="Check list PCCC"
+        parent="ttb_check_list_template_menu"
+        action="ttb_kpi.ttb_task_template_pccc_action"
+        sequence="22"/>
+
+    <menuitem
+        id="ttb_kpi_task_template_menu"
+        name="Check list mới (Mẫu nhiệm vụ)"
+        parent="ttb_check_list_template_menu"
+        action="ttb_kpi.ttb_task_template_action"
+        sequence="32"/>
+
+    <menuitem
+        id="ttb_kpi_task_template_line_menu"
+        name="Chi tiết mẫu nhiệm vụ"
+        parent="ttb_check_list_template_menu"
+        action="ttb_kpi.ttb_task_template_line_action"
+        sequence="40"/>
+
+    <menuitem
+        id="ttb_kpi_seting_menu"
+        name="Cấu hình"
+        parent="ttb_kpi_menu_root"
+        sequence="31"/>
+    <menuitem
+        id="ttb_kpi_type_group_menu"
+        name="Nhóm KPI"
+        parent="ttb_kpi_seting_menu"
+        action="ttb_kpi.ttb_kpi_type_group_action"
+        sequence="99"/>
+    <menuitem
+        id="ttb_task_category_menu"
+        name="Danh mục nhiệm vụ"
+        parent="ttb_kpi_seting_menu"
+        action="ttb_kpi.ttb_task_category_action"
+        sequence="1"/>
+    <menuitem
+        id="ttb_kpt_type_menu"
+        name="Loại KPI"
+        parent="ttb_kpi_seting_menu"
+        action="ttb_kpi.ttb_kpi_type_action"
+        sequence="11"/>
+    <menuitem
+        id="ttb_area_menu"
+        name="Khu vực"
+        parent="ttb_kpi_seting_menu"
+        action="ttb_kpi.ttb_kpi_area_action"
+        sequence="21"
+        groups="base.group_system"
+    />
+    <menuitem 
+        id="menu_branch_checklist_dashboard" 
+        name="Tổng hợp checklist" 
+        parent="ttb_kpi_check_list_menu" 
+        action="branch_checklist_dashboard_action" 
+        sequence="100"/>
+</odoo>

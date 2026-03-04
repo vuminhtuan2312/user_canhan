@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_happy_call_rule_view_tree" model="ir.ui.view">
+        <field name="name">ttb.happy.call.rule.tree</field>
+        <field name="model">ttb.happy.call.rule</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="number_of_days"/>
+                <field name="amount_total"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_happy_call_rule_action" model="ir.actions.act_window">
+        <field name="name">Danh sách điều kiện HappyCall</field>
+        <field name="res_model">ttb.happy.call.rule</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

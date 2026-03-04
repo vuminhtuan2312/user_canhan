@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="en_login_as.SystrayItem" owl="1">
+    <div>
+        <button title="Switch User" aria-label="Switch User" t-on-click.prevent="onClick" class="o_nav_entry">
+            <i aria-label="Switch User" class="fa fa-lg fa-user" role="img"/>
+        </button>
+    </div>
+</t>
+</templates>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_report_sale_pos_inventory_list" model="ir.ui.view">
+        <field name="name">report.sale.pos.inventory.list</field>
+        <field name="model">report.sale.pos.inventory</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <header>
+                    <button name="action_create_pr"
+                            string="Tạo PR"
+                            type="object"
+                            class="btn-primary"
+                            confirm="Bạn chắc chắn tạo PR với các Sản phẩm đã chọn?"/>
+                    <button name="action_change_ncc"
+                            string="Đổi NCC"
+                            type="object"
+                            class="btn-primary"/>
+                </header>
+                <field name="branch_id" readonly="1"/>
+                <field name="warehouse_type" readonly="1" />
+                <field name="pdcode" readonly="1"/>
+                <field name="barcode" readonly="1" optional="hide"/>
+                <field name="supplier_id" readonly="1"/>
+                <field name="supplier_code" readonly="1" optional="hide"/>
+                <field name="pdname" readonly="1"/>
+                <field name="duplicate_products" optional=" hide" readonly="1"/>
+                <field name="dvt" readonly="1"/>
+                <field name="total_sales_3m_sys" optional="hide" readonly="1"/>
+                <field name="total_sales_1m_sys" readonly="1"/>
+                <field name="total_sales_2w_qty" readonly="1"/>
+                <field name="stock_system_branch" readonly="1"/>
+                <field name="incoming_qty" readonly="1"/>
+                <field name="auto_order_qty" readonly="1" />
+                <field name="actual_stock_branch" optional="hide" readonly="1"/>
+                <field name="suggested_order_category"/>
+                <field name="suggested_order_branch" optional="hide" readonly="1"/>
+                <field name="sale_price" readonly="1"/>
+                <field name="total_value" optional="hide" readonly="1"/>
+                <field name="total_sales_2w_amount" optional="hide" readonly="1"/>
+                <field name="last_purchase_price" readonly="1"/>
+                <field name="estimated_days_in_stock" readonly="1"/>
+                <field name="classify_14_days" optional="hide" readonly="1"/>
+                <field name="notes" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_report_sale_pos_inventory_search" model="ir.ui.view">
+        <field name="name">report.sale.pos.inventory.search</field>
+        <field name="model">report.sale.pos.inventory</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter name="filter_ordered" string="Sản phẩm đang đặt"
+                        domain="[('suggested_order_category', '>', 0)]"/>
+
+                <filter name="filter_sales_days" string="Số ngày bán hàng > 30"
+                        domain="[('estimated_days_in_stock', '>', 30)]"/>
+
+                <filter name="filter_out_of_stock" string="Sản phẩm hết hàng"
+                        domain="[('stock_system_branch', '=', 0)]"/>
+
+                <filter name="group_by_product" string="Nhóm theo sản phẩm"
+                    context="{'group_by': 'product_id'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_ttb_coverage_config_list" model="ir.ui.view">
+        <field name="name">ttb.coverage_config.list</field>
+        <field name="model">ttb.coverage.config</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_id"/>
+                <field name="branch_id"/>
+                <field name="min_qty"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_ttb_coverage_config" model="ir.actions.act_window">
+        <field name="name">Cấu hình tồn tối thiểu</field>
+        <field name="res_model">ttb.coverage.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

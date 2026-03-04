@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Xác suất chọn công việc để hậu kiểm khi NV bấm "Hoàn thành" (0.0–1.0, ví dụ 0.2 = 20%) -->
+        <record id="config_audit_selection_probability" model="ir.config_parameter">
+            <field name="key">ttb_khuvuichoi.audit_selection_probability</field>
+            <field name="value">0.2</field>
+        </record>
+    </data>
+</odoo>

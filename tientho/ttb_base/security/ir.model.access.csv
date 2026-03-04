@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_model_generate_qr_code,access_model_generate_qr_code,model_generate_qr_code,base.group_user,1,1,1,1

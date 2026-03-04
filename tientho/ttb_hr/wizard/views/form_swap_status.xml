@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="form_swap_status" model="ir.ui.view">
+        <field name="name">form.swap.status.form</field>
+        <field name="model">form.swap.status</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="status"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="button_confirm" type="object" string="Xác nhận" class="btn btn-primary"/>
+                    <button special="cancel" string="Hủy" class="btn btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

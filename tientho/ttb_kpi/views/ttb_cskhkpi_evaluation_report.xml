@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="report_result_cskh" model="account.report">
+        <field name="name">Báo cáo kết quả chấm CSKH theo khu vực</field>
+        <field name="filter_show_draft" eval="False"/>
+        <field name="filter_account_type" eval="False"/>
+        <field name="filter_partner" eval="False"/>
+        <field name="filter_unfold_all" eval="True"/>
+        <field name="filter_unreconciled" eval="False"/>
+        <field name="filter_period_comparison" eval="False"/>
+        <field name="filter_multi_company">selector</field>
+        <field name="filter_hide_0_lines">never</field>
+        <field name="default_opening_date_filter">this_month</field>
+        <field name="search_bar" eval="True"/>
+        <field name="load_more_limit" eval="200"/>
+        <field name="custom_handler_model_id" ref="model_cskpi_evaluation_report"/>
+    </record>
+
+    <record id="cskpi_evaluation_report_action" model="ir.actions.client">
+        <field name="name">Báo cáo kết quả chấm CSKH theo khu vực</field>
+        <field name="tag">account_report</field>
+        <field name="path">report-cskh</field>
+        <field name="context" eval="{'report_id': ref('ttb_kpi.report_result_cskh')}"/>
+    </record>
+
+    <record id="report_result_cskh_employee" model="account.report">
+        <field name="name">Báo cáo kết quả chấm CSKH theo nhân viên</field>
+        <field name="filter_show_draft" eval="False"/>
+        <field name="filter_account_type" eval="False"/>
+        <field name="filter_partner" eval="False"/>
+        <field name="filter_unfold_all" eval="True"/>
+        <field name="filter_unreconciled" eval="False"/>
+        <field name="filter_period_comparison" eval="False"/>
+        <field name="filter_multi_company">selector</field>
+        <field name="filter_hide_0_lines">never</field>
+        <field name="default_opening_date_filter">this_month</field>
+        <field name="search_bar" eval="True"/>
+        <field name="load_more_limit" eval="200"/>
+        <field name="custom_handler_model_id" ref="model_cskpi_evaluation_report_employee"/>
+    </record>
+
+    <record id="cskpi_evaluation_report_action_employee" model="ir.actions.client">
+        <field name="name">Báo cáo kết quả chấm CSKH theo nhân viên</field>
+        <field name="tag">account_report</field>
+        <field name="path">report-cskh-employee</field>
+        <field name="context" eval="{'report_id': ref('ttb_kpi.report_result_cskh_employee')}"/>
+    </record>
+</odoo>

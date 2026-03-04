@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="enc_server_management_js" model="ir.asset">
+        <field name="name">enc_server_management backend js</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="active">True</field>
+        <field name="path">/enc_server_management/static/src/js/odoo_wssh1.js</field>
+    </record>
+
+    <record id="enc_server_management_css" model="ir.asset">
+        <field name="name">enc_server_management backend css</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="active">True</field>
+        <field name="path">/enc_server_management/static/src/css/css.css</field>
+    </record>
+
+</odoo>

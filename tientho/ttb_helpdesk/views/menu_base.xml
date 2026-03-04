@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="helpdesk.menu_helpdesk_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="helpdesk.helpdesk_menu_config" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_helpdesk_crm_root"/>
+    </record>
+    <record id="helpdesk.helpdesk_sla_menu_main" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('ttb_kpi.group_ttb_kpi_tnkh_manager'), ref('ttb_kpi.group_ttb_kpi_tn_cskh')])]"/>
+    </record>
+    <record id="helpdesk.helpdesk_sla_menu_main" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('ttb_kpi.group_ttb_kpi_tnkh_manager'), ref('ttb_kpi.group_ttb_kpi_tn_cskh')])]"/>
+    </record>
+</odoo>

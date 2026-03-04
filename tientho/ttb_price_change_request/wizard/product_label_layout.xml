@@ -1,0 +1,18 @@
+<odoo>
+    <record id="product_label_layout_form_ttb_inherit" model="ir.ui.view">
+        <field name="name">product.label.layout.form.ttb</field>
+        <field name="model">product.label.layout</field>
+        <field name="inherit_id" ref="product.product_label_layout_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='pricelist_id']" position="attributes">
+                <attribute name="domain">[('id', 'in', available_pricelist_ids)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='extra_html']" position="before">
+                <field name="print_area" invisible="print_format != 'ttb_custom'"/>
+            </xpath>
+            <xpath expr="//group" position="inside">
+                <field name="available_pricelist_ids" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

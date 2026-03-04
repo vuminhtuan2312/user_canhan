@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.module.category" id="module_ttb_return_request">
+        <field name="name">Hàng trả lại</field>
+        <field name="sequence">36</field>
+    </record>
+
+    <!-- Nhóm quyền cho Quản lý cơ sở -->
+    <record id="group_branch_manager" model="res.groups">
+        <field name="name">Quản lý cơ sở</field>
+        <field name="category_id" ref="ttb_return_request.module_ttb_return_request"/>
+        <field name="comment">Quyền xem Đề xuất trả hàng thuộc cơ sở được gán</field>
+    </record>
+
+    <!-- Nhóm quyền cho Giám đốc cơ sở -->
+    <record id="group_branch_director" model="res.groups">
+        <field name="name">Giám đốc cơ sở</field>
+        <field name="category_id" ref="ttb_return_request.module_ttb_return_request"/>
+        <field name="comment">Quyền xem Đề xuất trả hàng thuộc cơ sở được gán</field>
+    </record>
+
+    <!-- Nhóm quyền cho Nhân viên cơ sở -->
+    <record id="group_branch_staff" model="res.groups">
+        <field name="name">Nhân viên cơ sở</field>
+        <field name="category_id" ref="ttb_return_request.module_ttb_return_request"/>
+        <field name="comment">Quyền xem Phiếu nhặt hàng được gán làm Người phụ trách hoặc Người hỗ trợ</field>
+    </record>
+</odoo>

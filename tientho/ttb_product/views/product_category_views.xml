@@ -1,0 +1,89 @@
+<odoo>
+    <record id="inherit_product_category_form_view" model="ir.ui.view">
+        <field name="name">product.category.form.inherit</field>
+        <field name="model">product.category</field>
+        <field name="priority">1000</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Chèn các trường sau parent_id -->
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="category_code"/>
+                <field name="category_level"/>
+            </xpath>
+            <group name="first" position="before">
+                <group>
+                    <group name="second" col="2">
+                        <field name="ttb_user_id"/>
+                        <field name="ttb_tax_id"/>
+                    </group>
+                </group>
+            </group>
+            <group name="second" position="before">
+                <group name="first" position="move"/>
+            </group>
+            <xpath expr="/form/sheet" position="inside">
+                <notebook>
+                    <page string="Thuộc tính MCH" name="attributes">
+                        
+                        <separator string="Chọn thuộc tính và các giá trị"/>
+                        <field name="allowed_attribute_ids" context="{'show_attribute': False}">
+                            <list editable="bottom">
+                                <field name="attribute_id" context="{'default_create_variant': 'no_variant'}"/>
+                                <field name="value_ids" widget="many2many_tags" context="{'default_attribute_id': attribute_id}"/>
+                                <field name="sku_flag"/>
+                            </list>
+                        </field>
+                        
+                        <separator string="Thiết lập tỷ lệ"/>
+                        <field name="attribute_value_rate_ids">
+                            <list editable="bottom" create="0" delete="0">
+                                <field name="attribute_id" readonly="1" force_save="1" optional="hide"/>
+                                <field name="value_id" force_save="1" readonly="1"/>
+                                <field name="sku_rate" widget="percentage"/>
+                            </list>
+                        </field>
+                        
+                        <separator string="Bảng kết hợp thuộc tính"/>
+                        <group><field name="sku_number"/></group>
+                        <field name="sku_by_attribute_ids">
+                            <list editable="top" create="false">
+                                <!-- <field name="name_attribute" readonly="1"/> -->
+                                <field name="name" readonly="1" force_save="1"/>
+                                <field name="rate" readonly="0" force_save="1" widget="percentage" sum="Tổng  %"/>
+                                <field name="sku_number" sum="Tổng SKU"/>
+                                <field name="value_ids" column_invisible="1"/>
+                            </list>
+                        </field>
+                        <!-- <button type="object" name="delete_combine" string="Điều chỉnh"/> -->
+                    </page>
+
+                    <page string="Hướng dẫn" name="mch_description">
+                        <field name="mch_description" />
+                    </page>
+                </notebook>
+            </xpath>
+            <xpath expr="//field[@name='ttb_tax_id']" position="after">
+                <field name="code_augges"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_category_search_view_inherit" model="ir.ui.view">
+        <field name="name">product.category.search.inherit</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="replace">
+                <field name="complete_name" string="Product Categories"/>
+            </xpath>
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <separator/>
+                <filter string="MCH1" name="filter_category_level" domain="[('category_level', '=', 1)]"/>
+                <filter string="MCH2" name="filter_category_level" domain="[('category_level', '=', 2)]"/>
+                <filter string="MCH3" name="filter_category_level" domain="[('category_level', '=', 3)]"/>
+                <filter string="MCH4" name="filter_category_level" domain="[('category_level', '=', 4)]"/>
+                <filter string="MCH5" name="filter_category_level" domain="[('category_level', '=', 5)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

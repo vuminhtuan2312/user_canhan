@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ttb_payment_request_user,ttb.payment.request.user,model_ttb_payment_request,base.group_user,1,1,1,1
+access_ttb_payment_request_selector_user,ttb.ttb_payment_request_selector.user,model_ttb_payment_request_selector,base.group_user,1,1,1,1

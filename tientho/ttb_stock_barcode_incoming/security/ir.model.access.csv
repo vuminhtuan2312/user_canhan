@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inventory_product_recheck,access_inventory_product_recheck,model_inventory_product_recheck,,1,1,1,1
+access_product_zone_report,access_product_zone_report,model_product_zone_report,base.group_user,1,1,1,1
+access_shelf_location,access_shelf_location,model_shelf_location,,1,1,1,1
+access_period_inventory,access_period_inventory,model_period_inventory,,1,1,1,1
+access_period_inventory_branch,access_period_inventory_branch,model_period_inventory_branch,,1,1,1,1
+access_kvc_inventory_report,access_kvc_inventory_report,model_kvc_inventory_report,base.group_user,1,1,1,1
+access_kvc_inventory_report_branch,access_kvc_inventory_report_branch,model_kvc_inventory_report_branch,base.group_user,1,1,1,1
+access_kvc_inventory_report_branch_line,access_kvc_inventory_report_branch_line,model_kvc_inventory_report_branch_line,base.group_user,1,1,1,1
+access_create_recheck_inventory_wizard,access_create_recheck_inventory_wizard,model_create_recheck_inventory_wizard,,1,1,1,1

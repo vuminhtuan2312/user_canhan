@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="purchase_request_form" model="ir.ui.view">
+        <field name="name">Yêu cầu mua hàng</field>
+        <field name="model">ttb.purchase.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="sent_ok" invisible="1"/>
+                    <field name="approve_ok" invisible="1"/>
+                    <field name="locker_ok" invisible="1"/>
+                    <button name="action_sent" string="Gửi duyệt" invisible="not sent_ok or state != 'new'" type="object" class="btn-primary"/>
+                    <button name="action_approve" string="Duyệt" invisible="not approve_ok or state != 'sent'" type="object" class="btn-primary"/>
+                    <button name="action_reject" string="Từ chối" invisible="not approve_ok or state != 'sent'" type="object"/>
+                    <button name="action_cancel" string="Hủy" invisible="state != 'new'" type="object"/>
+                    <button name="action_done" string="Khóa" invisible="state != 'po_created' or not locker_ok" type="object"/>
+                    <button name="action_undone" string="Mở khóa" invisible="state != 'done' or not locker_ok" type="object"/>
+                    <button name="action_create_po" string="Tạo PO" type="object" class="btn-primary"
+                            invisible="state != 'approved'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,sent,approved,po_created"/>'
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Đã khóa" bg_color="text-bg-danger" invisible="state !='done'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_to_po"
+                                class="oe_stat_button"
+                                icon="fa-credit-card" invisible="po_count == 0">
+                            <field name="po_count" widget="statinfo" string="Đơn mua hàng"/>
+                            <field name='po_ids' widget="many2many_tags" invisible="1"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" nolabel="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="description" readonly="state == 'done'"/>
+                            <field name="type" readonly="state != 'new'"/>
+                            <field name="receipt_date" readonly="state == 'done'"/>
+                            <field name="note" readonly="state == 'done'"/>
+                            <field name="partner_id" readonly="state == 'done'"
+                                   context="{'res_partner_search_mode': 'supplier'}"
+                                   invisible="type != 'imported_goods'"/>
+                            <field name="partner_international_id" readonly="state == 'done'"
+                                   context="{'res_partner_search_mode': 'supplier'}"
+                                   invisible="type != 'imported_goods'"/>
+                            <field name="attachment" filename="attachment_name" readonly="state == 'done'"/>
+                            <field name="attachment_name" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="state != 'new'"/>
+                            <field name="user_id" readonly="state != 'new'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'new'"/>
+                            <field name="department_id"/>
+                            <field name="branch_id" readonly="(type == 'imported_goods') or state != 'new'" force_save="1"/>
+                            <field name="branch_ok" invisible="1"/>
+                            <field name="product_category_ids" invisible="type != 'imported_goods'" widget="many2many_tags"
+                            required="type == 'imported_goods'"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="exchange_rate" invisible="type != 'imported_goods'"/>
+                            <field name="number_of_cases_total" invisible="type != 'imported_goods'" readonly="is_gift_category == False"/>
+                        </group>
+                    </group>
+                    <notebook>
+<!--                        <field name="ttb_type" invisible="1"/>-->
+                        <page string="Chi tiết yêu cầu" name="detail">
+                            <button name="action_import_product" type="object" string="Nhập sản phẩm" class="btn-primary m-2" invisible="state != 'new'"/>
+                            <button name="action_matching_product" type="object" string="Khớp sản phẩm" class="btn-primary m-2" invisible="state != 'approved' or type != 'imported_goods'"/>
+                            <button name="action_import_code" type="object" string="Import mã NCC" class="btn-primary m-2" invisible="state != 'approved' or type != 'imported_goods'"/>
+                            <field name="line_ids" context="{'disable_column_sort': True}">
+                                <list editable="bottom" create="parent.state == 'new'" delete="parent.state == 'new'">
+                                    <field name="separate_prd" string="Tách mã" invisible="parent.type != 'imported_goods'"/>
+                                    <field name="default_code"/>
+                                    <field name="product_id" domain="['|',('product_status_ids', 'any', [('branch_id', '=', parent.branch_id), ('state', 'in', ['zz','z1'])]),'&amp;',('product_status_ids', 'not any', [('branch_id', '=', parent.branch_id)]), ('ttb_product_status', 'in', ['zz','z1'])]" readonly="parent.state != 'new'"/>
+                                    <field name="description"/>
+                                    <field name="item" column_invisible="parent.type != 'imported_goods'"/>
+                                    <field name="product_image" widget="image" column_invisible="parent.type != 'imported_goods'"/>
+                                    <button name="button_open_link_prd" type="object" string="Link" class="btn-link" icon="fa-external-link" invisible="not product_link"/>
+                                    <field name="product_link" column_invisible="parent.type != 'imported_goods'" optional="hide"/>
+                                    <field name="cbm" column_invisible="parent.type != 'imported_goods'" optional="show"/>
+                                    <field name="weight" column_invisible="parent.type != 'imported_goods'" optional="show"/>
+                                    <field name="product_per_case" column_invisible="parent.type != 'imported_goods'" optional="show"/>
+                                    <field name="number_of_cases" column_invisible="parent.type != 'imported_goods'" optional="show"/>
+                                    <field name="demand_qty" readonly="parent.state != 'new'"/>
+                                    <field name="stock_qty" optional="show" column_invisible="parent.type == 'imported_goods'"/>
+                                    <field name="sale_30_qty" optional="show" column_invisible="parent.type == 'imported_goods'"/>
+                                    <field name="sale_90_qty" optional="show" column_invisible="parent.type == 'imported_goods'"/>
+                                    <field name="sale_days" optional="show" column_invisible="parent.type == 'imported_goods'"/>
+                                    <field name="uom_qty" readonly="parent.state != 'new' or not packaging_id"
+                                           force_save="1" column_invisible="parent.type == 'imported_goods'"/>
+                                    <field name="quantity" readonly="parent.state not in ['new','sent']"/>
+                                    <field name="price_cn" column_invisible="parent.type != 'imported_goods'"/>
+                                    <field name="price_total_line" column_invisible="parent.type != 'imported_goods'"/>
+                                    <field name="purchase_qty" optional="hide"/>
+                                    <field name="received_qty" optional="hide"/>
+                                    <field name="uom_id" readonly="parent.state != 'new'"/>
+                                    <field name="packaging_id" readonly="parent.state != 'new'" column_invisible="parent.type == 'imported_goods'"/>
+                                    <field name="reject" readonly="reject or parent.state not in ['new','sent']" force_save="1"/>
+                                    <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'supplier'}" optional="show" groups="ttb_purchase.group_purchase_expert"/>
+                                    <field name="company_id" groups="base.group_multi_company" column_invisible="1"/>
+                                    <field name="currency_id" groups="base.group_multi_currency" column_invisible="1"/>
+                                    <button name="action_view_product" title="View Product" type="object" class="btn-link" icon="fa-picture-o"/>
+                                </list>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="default_code"/>
+                                            <field name="product_id"/>
+                                            <field name="description"/>
+                                            <field name="reject"/>
+                                            <field name="partner_id"/>
+                                            <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                                            <field name="currency_id" groups="base.group_multi_currency" invisible="1"/>
+                                        </group>
+                                        <group>
+                                            <field name="uom_id"/>
+                                            <field name="packaging_id"/>
+                                            <field name="uom_qty"/>
+                                            <field name="quantity"/>
+                                            <field name="purchase_qty"/>
+                                            <field name="received_qty"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Thông tin phê duyệt" name="approval_info">
+                            <group>
+                                <group>
+                                    <field name="current_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="next_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="notif_user_ids" readonly="1" widget="many2many_tags"/>
+                                </group>
+                                <group groups="base.group_no_one">
+                                    <field name="process_id" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_sent" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_approved" readonly="1" groups="base.group_no_one"/>
+                                </group>
+                            </group>
+                            <field name="rule_line_ids"/>
+                        </page>
+                    </notebook>
+                    <group>
+                        <field name="ttb_prd_type_total"/>
+                        <field name="ttb_quantity_total"/>
+                        <field name="ttb_price_total"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_request_list" model="ir.ui.view">
+        <field name="name">Yêu cầu mua hàng</field>
+        <field name="model">ttb.purchase.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="approval_date_last"/>
+                <field name="description"/>
+                <field name="user_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="department_id"/>
+                <field name="branch_id"/>
+                <field name="state"/>
+                <field name="currency_id" groups="base.group_multi_currency"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_request_search" model="ir.ui.view">
+        <field name="name">Yêu cầu mua hàng</field>
+        <field name="model">ttb.purchase.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="date"/>
+                <field name="user_id"/>
+                <field name="branch_id"/>
+                <field name="description"/>
+                <filter string="Yêu cầu của tôi" name="my_request" domain="[('user_id', '=', uid)]"/>
+                <filter string="Yêu cầu cần duyệt" name="my_approve" domain="[('state','=','sent'),('current_approve_user_ids', '=', uid)]"/>
+                <filter string="Yêu cầu phụ trách" name="my_notify" domain="[('notif_user_ids', '=', uid)]"/>
+                <separator/>
+                <filter string="Đang duyệt" name="state_sent" domain="[('state','=','sent')]"/>
+                <filter string="Đã duyệt" name="state_approved" domain="[('state','=','approved')]"/>
+                <filter string="Đang mua hàng" name="state_po_created" domain="[('state','=','po_created')]"/>
+                <filter string="Đã hoàn thành" name="state_done" domain="[('state','=','done')]"/>
+
+                <group expand="1" string="Group By">
+                    <filter string="Ngày đề nghị" name="groupby_date" context="{'group_by': 'date:month'}"/>
+                    <filter string="Người đề nghị" name="groupby_user_id" context="{'group_by':'user_id'}"/>
+                    <filter string="Cơ sở" name="groupby_branch_id" context="{'group_by':'branch_id'}"/>
+                    <filter string="Trạng thái" name="groupby_state" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="purchase_request_action" model="ir.actions.act_window">
+        <field name="name">Yêu cầu mua hàng</field>
+        <field name="res_model">ttb.purchase.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('type', '!=', 'imported_goods')]</field>
+        <field name="context">{'display_default_code': False}</field>
+    </record>
+
+    <record id="purchase_request_imported_goods_action" model="ir.actions.act_window">
+        <field name="name">Yêu cầu mua hàng</field>
+        <field name="res_model">ttb.purchase.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('type', '=', 'imported_goods')]</field>
+        <field name="context">{'default_type': 'imported_goods'}</field>
+    </record>
+</odoo>

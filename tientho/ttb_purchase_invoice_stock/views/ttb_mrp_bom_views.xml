@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="ttb_mrp_bom_form_view" model="ir.ui.view">
+            <field name="name">ttb.mrp.bom.form</field>
+            <field name="model">ttb.mrp.bom</field>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <form string="Định mức nguyên vật liệu">
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <group>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="product_tmpl_id" context="{'default_is_storable': True}"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <label for="product_qty" string="Quantity"/>
+                            <div class="o_row">
+                                <field name="product_qty"/>
+                                <field name="product_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                        </group>
+                        <!-- <group>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True, 'no_open': True}" invisible="context.get('parent_production_id')"/>
+                        </group> -->
+                    </group>
+                    <notebook>
+                        <page string="Thành phần" name="components">
+                            <field name="bom_line_ids" widget="one2many" context="{'default_product_id': False, 'default_bom_id': id}">
+                                <list string="Components" editable="bottom">
+                                    <field name="company_id" column_invisible="True"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id" context="{'default_is_storable': True}"/>
+                                    <field name="product_tmpl_id" column_invisible="True"/>
+                                    
+                                    <field name="product_qty"/>
+                                    <field name="product_uom_category_id" column_invisible="True"/>
+                                    <field name="product_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="ttb_mrp_bom_tree_view" model="ir.ui.view">
+            <field name="name">ttb.mrp.bom.list</field>
+            <field name="model">ttb.mrp.bom</field>
+            <field name="arch" type="xml">
+                <list string="Định mức nguyên vật liệu" sample="1" multi_edit="1">
+                    <field name="active" column_invisible="True"/>
+                    <field name="sequence" widget="handle"/>
+                    <field name="company_id" column_invisible="True"/>
+                    <field name="product_tmpl_id"/>
+                    <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                    <field name="product_qty" optional="hide"/>
+                    <field name="product_uom_category_id" column_invisible="True"/>
+                    <field name="product_uom_id" groups="uom.group_uom" optional="hide" string="Unit of Measure"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="ttb_mrp_bom_kanban_view" model="ir.ui.view">
+            <field name="name">ttb.mrp.bom.kanban</field>
+            <field name="model">ttb.mrp.bom</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" sample="1">
+                    <templates>
+                        <t t-name="card">
+                            <div>
+                                <field name="product_tmpl_id" class="fw-medium fs-5"/>
+                                <span class="float-end badge rounded-pill"><field name="product_qty"/> <field name="product_uom_id" class="small"/></span>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="view_ttb_mrp_bom_filter" model="ir.ui.view">
+            <field name="name">ttb.mrp.bom.select</field>
+            <field name="model">ttb.mrp.bom</field>
+            <field name="arch" type="xml">
+                <search string="Search Định mức nguyên vật liệu">
+                    <field name="product_tmpl_id" string="Product"/>
+                    <field name="bom_line_ids" string="Component"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Product" name="product" domain="[]" context="{'group_by': 'product_tmpl_id'}"/>
+                        <filter string='Unit of Measure' name="default_unit_of_measure" domain="[]" context="{'group_by' : 'product_uom_id'}"/>
+                   </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="ttb_mrp_bom_form_action" model="ir.actions.act_window">
+            <field name="name">Định mức nguyên vật liệu</field>
+            <field name="res_model">ttb.mrp.bom</field>
+            <field name="domain">[]</field> <!-- force empty -->
+            <field name="view_mode">list,kanban,form</field>
+            <field name="search_view_id" ref="view_ttb_mrp_bom_filter"/>
+            <field name="context">{'default_company_id': allowed_company_ids[0]}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Chưa có định mức nguyên vật liệu. Hãy tạo mới một bản ghi!
+              </p><p>
+                Bills of materials allow you to define the list of required raw
+                materials used to make a finished product; through a manufacturing
+                order or a pack of products.
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_ttb_mrp_bom_form_action"
+            action="ttb_mrp_bom_form_action"
+            parent="purchase.menu_purchase_products"
+            sequence="13"/>
+
+        <!-- BOM Line -->
+        <record id="ttb_mrp_bom_line_view_form" model="ir.ui.view">
+            <field name="name">ttb.mrp.bom.line.view.form</field>
+            <field name="model">ttb.mrp.bom.line</field>
+            <field name="arch" type="xml">
+                <form string="Định mức nguyên vật liệu line" create="0" edit="0">
+                    <sheet>
+                        <group>
+                            <group string="Thành phần">
+                                <field name="product_id"/>
+                                <field name="parent_product_tmpl_id" invisible="1"/>
+                                <label for="product_qty" string="Quantity"/>
+                                <div class="o_row">
+                                    <field name="product_qty"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <field name="product_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                                </div>
+                            </group>
+                            <group string="Operation">
+                                <field name="company_id" invisible="1"/>
+                                <field name="sequence" groups="base.group_no_one"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

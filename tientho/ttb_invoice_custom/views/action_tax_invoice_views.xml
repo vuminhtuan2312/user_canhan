@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ttb_inout_invoice_mapper_list_ivew" model="ir.ui.view">
+        <field name="name">ttb.inout.invoice.mapper.list</field>
+        <field name="model">ttb.inout.invoice.mapper</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="in_line_id" optional="hide"/>
+                <field name="in_product_id" optional="show"/>
+                <field name="out_product_id" optional="show"/>
+                <field name="in_price_total" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="tax_output_invoice_line_list_ivew" model="ir.ui.view">
+        <field name="name">tax.output.invoice.line.list</field>
+        <field name="model">tax.output.invoice.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="domain_manual_in_line_id" column_invisible="1"/>
+                <field name="manual_in_line_id" optional="hide" domain="domain_manual_in_line_id"/>
+                <field name="category_id_level_1" optional="show"/>
+                <field name="category_id_level_2" optional="hide"/>
+                <field name="category_id_level_3" optional="hide"/>
+                <field name="category_id_level_4" optional="hide"/>
+                <field name="category_id_level_5" optional="hide"/>
+
+                <field name="invoice_date" optional="show"/>
+                <field name="product_id" optional="show"/>
+                <field name="quantity" optional="show"/>
+                <field name="price_unit" optional="show"/>
+                <field name="price_total" optional="show"/>
+                <field name="buy_product_id" optional="show"/>
+                <field name="buy_product_level" optional="show"/>
+                <field name="state" optional="hide"/>
+                <field name="result_state" optional="hide"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="tax_output_invoice_line_view_form" model="ir.ui.view">
+        <field name="name">tax.output.invoice.line.form</field>
+        <field name="model">tax.output.invoice.line</field>
+        <field name="arch" type="xml">
+            <form string="Dòng Hóa đơn đầu ra">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="invoice_number"/>
+                            <field name="invoice_symbol"/>
+                            <field name="invoice_date"/>
+                        </group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                            <field name="price_unit"/>
+                            <field name="uom"/>
+                            <field name="price_total"/>
+                        </group>
+                    </group>
+
+                    <separator string="Thông tin Sản phẩm đầu vào"/>
+                    <group>
+                        <group>
+                            <field name="buy_product_id"/>
+                            <field name="buy_product_rate"/>
+                            <field name="buy_product_level"/>
+                            <field name="inventory_quantity"/>
+                        </group>
+                        <group>
+                            <field name="domain_manual_in_line_id"/>
+                            <field name="manual_in_line_id" domain="domain_manual_in_line_id"/>
+                            <field name="best_buy_product_id"/>
+                            <field name="best_buy_product_rate"/>
+                            <field name="best_inventory_quantity"/>
+                        </group>
+                    </group>
+
+                    <separator string="Trạng thái và Cấu hình"/>
+                    <group>
+                        <group>
+                            <field name="state" widget="statusbar" statusbar_visible="new,ok,no_product"/>
+                            <field name="result_state"/>
+                            <field name="branch_type"/>
+                        </group>
+                        <group>
+                            <field name="price_rate"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+
+                    <field name="map_info"/>
+                    
+                    <separator string="Phân loại Sản phẩm (Không sửa)"/>
+                    <group string="Phân loại Cấp độ">
+                        <field name="category_id_level_1" readonly="1"/>
+                        <field name="category_id_level_2" readonly="1"/>
+                        <field name="category_id_level_3" readonly="1"/>
+                        <field name="category_id_level_4" readonly="1"/>
+                        <field name="category_id_level_5" readonly="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Chi tiết Dòng đầu vào">
+                            <field name="in_line_ids"/>
+                        </page>
+                        <page string="Dòng đầu vào tại cơ sở thoả mãn">
+                            <field name="available_in_line_ids"/>
+                        </page>
+                        <page string="Dòng đầu vào tại HO thoả mãn">
+                            <field name="available_ho_in_line_ids"/>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_nimbox_invoice_view_form" model="ir.ui.view">
+        <field name="name">ttb.nimbox.invoice.form</field>
+        <field name="model">ttb.nimbox.invoice</field>
+        <field name="inherit_id" ref="ttb_purchase_invoice_stock.ttb_nimbox_invoice_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ttb_branch_id']" position="after">
+                <field name="in_branch_id"/>
+                <field name="invoice_type"/>
+            </xpath>
+            <xpath expr="//field[@name='nimbox_line_ids']//field[@name='thanhtien']" position="after">
+                <field name="buy_product_id" optional="hide"/>
+                <field name="thanhtien_exclude_tax" optional="hide"/>
+                <field name="dongia_excluded_tax" optional="hide"/>
+                <field name="soluong_used" optional="hide"/>
+            </xpath>
+            <xpath expr="//field[@name='nimbox_line_ids']/list/field[@name='soluong']" position="attributes">
+                <attribute name="sum">Tổng SL</attribute>
+            </xpath>
+            <xpath expr="//field[@name='nimbox_line_ids']/list/field[@name='so_tien_chiet_khau']" position="attributes">
+                <attribute name="sum">Tổng CK</attribute>
+            </xpath>
+            <xpath expr="//field[@name='nimbox_line_ids']/list/field[@name='thanhtien']" position="attributes">
+                <attribute name="sum">Tổng tiền</attribute>
+            </xpath>
+            <xpath expr="//field[@name='nimbox_line_ids']/list/field[@name='thanhtien_exclude_tax']" position="attributes">
+                <attribute name="sum">Tổng tiền trước thuế</attribute>
+            </xpath>
+            <xpath expr="//field[@name='nimbox_line_ids']/list/field[@name='soluong_used']" position="attributes">
+                <attribute name="sum">Tổng tiền trước thuế</attribute>
+            </xpath>
+            <xpath expr="//field[@name='nimbox_line_ids']" position="inside">
+                <!-- Chèn FORM VIEW -->
+                <form string="Chi tiết dòng hóa đơn">
+                    <group>
+                        <group>
+                            <field name="tchat"/>
+                            <field name="tensp"/>
+                            <field name="soluong"/>
+                            <field name="donvi"/>
+                            <field name="dongia"/>
+                        </group>
+                        <group>
+                            <field name="ti_le_chiet_khau" readonly="0"/>
+                            <field name="so_tien_chiet_khau" readonly="0"/>
+                            <field name="thuesuat" readonly="0"/>
+                            <field name="thanhtien" readonly="0"/>
+                            <field name="thanhtien_exclude_tax" readonly="0"/>
+                            <field name="dongia_excluded_tax" readonly="0"/>
+                            <field name="phanbo_thanh_tien_exclude_tax" readonly="0"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Dòng đầu vào phân bổ dòng đầu ra">
+                            <field name="out_line_ids">
+                                <list>
+                                    <field name="in_line_id"/>
+                                    <field name="out_line_id"/>
+                                    <field name="quantity"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </form>
+            </xpath>
+            <xpath expr="//page[@name='xml']" position="after">
+                <page string="Ghép hoá đơn đầu ra" name="out_invoice">
+                    <field name="out_invoice_ids">
+                        <list limit="800" create="0" edit="0">
+                            <field name="id" optional="hide"/>
+                            <field name="out_line_id"/>
+                            <field name="quantity" optional="show"/>
+                            
+                        </list>
+                    </field>
+                </page>
+                <page string="Ghép sản phẩm đầu ra" name="out_product">
+                    <field name="out_product_ids">
+                        <list limit="800" create="0" edit="0">
+                            <field name="id" optional="hide"/>
+                            <field name="in_line_id"/>
+                            <field name="out_product_id" optional="show"/>
+                            <field name="quantity" optional="show"/>
+                            <field name="thanhtien" optional="show"/>
+                            <field name="thanhtien_exclude_tax" optional="show"/>
+                            <field name="tien_thue" optional="show"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="tax_output_invoice_line_view_graph" model="ir.ui.view">
+        <field name="name">tax.output.invoice.line.graph</field>
+        <field name="model">tax.output.invoice.line</field>
+        <field name="arch" type="xml">
+            <graph string="Biểu đồ theo Ngày" type="line">
+                <field name="invoice_date" type="row" interval="day"/> 
+                
+                <field name="quantity" type="measure"/>
+                <field name="price_total" type="measure"/> 
+            </graph>
+        </field>
+    </record>
+</odoo>

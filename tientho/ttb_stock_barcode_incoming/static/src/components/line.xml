@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="stock_barcode.LineTitle" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_product_ref')]" position="replace">
+            <div class="o_product_ref fs-2">
+                <div t-if="line.product_id.barcode"
+                    class="o_product_ref fs-2">
+                    <span class="o_product_code font-monospace"
+                        t-esc="line.product_id.barcode"/>
+                </div>
+
+                <div t-if="line.product_id.barcode_vendor"
+                    class="o_product_ref fs-2">
+                    <span class="o_product_code font-monospace"
+                        t-esc="line.product_id.barcode_vendor"/>
+                </div>
+
+                <div t-if="line.product_id.barcode_k"
+                    class="o_product_ref fs-2">
+                    <span class="o_product_code font-monospace"
+                        t-esc="line.product_id.barcode_k"/>
+                </div>
+                <div t-if="line.product_id.default_code"
+                    class="o_product_ref fs-2">
+                    <span class="o_product_code font-monospace"
+                        t-esc="line.product_id.default_code"/>
+                </div>
+            </div>
+
+        </xpath>
+        <xpath expr="//div[hasclass('o_product_label')]" position="after">
+            <div class="o_product_label small">
+                <span class="text-muted">Lệch tồn Augges: </span>
+                <span t-esc="line.diff_qty" class="fw-bold"/>
+            </div>
+        </xpath>
+<!--        <xpath expr="//div[hasclass('o_product_ref')]" position="inside">-->
+<!--            <div t-if="line.product_id.barcode"-->
+<!--                class="o_product_ref fs-2">-->
+<!--                <span class="o_product_code font-monospace"-->
+<!--                    t-esc="line.product_id.barcode"/>-->
+<!--            </div>-->
+
+<!--            <div t-if="line.product_id.barcode_vendor"-->
+<!--                class="o_product_ref fs-2">-->
+<!--                <span class="o_product_code font-monospace"-->
+<!--                    t-esc="line.product_id.barcode_vendor"/>-->
+<!--            </div>-->
+
+<!--            <div t-if="line.product_id.barcode_k"-->
+<!--                class="o_product_ref fs-2">-->
+<!--                <span class="o_product_code font-monospace"-->
+<!--                    t-esc="line.product_id.barcode_k"/>-->
+<!--            </div>-->
+<!--        </xpath>-->
+    </t>
+    <t t-inherit="stock_barcode.LineQuantity" t-inherit-mode="extension">
+        <xpath expr="//div[@name='quantity']" position="attributes">
+            <attribute name="t-att-style">
+                (env.model &amp;&amp; env.model.record &amp;&amp; env.model.record.ttb_return_request_id)
+                ? 'position: relative; bottom: 50px;'
+                : ''
+            </attribute>
+        </xpath>
+    </t>
+    <t t-inherit="stock_barcode.LineQuantity" t-inherit-mode="extension">
+        <xpath expr="//div[@name='quantity']" position="inside">
+            <div t-if="env.model.record.ttb_return_request_id"
+             class="d-flex justify-content-between align-items-end">
+                <t t-set="doneQty" t-value="line.qty_done || 0"/>
+                <t t-set="requiredQty"
+           t-value="line &amp;&amp; line.ttb_required_qty || (line &amp;&amp; line.product_uom_qty) || 0"/>
+
+                <div class="d-flex flex-column me-4">
+                    <span>Số lượng đạt</span>
+                    <span class="fw-bold font-monospace fs-1"
+                          t-out="((doneQty - (line.reject_qty || 0)) > 0
+              ? (doneQty - (line.reject_qty || 0))
+              : 0) + '/' + requiredQty"/>
+                </div>
+
+<!--                <div class="d-flex flex-column">-->
+<!--                    <span>Số lượng không đạt</span>-->
+<!--                    <span class="fw-bold font-monospace fs-1"-->
+<!--                          t-out="line.reject_qty || 0"/>-->
+<!--                </div>-->
+            </div>
+        </xpath>
+    </t>
+    <t t-inherit="stock_barcode.LineUpperButtons" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o_edit')]" position="attributes">
+            <attribute name="t-if">
+                !displayToggleBtn and !line.product_id.require_scan
+            </attribute>
+        </xpath>
+    </t>
+    <t t-inherit="stock_barcode.LineLowerButtons" t-inherit-mode="extension">
+    <!-- Thay nguyên div t-else bằng container 2 hàng -->
+        <xpath expr="//div[@t-else='']" position="replace">
+            <div t-else="" class="d-flex flex-column align-items-end gap-2">
+                <div class="d-flex flex-nowrap gap-2">
+                    <button class="o_line_button btn px-0" style="min-width:0"/>
+
+                    <button t-if="isSelected &amp;&amp; env.model.toggleAsCounted &amp;&amp; !(line.product_id.require_scan)"
+                            t-on-click="toggleAsCounted"
+                            t-attf-class="o_line_button btn btn-{{quantityIsSet ? 'warning o_unset' : 'danger o_count_zero'}}">
+                        <span t-if="quantityIsSet" class="fa fa-lg fa-question"/>
+                        <span t-else="">0</span>
+                    </button>
+                    <button t-if="isSelected &amp;&amp; qtyDone" name="decrementButton"
+                            class="o_line_button o_remove_unit btn btn-light"
+                            t-on-click="() => this.addQuantity(-1)">
+                        -1
+                    </button>
+
+                    <button t-if="displayIncrementButton &amp;&amp; !(line.kcl)"
+                            name="incrementButton"
+                            class="o_line_button o_add_quantity btn btn-light"
+                            t-att-disabled="!this.env.model.lineCanBeEdited(line)"
+                            t-on-click="() => this.addQuantity(1)">+1</button>
+
+                    <button t-if="displayFulfillbutton &amp;&amp; !(line.kcl)"
+                            name="fulfillButton"
+                            t-on-click="() => this.addQuantity(incrementQty)"
+                            t-att-disabled="!this.env.model.lineCanBeEdited(line)"
+                            t-attf-class="o_line_button o_add_remaining_quantity btn btn-{{isSelected ? 'light' : 'secondary'}}">
+                        <t t-if="incrementQty > 0">+</t><t t-esc="incrementQty"/>
+                    </button>
+                    <button t-if="displayDeleteButton" name="deleteButton"
+                            t-on-click="() => this.env.model.deleteLine(line)"
+                            t-att-disabled="!this.env.model.lineCanBeEdited(line)"
+                            class="o_line_button o_delete_line btn btn-danger">
+                        <span class="fa fa-lg fa-trash"/>
+                    </button>
+                </div>
+
+                <div t-if="env.model.record.ttb_return_request_id"
+                     class="d-flex flex-column">
+                    <span>Số lượng không đạt</span>
+                    <span class="fw-bold font-monospace fs-1"
+                          t-out="line.reject_qty || 0"/>
+                </div>
+
+                <div t-if="env.model.record.ttb_return_request_id"
+                     class="d-flex flex-nowrap gap-2">
+                    <button type="button"
+                            class="o_line_button btn btn-light btn-sm"
+                            t-att-disabled="!this.env.model.lineCanBeEdited(line)"
+                            t-on-click="() => this.addRejectQty(-1)">
+                        -1
+                    </button>
+                    <button type="button"
+                            class="o_line_button btn btn-light btn-sm"
+                            t-att-disabled="!this.env.model.lineCanBeEdited(line)"
+                            t-on-click="() => this.addRejectQty(1)">
+                        +1
+                    </button>
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

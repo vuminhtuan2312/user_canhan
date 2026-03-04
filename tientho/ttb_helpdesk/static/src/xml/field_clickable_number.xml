@@ -1,0 +1,7 @@
+<templates id="template" xml:space="preserve">
+  <t t-name="ttb.FieldClickableNumber" owl="1">
+    <a class="ttb-link-number" role="button" t-on-click="onClick">
+      <t t-esc="rawValue"/>
+    </a>
+  </t>
+</templates>

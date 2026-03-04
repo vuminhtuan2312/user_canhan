@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_voucher_type_view_list" model="ir.ui.view">
+        <field name="name">ttb.voucher.type.view.list</field>
+        <field name="model">ttb.voucher.type</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_voucher_type" model="ir.actions.act_window">
+        <field name="name">Loại ưu đãi</field>
+        <field name="res_model">ttb.voucher.type</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

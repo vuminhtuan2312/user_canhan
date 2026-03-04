@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="ImportDataSidepanel12" 
+       t-inherit="ImportDataSidepanel"
+       t-inherit-mode="extension">
+        <!-- Chèn checkbox "Import in background" vào Batch Import -->
+        <!-- <xpath expr="//div[@t-if='props.isBatched']/div[@class='d-flex']" position="after">
+            <CheckBox value="props.options.in_background" onChange.bind="(isChecked) => this.props.onOptionChanged('in_background', isChecked)">
+                Import in background
+            </CheckBox>
+        </xpath> -->
+
+        <!-- Chèn dropdown chọn chế độ Import Mode vào sau Advanced -->
+        <xpath expr="//div[contains(@class, 'o_import_debug_options')]" position="after">
+            <div class="o_import_execute_options pt-3 pb-4 border-top">
+                
+                <h4>Advance Options</h4>
+
+                <CheckBox value="props.options.in_background" onChange.bind="(isChecked) => this.props.onOptionChanged('in_background', isChecked)">
+                    Import in background
+                </CheckBox>
+
+                <!-- <CheckBox value="props.options.create_only" onChange.bind="(isChecked) => this.props.onOptionChanged('create_only', isChecked)">
+                    Create only (Skip if id or external id existed)
+                </CheckBox> -->
+
+                <!-- <CheckBox value="props.options.update_only" onChange.bind="(isChecked) => this.props.onOptionChanged('update_only', isChecked)">
+                    Update only (Skip if id or external id not existed)
+                </CheckBox> -->
+                
+                <CheckBox value="props.options.skip_row_error" onChange.bind="(isChecked) => this.props.onOptionChanged('skip_row_error', isChecked)">
+                    Skip error
+                </CheckBox>
+                <CheckBox value="props.options.commit_per_record" onChange.bind="(isChecked) => this.props.onOptionChanged('commit_per_record', isChecked)">
+                    Commit per record
+                </CheckBox>
+                <CheckBox value="props.options.create_only" onChange.bind="(isChecked) => this.props.onOptionChanged('create_only', isChecked)">
+                    Create only
+                </CheckBox>
+            </div>
+        </xpath>
+    </t>
+</templates>

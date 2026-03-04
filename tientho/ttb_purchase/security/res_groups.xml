@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="base.group_user" model="res.groups">
+        <field name="menu_access" eval="[Command.unlink(ref('ttb_approval.approval_main_menu'))]"/>
+    </record>
+
+    <record id="group_stock_expert" model="res.groups">
+        <field name="name">Chuyên viên</field>
+        <field name="category_id" ref="base.module_category_inventory_inventory"/>
+        <field name="implied_ids" eval="[Command.link(ref('stock.group_stock_user'))]"/>
+    </record>
+
+    <record id="stock.group_stock_manager" model="res.groups">
+        <field name="implied_ids" eval="[Command.link(ref('group_stock_expert'))]"/>
+    </record>
+
+    <record id="stock.group_stock_user" model="res.groups">
+        <field name="menu_access" eval="[
+        Command.link(ref('stock.menu_stock_transfers')),
+        Command.link(ref('stock.menu_stock_inventory_control')),
+        Command.link(ref('purchase.menu_purchase_root')),
+        Command.link(ref('stock.menu_stock_warehouse_mgmt')),
+        ]"/>
+    </record>
+
+    <record id="group_purchase_expert" model="res.groups">
+        <field name="name">Chuyên viên</field>
+        <field name="category_id" ref="base.module_category_inventory_purchase"/>
+        <field name="implied_ids" eval="[Command.link(ref('purchase.group_purchase_user'))]"/>
+        <field name="menu_access" eval="[Command.link(ref('ttb_approval.approval_main_menu')),Command.link(ref('ttb_approval.approval_process_menu'))]"/>
+    </record>
+
+    <record id="group_purchase_create_po" model="res.groups">
+        <field name="name">Tạo PO cơ sở</field>
+        <field name="category_id" ref="base.module_category_usability"/>
+    </record>
+
+    <record id="purchase.group_purchase_manager" model="res.groups">
+        <field name="implied_ids" eval="[Command.link(ref('group_purchase_expert'))]"/>
+    </record>
+
+    <record id="purchase.group_purchase_user" model="res.groups">
+        <field name="menu_access" eval="[
+            Command.link(ref('stock.menu_stock_root')),
+            Command.link(ref('ttb_approval.approval_process_menu')),
+        ]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_stock_check_session_form" model="ir.ui.view">
+        <field name="name">stock.check.session.form</field>
+        <field name="model">stock.check.session</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_mark_done" type="object" string="Hoàn thành" class="oe_highlight" invisible="state == 'done'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="user_id" />
+                        <field name="mch5_new_id" />
+                        <field name="name_mch1" readonly="1"/>
+                        <field name="name_mch3" readonly="1"/>
+                        <field name="branch_id" />
+                        <field name="user_by" />
+                        <field name="done_date" />
+                        <field name="create_date" />
+                    </group>
+                    <notebook>
+                        <page string="Danh sách sản phẩm">
+                            <field name="line_ids">
+                                <kanban create="false" limit="2000" can_open="0">
+                                    <field name="product_id"/>
+                                    <field name="barcode"/>
+                                    <field name="qty_real"/>
+                                    <field name="highlight_qty_class"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div class="oe_kanban_card">
+                                                <div>
+                                                    <strong><field name="product_id"/></strong>
+                                                </div>
+                                                <div>
+                                                    <span>Mã vạch: <field name="barcode"/></span>
+                                                </div>
+                                                <div>
+                                                    <span>Mã nhà cung cấp: <field name="code_ncc"/></span>
+                                                </div>
+                                                <div>
+                                                    <span>Mã tham chiếu: <field name="reference_code"/></span>
+                                                </div>
+                                                <div>
+                                                <span t-attf-class="#{record.highlight_qty_class.value}">
+                                                    Thực tế: <t t-esc="record.qty_real.value"/>
+                                                </span>
+                                                </div>
+                                                <div>
+                                                    <span>Số luợng bổ sung: <field name="last_qty_add"/></span>
+                                                </div>
+                                                <div>
+                                                    <span>Người kiểm tồn: <field name="user_perform"/></span>
+                                                </div>
+                                                <div>
+                                                    <span>MCH5 đề xuất: <field name="categ_id"/></span>
+                                                </div>
+                                                <div>
+                                                    <span>Trạng thái kiểm: <field name="state_check" /></span>
+                                                </div>
+                                                <div>
+                                                    <span>Ảnh sản phẩm: <field name="image_1920" widget="image" class="oe_avatar"/></span>
+                                                </div>
+                                                <div>
+                                                    <button type="object" name="open_check_wizard" class="btn btn-primary btn-sm mt-2" invisible="state == 'done' or can_check_inventory == False">
+                                                        Kiểm tồn
+                                                    </button>
+                                                    <button name="open_add_qty_wizard" type="object" class="btn btn-primary btn-sm mt-2" invisible="state == 'draft' or can_check_inventory == False">Nhập bổ sung</button>
+                                                    <button type="object" name="open_adjust_mch5_wizard" class="btn btn-primary btn-sm mt-2 adjust-mch5-btn" invisible="can_check_inventory == False" >Điều chỉnh MCH5</button>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                    </notebook>
+                    <div>
+                        <button name="action_mark_done" type="object" string="Hoàn thành" class="oe_highlight mt-2" invisible="state == 'done'"/>
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_stock_check_session_list" model="ir.ui.view">
+        <field name="name">stock.check.session.list</field>
+        <field name="model">stock.check.session</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="name" />
+                <field name="branch_id" />
+                <field name="mch5_new_id" />
+                <field name="name_mch1" />
+                <field name="name_mch3" />
+                <field name="create_date" />
+                <field name="user_by" />
+                <field name="state" />
+                <field name="done_date" />
+            </list>
+        </field>
+    </record>
+    <record id="action_stock_check_session" model="ir.actions.act_window">
+        <field name="name">Phiên kiểm tồn</field>
+        <field name="res_model">stock.check.session</field>
+        <field name="view_mode">list,form,pivot</field>
+    </record>
+</odoo>

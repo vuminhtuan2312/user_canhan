@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fsapp_budget_user,fsapp.budget.user,model_fsapp_budget,base.group_user,1,1,1,1
+access_fsapp_budget_line_user,fsapp.budget.line.user,model_fsapp_budget_line,base.group_user,1,1,1,1
+access_fsapp_budget_adjustment_user,fsapp.budget_adjustment.user,model_fsapp_budget_adjustment,base.group_user,1,1,1,1
+access_fsapp_budget_adjustment_line_user,fsapp.budget_adjustment.line.user,model_fsapp_budget_adjustment_line,base.group_user,1,1,1,1
+access_fsapp_budget_report_user,fsapp.budget_report.user,model_fsapp_budget_report,base.group_user,1,1,1,1
+access_fsapp_payment_request_user,fsapp.payment_request.user,model_fsapp_payment_request,base.group_user,1,1,1,1
+access_fsapp_account_analytic_tag,fsapp.account_analytic_tag,model_account_analytic_tag,base.group_user,1,1,1,1

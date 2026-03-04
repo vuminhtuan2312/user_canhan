@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_report_return_request_list" model="ir.ui.view">
+        <field name="name">report.return.request.list</field>
+        <field name="model">report.return.request</field>
+        <field name="arch" type="xml">
+            <list editable="top" create="0">
+                <header>
+                    <button name="action_create_tl"
+                            string="Tạo TL"
+                            type="object"
+                            class="btn-primary"
+                            confirm="Bạn chắc chắn tạo TL với các Sản phẩm đã chọn?"/>
+                </header>
+                <field name="branch_id" readonly="1"/>
+                <field name="pdcode" readonly="1"/>
+                <field name="barcode" readonly="1" optional="hide"/>
+                <field name="supplier_id" readonly="1"/>
+                <field name="supplier_code" readonly="1" optional="hide"/>
+                <field name="pdname" readonly="1"/>
+                <field name="dvt" readonly="1"/>
+                <field name="total_sales_3m_sys" optional="hide" readonly="1"/>
+                <field name="total_sales_1m_sys" readonly="1"/>
+                <field name="total_sales_2w_qty" readonly="1"/>
+                <field name="stock_system_branch" readonly="1"/>
+                <field name="incoming_qty" readonly="1"/>
+                <field name="auto_return_qty" readonly="1"/>
+                <field name="suggested_return_category"/>
+                <field name="sale_price" readonly="1"/>
+                <field name="total_value" optional="hide" readonly="1"/>
+                <field name="total_sales_2w_amount" optional="hide" readonly="1"/>
+                <field name="last_purchase_price" readonly="1"/>
+                <field name="notes" optional="hide"/>
+            </list>
+        </field>
+    </record>
+</odoo>

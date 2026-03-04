@@ -1,0 +1,28 @@
+<odoo>
+    <record id="stock_picking_kanban_custom" model="ir.ui.view">
+        <field name="name">stock.picking.kanban.custom</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.stock_picking_kanban"/>
+        <field name="arch" type="xml">
+            <!-- Bổ sung các trường vào kanban để context có dữ liệu -->
+            <xpath expr="//kanban" position="inside">
+                <field name="origin"/>
+                <field name="quantity"/>
+                <field name="amount_total"/>
+            </xpath>
+            <xpath expr="//div[@class='d-flex mb-1']" position="after">
+                <div class="text-muted small mt-1">
+                    <t t-if="record.origin and record.origin.value">
+                        Mã PO: <t t-esc="record.origin.value"/>
+                    </t>
+                    <t t-if="record.quantity and record.quantity.value">
+                        <br/>Số dòng sản phẩm: <t t-esc="record.quantity.value"/>
+                    </t>
+                    <t t-if="record.amount_total and record.amount_total.value">
+                        <br/>Tổng tiền: <t t-esc="(record.amount_total.value).toLocaleString()"/>
+                    </t>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

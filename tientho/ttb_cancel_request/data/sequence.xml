@@ -1,0 +1,16 @@
+<odoo>
+    <data noupdate="1">
+        <record id="seq_cancel_reason" model="ir.sequence">
+            <field name="name">Cancel Reason</field>
+            <field name="code">cancel.reason</field>
+            <field name="prefix">LD</field>
+            <field name="padding">6</field>
+        </record>
+        <record id="seq_cancel_request" model="ir.sequence">
+            <field name="name">Cancel Request</field>
+            <field name="code">cancel.request</field>
+            <field name="prefix">HH</field>
+            <field name="padding">6</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_send_sms_zalo_oa" model="ir.cron">
+            <field name="name">Gửi yêu cầu sms zalo cho bên ZNS</field>
+            <field name="model_id" ref="point_of_sale.model_pos_order"/>
+            <field name="state">code</field>
+            <field name="code">model.send_sms_zalo_oa_zns()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="ir_cron_send_sms_zalo_oa" model="ir.cron">
+            <field name="name">Gửi yêu cầu sms zalo cho bên ZNS</field>
+            <field name="model_id" ref="point_of_sale.model_pos_order"/>
+            <field name="state">code</field>
+            <field name="code">model.send_sms_zalo_oa_zns()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="ir_cron_clear_zalo_shop_partner_ids" model="ir.cron">
+            <field name="name">Reset dữ liệu ZNS trong ngày</field>
+            <field name="model_id" ref="model_zalo_shop_config"/>
+            <field name="state">code</field>
+            <field name="code">model.clear_partner_ids_daily()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=15, minute=0, second=0)).strftime('%Y-%m-%d %H:%M:%S')" />
+        </record>
+
+        <record id="ir_cron_auto_start_campaign" model="ir.cron">
+            <field name="name">Tự động bắt đầu chiến dịch</field>
+            <field name="model_id" ref="model_period_campaign"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_job_auto_start_campaign()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=15, minute=0, second=0)).strftime('%Y-%m-%d %H:%M:%S')" />
+        </record>
+
+        <record id="ir_cron_auto_completed_campaign" model="ir.cron">
+            <field name="name">Tự động hoàn thành chiến dịch</field>
+            <field name="model_id" ref="model_period_campaign"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_job_auto_finish_campaign()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=15, minute=0, second=0)).strftime('%Y-%m-%d %H:%M:%S')" />
+        </record>
+
+        <record id="ir_cron_upload_data_rating_crm" model="ir.cron">
+            <field name="name">Gửi dữ liệu rating lên CRM</field>
+            <field name="model_id" ref="ttb_connect_zns.model_zalo_shop_config"/>
+            <field name="state">code</field>
+            <field name="code">model.ir_cron_upload_data_rating_crm()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="inventory_result_view_form" model="ir.ui.view">
+        <field name="name">ttb_inventory_result_view_form</field>
+        <field name="model">inventory.result</field>
+        <field name="arch" type="xml">
+            <form string="Thông tin kiểm kê">
+                <header>
+                    <button name="button_confirm" string="Chốt" type="object" class="oe_highlight" invisible="state != 'check_done'"/>
+                    <button name="button_cancel" string="Hủy" type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="branch_id" readonly="1"/>
+                            <field name="pid_location_id" readonly="1"/>
+                            <field name="datetime_count" readonly="1"/>
+                            <field name="datetime_check" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="user_count_id" readonly="state == 'cancel'"/>
+                            <field name="user_check_id" readonly="state == 'cancel'"/>
+                            <field name="check_percentage" widget="percentage" readonly="state == 'cancel'"/>
+                            <field name="session_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="lines_ids" nolabel="1">
+                            <list editable="bottom" decoration-danger="quantity_final != quantity_count and check == True">
+<!--                                Tạm hiện 2 trường trên view để chọn giá trị-->
+                                <field name="stock_location_detail_lines_id"/>
+                                <field name="destination_location_id"/>
+<!--                                -->
+                                <field name="order_number"/>
+                                <field name="product_id"/>
+                                <field name="code"/>
+                                <field name="quantity_count" column_invisible="parent.state == 'check_process'"/>
+                                <field name="quantity_check" column_invisible="parent.state == 'count_process' and parent.state == 'count_done'"/>
+                                <field name="quantity_final" column_invisible="parent.state != 'check_done' and parent.state != 'complete'" readonly="quantity_count == quantity_check"/>
+                                <field name="check" readonly="1"/>
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_inventory_result_view_tree" model="ir.ui.view">
+        <field name="name">ttb_inventory_result_view_list</field>
+        <field name="model">inventory.result</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="branch_id"/>
+                <field name="pid_location_id"/>
+                <field name="session_id"/>
+                <field name="user_count_id"/>
+                <field name="user_check_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_inventory_result_view_search" model="ir.ui.view">
+        <field name="name">ttb_inventory_result_search</field>
+        <field name="model">inventory.result</field>
+        <field name="arch" type="xml">
+            <search>
+                <group expand="1" string="Group by">
+                    <filter name="group_by_branch" string="Cơ sở" context="{'group_by': 'branch_id'}"/>
+                    <filter name="group_by_pid" string="PID" context="{'group_by': 'pid_location_id'}"/>
+                    <filter name="group_by_create_date" string="Create on" context="{'group_by': 'create_date'}"/>
+                </group>
+                <filter name="filter_completed_count" string="Đã hoàn thành kiểm kê" domain="[('state', '=', 'done')]"/>
+                <filter name="filter_completed_check" string="Đã hoàn thành hậu kiểm" domain="[('state', '=', 'check_done')]"/>
+                <filter name="filter_completed_final" string="Kết quả kiểm kê của tôi" domain="['|',('user_count_id', '=', 'res.user'),('user_check_id','=','res.user')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="inventory_result_action" model="ir.actions.act_window">
+        <field name="name">Kết quả kiểm kê</field>
+        <field name="res_model">inventory.result</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

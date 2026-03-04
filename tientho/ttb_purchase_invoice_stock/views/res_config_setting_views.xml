@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.stock</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="30"/>
+        <field name="inherit_id" ref="stock.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='warehouse_setting_container']" position="inside">
+                <setting id="setting_invoice_warehouse_id" title="Kho hoá đơn">
+                    <field name="invoice_warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                </setting>
+                <setting id="setting_invoice_partner_id" title="Khách lẻ">
+                    <field name="invoice_partner_id" options="{'no_open': True, 'no_create': True}"/>
+                </setting>
+                <setting id="setting_difference_amount" title="Số tiền chênh lệch được phép (Tìm PO)">
+                    <field name="difference_amount"/>
+                </setting>
+                <setting id="setting_difference_amount_pos" title="Số tiền chênh lệch được phép (Tìm sản phẩm thay thế)">
+                    <field name="difference_amount_pos" options="{'no_open': True, 'no_create': True}"/>
+                </setting>
+                <setting id="setting_augges_no_tk" title="Tài khoản chuyển QR">
+                    <field name="augges_no_tk"/>
+                </setting>
+
+                <setting id="setting_auto_create_augges_incomming" title="Tạo phiếu nhập kho Augges khi Xác nhận phiếu nhập kho Odoo">
+                    <field name="auto_create_augges_incomming"/>
+                </setting>
+
+                <setting id="setting_create_bom_outgoing" title="Trừ tồn nguyên vật liệu khi xuất hoá đơn">
+                    <field name="create_bom_outgoing"/>
+                </setting>
+                <setting id="setting_einvoice_expiration_time_minutes" title="Thời gian hết hạn yêu cầu HĐĐT (phút)">
+                    <field name="einvoice_expiration_time_minutes"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

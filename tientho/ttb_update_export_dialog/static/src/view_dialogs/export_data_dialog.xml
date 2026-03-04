@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+	<t t-inherit="web.ExportDataDialog" t-inherit-mode="extension">
+		<xpath expr="//t[@t-if='state.isEditingTemplate']" position="inside">
+		 <button type="button" class="btn btn-secondary ms-1" t-on-click.stop="onUpdateExportTemplate">
+			 <i class="fa fa-edit" />
+		 </button>
+	</xpath>
+	</t>
+</templates>

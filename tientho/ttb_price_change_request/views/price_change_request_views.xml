@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_ttb_price_change_request" model="ir.actions.act_window">
+        <field name="name">Phiếu thay đổi giá</field>
+        <field name="res_model">ttb.price.change.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="menu_ttb_price_change_root" name="Cập nhật giá" sequence="60"/>
+    <menuitem id="menu_ttb_price_change_request" name="Phiếu thay đổi giá" parent="menu_ttb_price_change_root"
+              action="action_ttb_price_change_request" sequence="10"/>
+
+    <record id="view_ttb_price_change_request_tree" model="ir.ui.view">
+        <field name="name">ttb.price.change.request.tree</field>
+        <field name="model">ttb.price.change.request</field>
+        <field name="arch" type="xml">
+            <list string="Phiếu yêu cầu thay đổi giá">
+                <field name="name"/>
+                <field name="request_date"/>
+                <field name="approved_at"/>
+                <field name="effective_at"/>
+                <field name="description"/>
+                <field name="requested_by"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ttb_price_change_request_form" model="ir.ui.view">
+        <field name="name">ttb.price.change.request.form</field>
+        <field name="model">ttb.price.change.request</field>
+        <field name="arch" type="xml">
+            <form string="Phiếu yêu cầu thay đổi giá">
+                <header>
+                    <button name="action_import_product" type="object" string="Nhập sản phẩm"
+                                        class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_submit" type="object" string="Gửi duyệt" class="btn-primary"
+                            invisible="state != 'draft'"/>
+
+                    <button name="action_approve" type="object" string="Duyệt" class="btn-primary"
+                            invisible="state != 'to_approve'"/>
+                    <button name="action_reject" type="object" string="Hủy" class="btn-secondary"
+                            invisible="state != 'to_approve'"/>
+
+                    <button name="action_adjust" type="object" string="Từ chối" class="btn-secondary"
+                            invisible="state != 'to_approve'"/>
+
+                    <button name="action_update_augges" type="object" string="Cập nhật Augges" class="btn-primary"
+                            invisible="state != 'updating'"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,updating,done"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="description" readonly="state != 'draft'"/>
+                            <field name="effective_at" readonly="state != 'draft'"/>
+                            <field name="attachment_ids"
+                                   widget="many2many_binary"
+                                   string="Tài liệu đính kèm"
+                                   options="{'no_create': True}" readonly="state != 'draft'"/>
+
+                            <field name="note" placeholder="Nhập ghi chú..." readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="request_date" readonly="1"/>
+                            <field name="requested_by" readonly="1"/>
+                            <field name="responsible_user_ids" widget="many2many_tags" domain="[('id', 'in', responsible_candidate_user_ids)]" readonly="1"/>
+                            <field name="supporter_user_ids" widget="many2many_tags" domain="[('id', 'in', supporter_candidate_user_ids)]" readonly="1"/>
+                            <field name="approved_at" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Sản phẩm thay đổi giá">
+                            <field name="line_ids_changed" nolabel="1" mode="list" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="is_changed" column_invisible="1"/>
+                                    <field name="categ_id_level_1"/>
+                                    <field name="default_code"/>
+                                    <field name="barcode"/>
+                                    <field name="product_id" readonly="0"/>
+
+                                    <field name="old_sale_price" readonly="1" optional="show"/>
+                                    <field name="new_sale_price" decoration-warning="new_sale_price == old_sale_price"/>
+
+                                    <field name="old_bl_price" readonly="1" optional="hide"/>
+                                    <field name="new_bl_price" decoration-warning="new_bl_price == old_bl_price" optional="hide"/>
+
+                                    <field name="old_bb1_price" readonly="1" optional="show"/>
+                                    <field name="new_bb1_price" decoration-warning="new_bb1_price == old_bb1_price"/>
+
+                                    <field name="old_bb2_price" readonly="1" optional="hide"/>
+                                    <field name="new_bb2_price" decoration-warning="new_bb2_price == old_bb2_price" optional="hide"/>
+
+                                    <field name="old_bb3_price" readonly="1" optional="hide"/>
+                                    <field name="new_bb3_price" decoration-warning="new_bb3_price == old_bb3_price" optional="hide"/>
+
+                                    <field name="old_bb4_price" readonly="1" optional="hide"/>
+                                    <field name="new_bb4_price" decoration-warning="new_bb4_price == old_bb4_price" optional="hide"/>
+
+                                    <field name="old_bb5_price" readonly="1" optional="hide"/>
+                                    <field name="new_bb5_price" decoration-warning="new_bb5_price == old_bb5_price" optional="hide"/>
+
+                                    <field name="old_bb6_price" readonly="1" optional="hide"/>
+                                    <field name="new_bb6_price" decoration-warning="new_bb6_price == old_bb6_price" optional="hide"/>
+                                </list>
+                            </field>
+                            <group>
+                                <field name="line_count" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Sản phẩm không đổi giá" invisible="not line_ids_unchanged">
+                            <field name="line_ids_unchanged" nolabel="1" mode="list" readonly="state != 'draft'">
+                                <list editable="bottom" create="0">
+                                    <field name="is_changed" column_invisible="1"/>
+                                    <field name="categ_id_level_1"/>
+                                    <field name="default_code"/>
+                                    <field name="barcode"/>
+                                    <field name="product_id" readonly="0"/>
+
+                                    <field name="old_sale_price" readonly="1" optional="show"/>
+                                    <field name="new_sale_price"/>
+
+                                    <field name="old_bl_price" readonly="1" optional="hide"/>
+                                    <field name="new_bl_price" optional="hide"/>
+
+                                    <field name="old_bb1_price" readonly="1" optional="show"/>
+                                    <field name="new_bb1_price"/>
+
+                                    <field name="old_bb2_price" readonly="1" optional="hide"/>
+                                    <field name="new_bb2_price" optional="hide"/>
+
+                                    <field name="old_bb3_price" readonly="1" optional="hide"/>
+                                    <field name="new_bb3_price" optional="hide"/>
+
+                                    <field name="old_bb4_price" readonly="1" optional="hide"/>
+                                    <field name="new_bb4_price" optional="hide"/>
+
+                                    <field name="old_bb5_price" readonly="1" optional="hide"/>
+                                    <field name="new_bb5_price" optional="hide"/>
+
+                                    <field name="old_bb6_price" readonly="1" optional="hide"/>
+                                    <field name="new_bb6_price" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Thông tin phê duyệt">
+                            <group>
+                                <field name="process_id" readonly="1"/>
+                                <field name="date_sent" readonly="1"/>
+                                <field name="date_approved" readonly="1"/>
+                            </group>
+
+                            <field name="approval_line_ids" readonly="1">
+                                <list decoration-danger="user_id and state == 'sent'" decoration-muted="notif_only">
+                                    <field name="sequence"/>
+                                    <field name="approve_user_ids" widget="many2many_tags"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <field name="login"/>
+                                    <field name="date_approved"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+
+                    </notebook>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+</odoo>
+

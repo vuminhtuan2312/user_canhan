@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard: Nhân viên báo cáo tạm hoãn (Công việc của tôi) -->
+    <record id="view_ttb_task_delay_report_wizard_form" model="ir.ui.view">
+        <field name="name">ttb.task.delay.report.wizard.form</field>
+        <field name="model">ttb.task.delay.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Báo cáo Sự cố">
+                <sheet>
+                    <group>
+                        <field name="reason_id" options="{'no_create': True}"/>
+                        <field name="note" placeholder="Mô tả chi tiết sự cố (Máy hỏng, Khách đông...)..."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_submit_delay" string="Gửi báo cáo" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

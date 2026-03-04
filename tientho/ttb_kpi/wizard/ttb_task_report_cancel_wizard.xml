@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="cancel_reason_temp_leave" model="ttb.cancel.reason">
+            <field name="name">Nhân viên tạm nghỉ</field>
+        </record>
+        <record id="cancel_reason_quit" model="ttb.cancel.reason">
+            <field name="name">Nhân viên nghỉ hẳn</field>
+        </record>
+    </data>
+
+    <record id="view_ttb_task_report_cancel_wizard_form" model="ir.ui.view">
+        <field name="name">ttb.task.report.cancel.wizard.form</field>
+        <field name="model">ttb.task.report.cancel.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Hủy phiếu đánh giá">
+                <group>
+                    <field name="reason_id"/>
+                </group>
+                <footer>
+                    <button name="action_confirm_cancel" string="Xác nhận Hủy" type="object" class="btn-danger" data-hotkey="q"/>
+                    <button string="Đóng" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

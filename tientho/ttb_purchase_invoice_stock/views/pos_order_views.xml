@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_pos_order_pos_invoice_filter" model="ir.ui.view">
+        <field name="name">pos.order.pos.invoice.filter.inherit</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="id_quay_augges" string="Quầy"/>
+                <field name="sp_augges" string="Số phiếu"/>
+            </xpath>
+            <xpath expr="//group/filter[@name='order_month']" position="after">
+                <filter string="Tài khoản" name="group_augges_no_tk" domain="[]" context="{'group_by': 'augges_no_tk'}"/>
+                <filter string="Cơ sở" name="group_ttb_branch_id" domain="[]" context="{'group_by': 'ttb_branch_id'}"/>
+            </xpath>
+            <xpath expr="//filter[@name='order_date']" position="after">
+                <separator/>
+                <filter string="Ngày hôm nay" name="today_date_order" domain="['&amp;', ('date_order', '&gt;', context_today().strftime('%Y-%m-%d 00:00:01')), ('date_order', '&lt;', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="pos_order_invoice_view_list" model="ir.ui.view">
+        <field name="name">pos.order.pos.invoice.filter.inherit</field>
+        <field name="model">pos.order</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <list string="POS Orders" create="0" sample="1" decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" duplicate="0">
+                <field name="currency_id" column_invisible="True"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="date_order"/>
+                <field name="sp_augges"/>
+                <field name="ttb_branch_id"/>
+                <field name="id_quay_augges"/>
+                <field name="amount_total" sum="Amount total" widget="monetary" decoration-bf="1"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state not in ('draft','cancel')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pos_pos_form" model="ir.ui.view">
+        <field name="name">pos.order.form</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lines']//form//field[@name='tax_ids']" position="after">
+                <field name="tax_case"/>
+                <field name="tax_ids_amount"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

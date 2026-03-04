@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- list view for KVC Inventory Report -->
+    <record id="view_kvc_inventory_report_list" model="ir.ui.view">
+        <field name="name">kvc.inventory.report.list</field>
+        <field name="model">kvc.inventory.report</field>
+        <field name="arch" type="xml">
+            <list string="Báo cáo Tổng hợp KVC">
+                <field name="name"/>
+                <field name="period_inventory_name"/>
+                <field name="inventory_date"/>
+                <field name="total_revenue_kvc"/>
+                <field name="total_loss_amount"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for KVC Inventory Report -->
+    <record id="view_kvc_inventory_report_form" model="ir.ui.view">
+        <field name="name">kvc.inventory.report.form</field>
+        <field name="model">kvc.inventory.report</field>
+        <field name="arch" type="xml">
+            <form string="Báo cáo Tổng hợp KVC">
+                <header>
+                    <button name="action_fetch_data" type="object" string="Lấy dữ liệu" class="btn-secondary"/>
+                    <button name="action_confirm_report" type="object" string="Xác nhận" class="btn-primary" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="period_inventory_id"/>
+                            <field name="inventory_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Chi tiết cơ sở">
+                            <field name="line_ids">
+                                <list>
+                                    <field name="warehouse_id"/>
+                                    <field name="inventory_date"/>
+                                    <field name="total_overage_amount"/>
+                                    <field name="total_shortage_amount"/>
+                                    <field name="total_revenue_kvc"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Tổng hợp">
+                            <group>
+                                <field name="total_revenue_kvc"/>
+                                <field name="total_loss_amount"/>
+                                <field name="allowed_loss_rate"/>
+                                <field name="compensation_amount"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Li view for Branch -->
+    <record id="view_kvc_inventory_report_branch_list" model="ir.ui.view">
+        <field name="name">kvc.inventory.report.branch.list</field>
+        <field name="model">kvc.inventory.report.branch</field>
+        <field name="arch" type="xml">
+            <list string="Báo cáo chi nhánh">
+                <field name="warehouse_id"/>
+                <field name="inventory_date"/>
+                <field name="total_overage_amount"/>
+                <field name="total_shortage_amount"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for Branch -->
+    <record id="view_kvc_inventory_report_branch_form" model="ir.ui.view">
+        <field name="name">kvc.inventory.report.branch.form</field>
+        <field name="model">kvc.inventory.report.branch</field>
+        <field name="arch" type="xml">
+            <form string="Báo cáo chi tiết KVC">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_send_for_approval" type="object" string="Gửi duyệt" class="btn-primary" invisible=" state != 'draft'"/>
+                    <button name="action_confirm_approval" type="object" string="Xác nhận Duyệt" class="btn-success" invisible="not approve_ok or state != 'in_review'"/>
+                    <button name="action_edit" type="object" string="Chỉnh sửa" class="btn-primary" invisible=" state != 'in_review'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="report_id" invisible="1" readonly="state != 'draft'"/>
+                        <field name="warehouse_id" readonly="state != 'draft'"/>
+                        <field name="reason" readonly="state != 'draft'"/>
+                        <field name="submit_date" readonly="state != 'draft'"/>
+                        <field name="approve_date" readonly="state != 'draft'"/>
+                        <field name="confirmed_by" readonly="state != 'draft'"/>
+                    </group>
+                    <group>
+                        <field name="line_ids" readonly="1">
+                            <list>
+                                <field name="product_id"/>
+                                <field name="barcode"/>
+                                <field name="qty_theoretical"/>
+                                <field name="qty_counted"/>
+                                <field name="diff_qty"/>
+                                <field name="price"/>
+                                <field name="overage_amount"/>
+                                <field name="shortage_amount"/>
+                            </list>
+                        </field>
+                    </group>
+                    <notebook>
+                        <page string="Thông tin phê duyệt" name="approval_info">
+                            <group>
+                                <group>
+                                    <field name="current_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="next_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="notif_user_ids" readonly="1" widget="many2many_tags"/>
+                                </group>
+                                <group groups="base.group_no_one">
+                                    <field name="process_id" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_sent" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_approved" readonly="1" groups="base.group_no_one"/>
+                                </group>
+                            </group>
+                            <field name="rule_line_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action + Menu riêng cho KVC Inventory Report Branch -->
+    <record id="action_kvc_inventory_report_branch" model="ir.actions.act_window">
+        <field name="name">Báo cáo chi tiết KVC (Các cơ sở)</field>
+        <field name="res_model">kvc.inventory.report.branch</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_kvc_inventory_report_branch_list"/>
+    </record>
+
+    <!-- list view for Branch Line (used when opening the line model directly) -->
+    <record id="view_kvc_inventory_report_branch_line_list" model="ir.ui.view">
+        <field name="name">kvc.inventory.report.branch.line.list</field>
+        <field name="model">kvc.inventory.report.branch.line</field>
+        <field name="arch" type="xml">
+            <list string="Dòng chi tiết KVC">
+                <field name="report_branch_id"/>
+                <field name="product_id"/>
+                <field name="barcode"/>
+                <field name="qty_theoretical"/>
+                <field name="qty_counted"/>
+                <field name="diff_qty"/>
+                <field name="price"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action to open KVC Inventory Report -->
+    <record id="action_kvc_inventory_report" model="ir.actions.act_window">
+        <field name="name">Báo cáo Tổng hợp KVC</field>
+        <field name="res_model">kvc.inventory.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_kvc_inventory_report_list"/>
+    </record>
+
+    <!-- Views + Action + Menu cho Period Inventory Branch -->
+    <record id="view_period_inventory_branch_list" model="ir.ui.view">
+        <field name="name">period.inventory.branch.list</field>
+        <field name="model">period.inventory.branch</field>
+        <field name="arch" type="xml">
+            <list string="Đợt kiểm kê theo cơ sở">
+                <field name="period_inventory_id"/>
+                <field name="branch_id"/>
+                <field name="code"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_period_inventory_branch_form" model="ir.ui.view">
+        <field name="name">period.inventory.branch.form</field>
+        <field name="model">period.inventory.branch</field>
+        <field name="arch" type="xml">
+            <form string="Đợt kiểm kê theo cơ sở">
+                <header>
+                    <button name="action_confirm" type="object" string="Hoàn tất đợt kiểm kê" class="btn-primary"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="period_inventory_id" readonly="1"/>
+                        <field name="branch_id"/>
+                        <field name="code" readonly="1"/>
+                        <field name="name" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="start_date" readonly="1"/>
+                        <field name="end_date" readonly="1"/>
+                        <field name="confirmed_at"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_period_inventory_branch" model="ir.actions.act_window">
+        <field name="name">Đợt kiểm kê theo cơ sở</field>
+        <field name="res_model">period.inventory.branch</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_period_inventory_branch_list"/>
+    </record>
+
+    <!-- Wizard: Xác nhận hoàn tất đợt kiểm kê tại cơ sở -->
+    <record id="view_period_inventory_branch_finish_wizard_form" model="ir.ui.view">
+        <field name="name">period.inventory.branch.finish.wizard.form</field>
+        <field name="model">period.inventory.branch.finish.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Xác nhận hoàn tất đợt kiểm kê">
+                <group>
+                    <field name="branch_id" readonly="1"/>
+                    <field name="pickings_count" readonly="1"/>
+                </group>
+                <footer>
+                    <button string="Xác nhận" name="action_confirm_finish" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

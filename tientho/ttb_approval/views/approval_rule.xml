@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="approval_rule_list" model="ir.ui.view">
+        <field name="name">Quy tắc duyệt</field>
+        <field name="model">ttb.approval.rule</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="visible_sequence"/>
+                <field name="method"/>
+                <field name="job_id" readonly="method not in ['title','title_manager']" invisible="method not in ['title','title_manager']"/>
+                <field name="department_id" readonly="method != 'department'" invisible="method != 'department'"/>
+                <field name="user_id" readonly="method != 'user'" invisible="method != 'user'"/>
+                <field name="all_approve"/>
+                <field name="notif_only"/>
+                <field name="company_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="approval_rule_form" model="ir.ui.view">
+        <field name="name">Quy tắc duyệt</field>
+        <field name="model">ttb.approval.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="sequence" invisible="1"/>
+                            <field name="visible_sequence"/>
+                            <field name="method"/>
+                            <field name="notif_only"/>
+                        </group>
+                        <group>
+                            <field name="all_approve"/>
+                            <field name="job_id" readonly="method != 'title'" invisible="method != 'title'"/>
+                            <field name="department_id" readonly="method != 'department'" invisible="method != 'department'"/>
+                            <field name="user_id" readonly="method != 'user'" invisible="method != 'user'"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

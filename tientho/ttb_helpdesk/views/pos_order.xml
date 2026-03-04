@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="pos_order_form" model="ir.ui.view">
+        <field name="name">pos_order_form_inherit</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='mobile']" position="replace">
+                <field name="mobile" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager"/>
+            </xpath>
+
+            <xpath expr="//field[@name='mobile']" position="after">
+                <field name="mobile_masked" groups="ttb_kpi.group_ttb_kpi_nv_cskh,ttb_kpi.group_cv_vhkd,ttb_kpi.group_ttb_kpi_warehouse_director,ttb_kpi.group_ttb_kpi_asm" invisible="create_date == False"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

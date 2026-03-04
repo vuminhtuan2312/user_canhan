@@ -1,0 +1,204 @@
+<odoo>
+    <record id="product_auto_purchase_request_form" model="ir.ui.view">
+        <field name="name">Sản phẩm phân bổ</field>
+        <field name="model">auto.purchase.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_cap_nhat_ton" type="object" string="Cập nhật tồn" class="btn-primary"/>
+                    <button name="action_auto_quantity" type="object" string="Tính SL đặt" class="btn-primary"/>
+
+                    <button name="action_create_purchase_request" type="object" string="Tạo Đề nghị đặt hàng" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="open_auto_detail"
+                                class="oe_stat_button" icon="fa-credit-card"
+                                >
+                                <field name="line_count" widget="statinfo" string="Line đã tính SL"/>
+                        </button>
+
+                        <button type="object" name="open_auto_detail_selected"
+                                class="oe_stat_button" icon="fa-credit-card"
+                                >
+                                <field name="selected_line_count" widget="statinfo" string="Line đã chọn"/>
+                        </button>
+
+                        <button type="object" name="open_pr_created"
+                                class="oe_stat_button" icon="fa-credit-card"
+                                >
+                                <field name="pr_count" widget="statinfo" string="PR đã tạo"/>
+                        </button>
+
+                        <button type="object" name="open_auto_stock"
+                                class="oe_stat_button" icon="fa-credit-card"
+                                >
+                                Xem tồn
+                        </button>
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="partner_ids" widget="many2many_tags"/>
+                        <field name="warehouse_ids" widget="many2many_tags"/>
+                        <field name="product_ids" widget="many2many_tags"/>
+                        <field name="mch_ids" widget="many2many_tags"/>
+                        <!-- <field name="start_date"/> -->
+                        <field name="end_date"/>
+                        <field name="lead_time"/>
+                        <field name="stock_day"/>
+                        <field name="check_day"/>
+                        <field name="fix_stock"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="auto_purchase_request_list" model="ir.ui.view">
+        <field name="name">Sản phẩm phân bổ</field>
+        <field name="model">auto.purchase.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="end_date"/>
+                <field name="stock_day"/>
+                
+            </list>
+        </field>
+    </record>
+
+    <record id="auto_purchase_request_line_list" model="ir.ui.view">
+        <field name="name">Sản phẩm phân bổ</field>
+        <field name="model">auto.purchase.request.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_id" readonly="1"/>
+                <field name="warehouse_id" readonly="1" optional="hide"/>
+                <field name="partner_id" readonly="1" optional="show"/>
+                <field name="qty_sale" readonly="1" optional="show"/>
+                <field name="qty_stock" readonly="1" optional="show"/>
+                <field name="qty_auto" readonly="1"/>
+                <field name="qty_pr" readonly="1" optional="hide"/>
+                <field name="qty_po" readonly="1" optional="hide"/>
+                <field name="qty_final"/>
+                <field name="is_select" invisible="1"/>
+
+                <button name="action_select_line"
+                    string="Chọn"
+                    type="object"
+                    class="btn-primary"
+                    invisible="is_select"/>
+
+                <button name="action_unselect_line"
+                    string="Bỏ chọn"
+                    type="object"
+                    class="btn-primary"
+                    invisible="not is_select"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="auto_purchase_request_line_form" model="ir.ui.view">
+        <field name="name">Sản phẩm phân bổ</field>
+        <field name="model">auto.purchase.request.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="warehouse_id" readonly="1"/>
+                        <field name="partner_id" readonly="1"/>
+                        <field name="qty_sale" readonly="1"/>
+                        <field name="qty_sale_series" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="qty_stock" readonly="1"/>
+                        <field name="qty_avg" readonly="1"/>
+                        <field name="qty_std" readonly="1"/>
+                        <field name="qty_ss" readonly="1"/>
+                        <field name="qty_reorder" readonly="1"/>
+                        
+                        <field name="lead_time" readonly="1"/>
+                        <field name="stock_day" readonly="1"/>
+                        <field name="check_day" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="qty_auto" readonly="1"/>
+                        <field name="qty_pr" readonly="1"/>
+                        <field name="qty_po" readonly="1"/>
+                        <field name="qty_final"/>
+                    </group>
+                    <group>
+                        <field name="is_select" invisible="1"/>
+                        <button name="action_select_line"
+                            string="Chọn"
+                            type="object"
+                            class="btn-primary"
+                            invisible="is_select"/>
+
+                        <button name="action_unselect_line"
+                            string="Bỏ chọn"
+                            type="object"
+                            class="btn-primary"
+                            invisible="not is_select"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="auto_purchase_request_line_search" model="ir.ui.view">
+        <field name="name">Chi tiết tự động đặt hàng</field>
+        <field name="model">auto.purchase.request.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+                <field name="warehouse_id"/>
+                <field name="partner_id"/>
+                <separator/>
+                
+                <filter string="Số lượng tính > 0" name="has_qty_auto" domain="[('qty_auto', '>', 0)]"/>
+                <filter string="Số lượng đặt > 0" name="has_qty_final" domain="[('qty_final', '>', 0)]"/>
+
+                <group expand="1" string="Group By">
+                    <filter string="Kho" name="groupby_warehouse_id" context="{'group_by': 'warehouse_id'}"/>
+                    <filter string="Nhà cung cấp" name="groupby_partner_id" context="{'group_by':'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="auto_purchase_request_action" model="ir.actions.act_window">
+        <field name="name">Đặt hàng tự động</field>
+        <field name="res_model">auto.purchase.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="auto_purchase_request_line_action" model="ir.actions.act_window">
+        <field name="name">Chi tiết tự động đặt hàng</field>
+        <field name="res_model">auto.purchase.request.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="auto_purchase_request_batch_action_select" model="ir.actions.server">
+        <field name="name">Chọn tất cả</field>
+        <field name="model_id" ref="model_auto_purchase_request_line"/> <!-- ví dụ: model_sale_order -->
+        <field name="binding_model_id" ref="model_auto_purchase_request_line"/> <!-- để gắn vào action list view -->
+        <field name="state">code</field>
+        <field name="binding_type">action</field>
+        <field name="code">
+            records.action_select_line()
+        </field>
+    </record>
+
+    <record id="auto_purchase_request_batch_action_unselect" model="ir.actions.server">
+        <field name="name">Bỏ chọn tất cả</field>
+        <field name="model_id" ref="model_auto_purchase_request_line"/> <!-- ví dụ: model_sale_order -->
+        <field name="binding_model_id" ref="model_auto_purchase_request_line"/> <!-- để gắn vào action list view -->
+        <field name="state">code</field>
+        <field name="binding_type">action</field>
+        <field name="code">
+            records.action_unselect_line()
+        </field>
+    </record>
+</odoo>

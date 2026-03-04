@@ -1,0 +1,29 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+ttb_product.access_ttb_product_status,access_ttb_product_status,ttb_product.model_ttb_product_status,base.group_user,1,1,1,1
+access_ttb_product_image,access_ttb_product_image,model_ttb_product_image,,1,1,1,1
+access_product_category_attribute,access_product_category_attribute,model_product_category_attribute,,1,1,1,1
+access_product_category_attribute_value,access_product_category_attribute_value,model_product_category_attribute_value,,1,1,1,1
+access_ttb_sku_attribute,access_ttb_sku_attribute,model_ttb_sku_attribute,,1,1,1,1
+
+access_ttb_branch,access_ttb_branch,model_ttb_branch,base.group_user,1,0,0,0
+access_ttb_branch_group_erp_manager,access_ttb_branch,model_ttb_branch,base.group_erp_manager,1,1,1,1
+access_ttb_substitute_product,access_ttb_substitute_product,model_ttb_substitute_product,base.group_user,1,1,1,1
+access_update_product_attribute_value_wizard,Update Product Attribute Value Wizard,model_update_product_attribute_value_wizard,,1,1,1,1
+access_product_template_attribute_line_wizard,Product Template Attribute Line Wizard,model_product_template_attribute_line_wizard,,1,1,1,1
+access_product_mch_setter,Product MCH Setter,model_product_mch_setter,,1,1,1,1
+access_ttb_product_nibot,access_ttb_product_nibot,model_ttb_product_nibot,,1,1,1,1
+
+access_attribute_product_report_user,access.attribute.product.report.user,model_attribute_product_report,base.group_user,1,0,0,0
+access_product_zone_report,access_product_zone_report,model_product_zone_report,base.group_user,1,0,0,0
+
+access_product_category2,access_product_category2,model_product_category2,,1,1,1,1
+access_product_mch_setter2,access_product_mch_setter2,model_product_mch_setter2,,1,1,1,1
+access_product_stock_item,access_product_stock_item,model_product_stock_item,,1,1,1,1
+access_product_sale_item,access_product_sale_item,model_product_sale_item,,1,1,1,1
+access_season_type,access_season_type,model_season_type,base.group_user,1,1,1,1
+access_product_category_keyword_user,product.category.keyword.user,model_product_category_keyword,base.group_user,1,1,1,1
+access_product_product_category_training,product.product.category.training,model_product_product_category_training,stock.group_stock_manager,1,1,1,1
+access_product_category_training,product.product.category.training,model_product_category_training,stock.group_stock_manager,1,1,1,1
+access_product_merge,access_product_merge,model_product_merge,base.group_user,1,1,1,1
+access_product_merge_detail,access_product_merge_detail,model_product_merge_detail,base.group_user,1,1,1,1

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="purchase_order_add_discount_form" model="ir.ui.view">
+        <field name="name">Chọn Chiết khấu</field>
+        <field name="model">purchase.order.add.discount.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="discount" invisible="context.get('money', False)"/>
+                        <field name="discount_money" invisible="not context.get('money', False)"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string='Xác nhận' name="do" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_order_add_discount_action" model="ir.actions.act_window">
+        <field name="name">Chọn Chiết khấu (theo %)</field>
+        <field name="res_model">purchase.order.add.discount.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_discount_by_money" model="ir.actions.act_window">
+        <field name="name">Chọn Chiết khấu (theo tiền tệ)</field>
+        <field name="res_model">purchase.order.add.discount.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

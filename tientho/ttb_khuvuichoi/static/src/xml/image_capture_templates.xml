@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Template for the widget - Chỉ chụp ảnh (camera), không upload từ thư viện-->
+<templates xml:space="preserve">
+    <t t-name="CaptureImage">
+        <div class="d-inline-block position-relative o_field_capture_image">
+            <div t-attf-class="position-absolute d-flex flex-wrap justify-content-between align-items-center w-100 bottom-0 o_capture_controls_always {{isMobile ? 'o_mobile_controls' : ''}}"
+                 aria-atomic="true" t-att-style="sizeStyle">
+                <t t-if="!props.readonly">
+                    <div class="d-flex align-items-center gap-1">
+                        <button
+                                t-if="props.value and state.isValid"
+                                class="o_clear_file_button btn btn-light border-0 rounded-circle m-1 p-1"
+                                data-tooltip="Clear"
+                                aria-label="Clear"
+                                t-on-click="onFileRemove">
+                            <i class="fa fa-trash-o fa-fw"/>
+                        </button>
+                        <!-- Nút camera: mobile = mở camera native (chụp only), desktop = mở stream -->
+                        <button
+                                class="o_capture_image_button btn btn-light border-0 rounded-circle m-1 p-1"
+                                data-tooltip="Chụp ảnh"
+                                aria-label="Chụp ảnh"
+                                id="camera"
+                                t-ref="camera"
+                                t-on-click="onCameraClick">
+                            <i class="fa fa-camera fa-fw"/>
+                        </button>
+                        <!-- Input ẩn cho mobile: capture = chỉ mở camera, không chọn file -->
+                        <input type="file"
+                               class="d-none"
+                               t-ref="mobileCameraInput"
+                               accept="image/*"
+                               capture="environment"
+                               t-on-change="onMobileCaptureChange"/>
+                    </div>
+                </t>
+            </div>
+            <t t-if="props.name">
+                <img
+                    class="img img-fluid w-100"
+                    alt="Binary file"
+                    t-att-src="getUrl(props.previewImage or props.name)"
+                    t-att-name="props.name"
+                    t-att-height="props.height"
+                    t-att-width="props.width"
+                    t-att-style="sizeStyle"
+                    t-on-error.stop="onLoadFailed"
+                    t-att-data-tooltip-template="hasTooltip and tooltipAttributes.template"
+                    t-att-data-tooltip-info="hasTooltip and tooltipAttributes.info"
+                    t-att-data-tooltip-delay="hasTooltip and props.zoomDelay"/>
+            </t>
+            <div class="o_capture_modal d-none" t-ref="desktopModal">
+                <div class="o_capture_modal_backdrop"/>
+                <div class="o_capture_modal_dialog d-flex flex-column">
+                    <button type="button" class="btn-close align-self-end mb-2" aria-label="Đóng"
+                            t-on-click="OnClickCloseModal"/>
+                    <div class="o_capture_modal_body flex-grow-1 d-flex justify-content-center align-items-center">
+                        <video class="d-none o_capture_video" t-ref="player"
+                               autoplay="true" playsinline="true" muted="true"/>
+                        <canvas class="d-none o_capture_canvas" id="snapshot" width="320" height="240" t-ref="snapshotCanvas"/>
+                    </div>
+                    <div class="o_capture_modal_footer d-flex justify-content-center gap-2 mt-3 o_desktop_capture_actions d-none"
+                         t-ref="desktopCaptureActions">
+                        <t t-if="!state.hasSnapshot">
+                            <button type="button" class="btn btn-primary"
+                                    t-on-click="OnClickCaptureImage" t-ref="capture">
+                                Chụp
+                            </button>
+                            <t t-if="state.videoDevices.length > 0">
+                                <select class="form-select form-select-sm o_capture_device_select"
+                                        t-att-value="state.selectedDeviceId"
+                                        t-on-change="onCameraDeviceChange">
+                                    <t t-foreach="state.videoDevices" t-as="device" t-key="device.deviceId">
+                                        <option t-att-value="device.deviceId"
+                                                t-att-selected="state.selectedDeviceId === device.deviceId">
+                                            <t t-esc="device.label"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </t>
+                        </t>
+                        <t t-if="state.hasSnapshot">
+                            <button type="button" class="btn btn-success"
+                                    t-on-click="OnClickSaveImage" t-ref="save_image">
+                                Lưu
+                            </button>
+                            <button type="button" class="btn btn-secondary"
+                                    t-on-click="OnClickRetake">
+                                Chụp lại
+                            </button>
+                        </t>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="image" id="image" t-ref="imageInput"/>
+        </div>
+    </t>
+</templates>

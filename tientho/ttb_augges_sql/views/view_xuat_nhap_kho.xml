@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- List view -->
+    <record id="view_xuat_nhap_kho_list" model="ir.ui.view">
+        <field name="name">ttb.xuat.nhap.kho.list</field>
+        <field name="model">ttb.xuat.nhap.kho</field>
+        <field name="arch" type="xml">
+            <list string="Xuất nhập kho Augges" create="false" edit="false">
+                <header>
+                    <button name="action_open_sync_wizard" type="object" string="Đồng bộ" class="btn-primary" display="always"/>
+                </header>
+                <field name="id_kho"/>
+                <field name="co_so"/>
+                <field name="id_dv"/>
+                <field name="id_nx"/>
+                <field name="loai_nx"/>
+                <field name="loai_phieu"/>
+                <field name="ngay_ct" optional="hide"/>
+                <field name="ngay_ct_local"/>
+                <field name="sngay"/>
+                <field name="insert_date" optional="hide"/>
+                <field name="insert_date_local"/>
+                <field name="id_phieu"/>
+                <field name="so_phieu"/>
+                <field name="dien_giai"/>
+                <field name="id_hang"/>
+                <field name="ma_hang"/>
+                <field name="ma_vach"/>
+                <field name="ten_hang"/>
+                <field name="so_luong"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_xuat_nhap_kho_form" model="ir.ui.view">
+        <field name="name">ttb.xuat.nhap.kho.form</field>
+        <field name="model">ttb.xuat.nhap.kho</field>
+        <field name="arch" type="xml">
+            <form string="Xuất nhập kho Augges" create="false" edit="false" delete="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="id_kho"/>
+                            <field name="co_so"/>
+                            <field name="id_dv"/>
+                            <field name="id_nx"/>
+                            <field name="loai_nx"/>
+                            <field name="loai_phieu"/>
+                            <field name="ngay_ct_local"/>
+                            <field name="sngay"/>
+                            <field name="insert_date_local"/>
+                            <field name="id_phieu"/>
+                            <field name="so_phieu"/>
+                        </group>
+                        <group>
+                            <field name="dien_giai"/>
+                            <field name="id_hang"/>
+                            <field name="ma_hang"/>
+                            <field name="ma_vach"/>
+                            <field name="ten_hang"/>
+                            <field name="so_luong"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_xuat_nhap_kho" model="ir.actions.act_window">
+        <field name="name">Xuất nhập Kho Augges</field>
+        <field name="res_model">ttb.xuat.nhap.kho</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Menu: Tồn kho -> Báo cáo -> Xuất nhập Kho Augges -->
+    <menuitem id="menu_xuat_nhap_kho"
+              name="Xuất nhập Kho Augges"
+              parent="stock.menu_warehouse_report"
+              action="action_xuat_nhap_kho"
+              sequence="15"/>
+</odoo>

@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_report_sale_pos_inventory,access.report.sale.pos.inventory,model_report_sale_pos_inventory,,1,1,1,1
+access_report_coverage_month,access.report.coverage.month,model_report_coverage_month,,1,1,1,1
+access_wizard_coverage_month,access.wizard.coverage.month,model_wizard_coverage_month,,1,1,1,1
+access_ttb_coverage_config,access.ttb.coverage.config,model_ttb_coverage_config,,1,1,1,1
+access_report_coverage_month_line,access.report.coverage.month.line,model_report_coverage_month_line,,1,1,1,1
+access_wizard_coverage_week,access.wizard.coverage.week,model_wizard_coverage_week,,1,1,1,1
+access_report_coverage_week_line,access.report.coverage.week.line,model_report_coverage_week_line,,1,1,1,1
+access_report_coverage_week,access.report.coverage.week,model_report_coverage_week,,1,1,1,1
+access_wizard_purchase_delivery,access.wizard.purchase.delivery,model_wizard_purchase_delivery,,1,1,1,1
+access_report_purchase_delivery,access.report.purchase.delivery,model_report_purchase_delivery,,1,1,1,1
+access_report_purchase_delivery_line,access.report.purchase.delivery.line,model_report_purchase_delivery_line,,1,1,1,1
+access_ttb_report_pos_action,access.ttb.report.pos.action,model_ttb_report_pos_action,,1,1,1,1
+access_ttb_change_ncc_wizard,ttb.change.ncc.wizard,model_ttb_change_ncc_wizard,base.group_user,1,1,1,1

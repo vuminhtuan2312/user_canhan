@@ -1,0 +1,16 @@
+.custom-width {
+    width: 40px !important;
+}
+
+.oe_rowno_in_tree_td {
+    overflow: visible !important;
+/*    text-overflow: unset;*/
+}
+
+.o_list_record_selector {
+    max-width: 40px !important;
+}
+
+.o_form_sheet .o_list_row_count_sheliya {
+    max-width: 40px !important;
+}

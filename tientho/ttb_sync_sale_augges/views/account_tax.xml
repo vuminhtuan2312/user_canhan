@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_account_tax_form_inherit_new_page" model="ir.ui.view">
+        <field name="name">account.tax.form.inherit.new.page</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='advanced_options']" position="after">
+                <page string="Augges">
+                    <group>
+                        <field name="id_augges"/>
+                        <field name="ma_thue_augges"/>
+                        <field name="vao_ra"/>
+                        <field name="khau_tru"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="config_invoice_list" model="ir.ui.view">
+        <field name="name">Tham số hóa đơn</field>
+        <field name="model">ir.config_parameter</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="key"/>
+                <field name="value"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="config_invoice_action" model="ir.actions.act_window">
+        <field name="name">Tham số hóa đơn</field>
+        <field name="res_model">ir.config_parameter</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('key', 'like', '%ttb_invoice%')]</field>
+    </record>
+</odoo>

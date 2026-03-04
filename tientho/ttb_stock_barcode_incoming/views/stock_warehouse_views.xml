@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Warehouse -->
+    <record id="view_warehouse_inherit_kiem_ke" model="ir.ui.view">
+        <field name="name">Stock Warehouse Inherit Kiểm kê</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='wh_output_stock_loc_id']" position="after">
+                <field name="ic_loc_id" readonly="True"/>
+            </xpath>
+            <xpath expr="//field[@name='out_type_id']" position="after">
+                <field name="ic_type_id" readonly="True"/>
+            </xpath>
+
+            <field name="code" position="after">
+                <field name="is_inventory_counting"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="stock_barcode.stock_picking_type_action_kanban" model="ir.actions.act_window">
+        <field name="domain">[('code', 'in', ('incoming', 'outgoing', 'internal', 'mrp_operation', 'inventory_counting'))]</field>
+    </record>
+</odoo>

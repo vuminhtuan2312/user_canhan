@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_inherit_ttb_discount_amount_inline" model="ir.ui.view">
+        <field name="name">account.move.form.ttb.discount.amount.inline</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <!-- Chèn sau cột discount trong list của invoice_line_ids ở tab Invoice Lines -->
+            <xpath expr="//page[@id='invoice_tab']//field[@name='invoice_line_ids']//list//field[@name='discount']"
+                   position="after">
+                <field name="ttb_discount_amount"
+                       widget="monetary"
+                       options="{'currency_field': 'currency_id'}"
+                       string="Chiết khấu (số tiền)"
+                       optional="show"/>
+            </xpath>
+            <xpath expr="//page[@id='invoice_tab']//field[@name='invoice_line_ids']//list//field[@name='tax_ids']"
+                   position="after">
+                <field name="ttb_tax_amount"
+                       widget="monetary"
+                       options="{'currency_field': 'currency_id'}"
+                       string="Thuế (số tiền)"
+                       optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

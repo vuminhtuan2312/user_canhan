@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-inherit="stock_barcode.MainMenu" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o_button_inventory')]" position="after">
+			<button class="o_button_inventory btn btn-block btn-info mb-3 p-3 w-100"
+					t-on-click="() => this.actionService.doAction('ttb_inventory_barcode_kiem_ke.experimental_kiemke_action')">
+                Kiểm kê (1)
+                <span t-if="this.quantCount" class="ms-2 p-1 px-2 bg-light rounded-circle text-primary" t-out="this.quantCount"/>
+            </button>
+		</xpath>
+    </t>
+</templates>

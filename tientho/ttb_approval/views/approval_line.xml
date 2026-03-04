@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="approval_line_list" model="ir.ui.view">
+        <field name="name">Thông tin duyệt</field>
+        <field name="model">ttb.approval.line</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="user_id and state == 'sent'">
+                <field name="sequence"/>
+                <field name="approve_user_ids" widget="many2many_tags"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="login"/>
+                <field name="date_approved"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="approval_line_form" model="ir.ui.view">
+        <field name="name">Thông tin duyệt</field>
+        <field name="model">ttb.approval.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="approve_user_ids" widget="many2many_tags"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="login"/>
+                            <field name="date_approved"/>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="approval_line_detailed_list" model="ir.ui.view">
+        <field name="name">Thông tin duyệt</field>
+        <field name="model">ttb.approval.line</field>
+        <field name="priority">10</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="user_id and state == 'sent'" decoration-muted="notif_only">
+                <field name="sequence"/>
+                <field name="approve_user_ids" widget="many2many_tags"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="login"/>
+                <field name="date_approved"/>
+                <field name="state"/>
+                <field name="reference" widget="reference"/>
+                <field name="notif_only" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="approval_line_action" model="ir.actions.act_window">
+        <field name="name">Thông tin duyệt duyệt</field>
+        <field name="res_model">ttb.approval.line</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="approval_line_detailed_list"/>
+    </record>
+</odoo>

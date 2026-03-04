@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="print_return_request_document">
+        <t t-call="ttb_return_request.ttb_form_layout_header"/>
+        <t t-call="web.html_container">
+            <div class="page">
+                <div style="text-align:left;">
+                    <br/>
+                    Địa chỉ:
+                    <t t-esc="dict_data['address']"/>
+                    <br/>
+                    Điện thoại:
+                    <br/>
+                    Email:
+                </div>
+                <h2 style="text-align:center; margin-top:20px;">
+                    PHIẾU XUẤT TRẢ NCC
+                </h2>
+                <div style="text-align:center;">
+                    Ngày lập phiếu:
+                    <t t-esc="dict_data['scheduled_date']"/>
+                </div>
+                <table style="width:100%; margin-top:20px;">
+                    <tr>
+                        <td>
+                        </td>
+                        <td style="text-align:right;">
+                            Số hoá đơn:
+                            <t t-esc="dict_data['sp_augges']"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="text-align:right;">
+                            Ngày giờ in:
+                            <t t-esc="dict_data['date_now']"/>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <table style="width:100%;">
+                    <tr>
+                        <td colspan="2">Nhà cung cấp:
+                            <t t-esc="dict_data['partner_id']"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Địa chỉ:
+                            <t t-esc="dict_data['street']"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:20%;">Điện thoại:</td>
+                        <td style="width:30%;">Fax:</td>
+                        <td style="width:50%;">Hình thức thanh toán:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Mã số thuế:</td>
+                        <td>Kho hàng: <t t-esc="dict_data['address']"/></td>
+                    </tr>
+                </table>
+                <br/>
+                <div>
+                    <strong>Lý do: <t t-esc="dict_data['reason']"/></strong>
+                </div>
+                <div style="margin-top:5px;">
+                    ĐVT: Đồng Việt Nam
+                </div>
+                <br/>
+                <table border="1" cellspacing="0" cellpadding="5" style="width:100%; font-size:12px;">
+                    <thead>
+                        <tr style="text-align:center;">
+                            <th>TT</th>
+                            <th>Mã vạch</th>
+                            <th>Tên hàng</th>
+                            <th>ĐV</th>
+                            <th>SL</th>
+                            <th>Đơn giá</th>
+                            <th>Tiền hàng</th>
+                            <th>CK</th>
+                            <th>Thanh toán</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="o" t-value="1"/>
+                        <t t-foreach="docs" t-as="doc">
+                            <tr style="text-align:center;">
+                                <td>
+                                    <span>
+                                        <t t-esc="o"/>
+                                    </span>
+                                    <t t-set="o" t-value="o+1"/>
+                                </td>
+                                <td style="text-align:left">
+                                    <span>
+                                        <t t-esc="doc['barcode']"/>
+                                    </span>
+                                </td>
+                                <td style="text-align:left">
+                                    <span>
+                                        <t t-esc="doc['product']"/>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span style="text-align:left">
+                                        <t t-esc="doc['product_uom']"/>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-esc="int(doc['quantity'])"/>
+                                    </span>
+                                </td>
+                                <td style="text-align:center;">
+                                    <span>
+                                        <t t-esc="int(doc['confirm_vendor_price'])"/>
+                                    </span>
+                                </td>
+                                <td style="text-align:center;">
+                                    <span>
+                                        <t t-esc="int(doc['return_price_subtotal'])"/>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-esc="int(doc['ttb_discount'])"/>
+                                    </span>
+                                </td>
+                                <td style="text-align:center;">
+                                    <span>
+                                        <t t-esc="int(doc['return_price_subtotal'])"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </t>
+                        <tr>
+                            <td colspan="4" style="border:none"/>
+                            <td style="text-align:center; border:none">
+                                <t t-esc="int(dict_data['total_quantity'])"/>
+                            </td>
+                            <td colspan="3" style="text-align:right; border:none">
+                                <span>Cộng tiền giá bìa</span>
+
+                            </td>
+                            <td style="text-align:center; border:none">
+                                <span>
+                                    <t t-esc="dict_data['amount_total']"/>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" style="text-align:right; border:none">
+                                <span>Chiết khấu khác</span>
+                            </td>
+                            <td style="border:none"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" style="text-align:right; border:none">
+                                <span>Chiết khấu tiền mặt</span>
+                            </td>
+                            <td style="border:none"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" style="text-align:right; border:none">
+                                <span>Tổng tiền thành toán</span>
+
+                            </td>
+                            <td style="text-align:center; border:none">
+                                <span>
+                                    <t t-esc="dict_data['ttb_amount_total']"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br/>
+                <br/>
+                <div>
+                    Tổng tiền (viết bằng chữ): <t t-esc="dict_data['amount_in_words']"/>
+                </div>
+
+                <br/>
+                <br/>
+                <table style="width:100%; text-align:center;">
+                    <tr>
+                        <td>Kế toán</td>
+                        <td>Người kiểm kê</td>
+                        <td>Người nhận hàng</td>
+                        <td>Người lập phiếu</td>
+                    </tr>
+                    <tr style="height: 200px;">
+                        <td colspan="3"></td>
+                        <td>
+                            <t t-esc="dict_data['user_name']"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </t>
+    </template>
+</odoo>

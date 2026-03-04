@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_happy_call_view_form" model="ir.ui.view">
+        <field name="name">ttb_happy_call_view_form</field>
+        <field name="model">ttb.happy.call</field>
+        <field name="arch" type="xml">
+            <form class="o_helpdesk_ticket_crm">
+                <header>
+                    <field name="state" widget="statusbar" options="{'clickable': True}"/>
+                </header>
+<!--                <header>-->
+<!--                    <button name="action_create_ticket" type="object" class="oe_inline" string="tạo ticket"/>-->
+<!--                </header>-->
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="not is_locked"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Thông tin khách hàng">
+                            <field name="is_partner_phone_update" invisible="1"/>
+                            <label for="partner_phone"/>
+                            <div class="o_row o_row_readonly">
+                                <field name="partner_phone" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager,ttb_kpi.group_ttb_kpi_nv_cskh" readonly="not is_locked"/>
+                                <field name="phone_masked" groups="!ttb_kpi.group_ttb_kpi_tn_cskh,!ttb_kpi.group_ttb_kpi_tnkh_manager,!ttb_kpi.group_ttb_kpi_nv_cskh" readonly="not is_locked"/>
+                                <button name="make_phone_call" type="object" icon="fa-phone" class="oe_inline" string="Gọi" context="{'no_open_popup': True}" invisible="not partner_phone or state not in ['to_call', 'no_answer'] or is_locked == False"/>
+                                <span class="fa fa-exclamation-triangle text-warning oe_edit_only" title="Sau khi lưu thay đổi này, số điện thoại của khách hàng cũng sẽ được cập nhật" invisible="not is_partner_phone_update"/>
+                            </div>
+                            <label for="partner_id"/>
+                            <div class="o_row o_row_readonly">
+                                <field name="partner_id" class="field_partner_id" widget="res_partner_many2one" context="{'default_phone': partner_phone}" options="{'no_open': True}" readonly="not is_locked"/>
+                                <button name="action_view_partner" type="object" string="Xem" class="btn-link mb-1 px-0" invisible="not partner_id or is_locked == False" context="{'cancelsave': True, 'partner_id_on_view': partner_id}"/>
+                            </div>
+                            <field name="ttb_branch_id" options="{'no_create': True}" readonly="not is_locked"/>
+                            <field name="create_date" string="Thời gian tạo" invisible="1"/>
+                            <field name="execution_date" string="Ngày tạo" readonly="1"/>
+                        </group>
+                        <group string="Đơn hàng gần nhất">
+                            <field name="last_order_name"/>
+                            <field name="last_order_date"/>
+                            <field name="last_order_account_move"/>
+                            <field name="last_order_cashier"/>
+                            <field name="last_order_amount_total"/>
+                            <field name="last_order_line_ids" nolabel="1" options="{'no_open': True}">
+                                <list>
+                                    <field name="product_id"/>
+                                    <field name="qty"/>
+                                    <field name="price_unit"/>
+                                </list>
+                            </field>
+                        </group>
+                        <group string="Lịch sử happy call gần nhất">
+                            <field name="last_happy_call_id" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager"/>
+                            <field name="last_happy_call_state"/>
+                            <field name="last_happy_call_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Khảo sát khách hàng">
+                            <field name="user_id" widget="many2one_avatar_user" options="{'no_create': True}" readonly="not is_locked"/>
+                            <field name="show_under_control_content" invisible="1" readonly="not is_locked"/>
+                            <field name="show_out_control_content" invisible="1" readonly="not is_locked"/>
+                            <field name="show_other_control_content" invisible="1" readonly="not is_locked"/>
+<!--                            <field name="shopping_experience" widget="radio"/>-->
+                            <label for="shopping_experience"/>
+                                <div>
+                                    <!-- Hiển thị trường ghi chú -->
+                                    <field name="shopping_experience_note" nolabel="1" class="text-muted" readonly="1"/>
+
+                                    <!-- Hiển thị trường radio -->
+                                    <field name="shopping_experience" nolabel="1" widget="radio" readonly="not is_locked"/>
+                                </div>
+                            <label for="introduce_to_others"/>
+                                <div>
+                                    <!-- Hiển thị trường ghi chú -->
+                                    <field name="introduce_to_others_note" nolabel="1" class="text-muted" readonly="1"/>
+
+                                    <!-- Hiển thị trường radio -->
+                                    <field name="introduce_to_others" nolabel="1" widget="radio" readonly="not is_locked"/>
+                                </div>
+                            <label for="improvement_suggestions"/>
+                                <div>
+                                    <!-- Hiển thị trường ghi chú -->
+                                    <field name="improvement_suggestions_note" nolabel="1" class="text-muted" readonly="1"/>
+
+                                    <!-- Hiển thị trường radio -->
+                                    <field name="improvement_suggestions" readonly="not is_locked"/>
+                                </div>
+<!--                            <field name="introduce_to_others" widget="radio"/>-->
+<!--                            <field name="improvement_suggestions"/>-->
+                            <field name="ttb_area_ids" widget="many2many_tags" options="{'no_create': True}" readonly="not is_locked"/>
+                            <field name="ttb_description_ids" widget="many2many_checkboxes" readonly="not is_locked"/>
+                            <field name="under_control_content_ids" readonly="not is_locked" widget="many2many_tags_unlimit" invisible="not show_under_control_content" options="{'no_create': True, 'no_edit': True, 'no_quick_create': True, 'no_open': True}"/>
+                            <field name="out_control_content_ids" readonly="not is_locked" widget="many2many_tags_unlimit" invisible="not show_out_control_content" options="{'no_create': True, 'no_edit': True, 'no_quick_create': True, 'no_open': True}"/>
+                            <field name="other_control_content_ids" readonly="not is_locked" widget="many2many_tags_unlimit" invisible="not show_other_control_content" options="{'no_create': True, 'no_edit': True, 'no_quick_create': True, 'no_open': True}"/>
+                            <field name="has_related_user" readonly="not is_locked" required="show_under_control_content"/>
+                            <field name="state" readonly="not is_locked"/>
+                        </group>
+                        <group string="Thông tin đơn hàng">
+                            <field name="order_ids" nolabel="1" />
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Lịch sử cuộc gọi">
+                            <field name="voip_call_ids" nolabel="1" options="{'no_open': True}">
+                                <list>
+                                    <field name="user_id"/>
+                                    <field name="extension"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="recording_link" widget="audio_link"  invisible="not recording_link"/>
+                                    <button name="get_recording_link" type="object" string="Lấy file ghi âm" invisible="recording_link"/>
+                                </list>
+                            </field>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter reload_on_post="True"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_happy_call_view_tree" model="ir.ui.view">
+        <field name="name">ttb_happy_call_view_tree</field>
+        <field name="model">ttb.happy.call</field>
+        <field name="arch" type="xml">
+            <list default_order="execution_date desc">
+                <field name="last_order_currency_id" column_invisible="1"/>
+                <field name="partner_phone" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager"/>
+                <button name="make_phone_call" type="object" icon="fa-phone" class="oe_inline" string="Gọi" invisible="not partner_phone or state not in ['to_call', 'no_answer']"/>
+                <field name="last_order_name"/>
+                <field name="last_order_date"/>
+                <field name="partner_id"/>
+                <field name="last_order_account_move"/>
+                <field name="last_order_cashier"/>
+                <field name="last_order_amount_total"/>
+                <field name="create_date" string="Thời gian tạo"/>
+                <field name="execution_date" string="Ngày tạo" readonly="1"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="ttb_happy_call_info_view_tree" model="ir.ui.view">
+        <field name="name">ttb_happy_call_info_view_tree</field>
+        <field name="inherit_id" ref="ttb_happy_call_view_tree"/>
+        <field name="model">ttb.happy.call</field>
+        <field name="priority">10000</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="user_id" optional="show"/>
+                <field name="shopping_experience" optional="show"/>
+                <field name="introduce_to_others" optional="show"/>
+                <field name="improvement_suggestions" optional="show"/>
+                <field name="ttb_area_ids" widget="many2many_tags" optional="show"/>
+                <field name="ttb_description_ids" widget="many2many_tags" optional="show"/>
+                <field name="under_control_content_ids" widget="many2many_tags" optional="show"/>
+                <field name="out_control_content_ids" widget="many2many_tags" optional="show"/>
+                <field name="other_control_content_ids" widget="many2many_tags" optional="show"/>
+                <field name="has_related_user" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="ttb_happy_call_view_search" model="ir.ui.view">
+        <field name="name">ttb_happy_call_view_search</field>
+        <field name="model">ttb.happy.call</field>
+        <field name="arch" type="xml">
+            <search string="Happy Call">
+                <field name="name" string="Tất cả" filter_domain="['|', '|', ('partner_id.name', 'ilike', self), ('partner_phone', 'ilike', self), ('last_order_id.name', 'ilike', self)]"/>
+                <field name="name" string="Tên"/>
+                <field name="partner_id" filter_domain="['|', ('partner_id', '=', self), ('partner_phone', '=', self)]"/>
+                <field name="last_order_id" string="Tổng tiền" filter_domain="[('last_order_id.amount_total', '&gt;=', self)]"/>
+                <field name="ttb_branch_id"/>
+                <field name="user_id"/>
+
+                <filter string="Happy Call hôm nay" name="create_today" domain="[
+                    ('create_date', '>=', (datetime.datetime.combine(context_today(), datetime.time(0,0,0)).to_utc()).strftime('%Y-%m-%d %H:%M:%S')),
+                    ('create_date', '&lt;=', (datetime.datetime.combine(context_today(), datetime.time(23, 59, 59)).to_utc()).strftime('%Y-%m-%d %H:%M:%S'))]"/>
+                <separator/>
+                <filter name="to_recall" string="Happy Call cần gọi lại" domain="[('state', '=', 'no_answer')]"/>
+                <filter name="to_call_filter" string="Happy Call cần gọi" domain="[('state', '=', 'to_call')]"/>
+                <filter name="history_filter" string="Lịch sử Happy Call" domain="[('state', 'not in', ['to_call', 'no_answer'])]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ttb_happy_call_action" model="ir.actions.act_window">
+        <field name="name">Happy call hôm nay</field>
+        <field name="res_model">ttb.happy.call</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{
+            'search_default_create_today': 1,
+            'search_default_to_call_filter': 1,
+        }</field>
+
+    </record>
+    <record id="ttb_happy_call_history_action" model="ir.actions.act_window">
+        <field name="name">Lịch sử happy call</field>
+        <field name="res_model">ttb.happy.call</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', 'not in', ('to_call', 'follow_up', 'no_answer'))]</field>
+        <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('ttb_happy_call_info_view_tree')})]"/>
+    </record>
+    <record id="ttb_happy_call_to_recall_action" model="ir.actions.act_window">
+        <field name="name">Happy call cần gọi lại</field>
+        <field name="res_model">ttb.happy.call</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'no_answer')]</field>
+    </record>
+</odoo>

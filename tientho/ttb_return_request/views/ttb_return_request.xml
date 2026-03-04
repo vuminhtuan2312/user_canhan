@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_ttb_return_request_form" model="ir.ui.view">
+        <field name="name">ttb.return.request.form</field>
+        <field name="model">ttb.return.request</field>
+        <field name="arch" type="xml">
+            <form string="Đề nghị trả hàng">
+                <field name="count_picking_ids" invisible="1"/>
+                <header>
+                    <button name="action_send_approve" string="Gửi duyệt" class="btn-primary" type="object"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Duyệt" invisible="not approve_ok or state != 'pending'"
+                            type="object" class="btn-primary"/>
+                    <button name="action_adjust" string="Điều chỉnh" invisible="state != 'pending'" class="btn-primary" type="object"/>
+                    <button name="action_cancel" string="Hủy" type="object"
+                            invisible="state not in ['draft','pending','wait_pick']"/>
+                    <button name="action_view_pickings" string="Xem phiếu điều chuyển" type="object"
+                            invisible="count_picking_ids == 0"/>
+                    <button name="action_waiting_export_invoice" string="Đợi xuất hoá đơn" type="object"
+                            invisible="state != 'wait_supplier_approve'"/>
+                    <button name="action_done" string="Hoàn thành" type="object"
+                            invisible="state != 'wait_invoice'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,pending,wait_pick,wait_transfer,transferring,done,cancel"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="requester_id" readonly="1"/>
+                            <field name="request_date" readonly="1"/>
+                            <field name="branch_id" readonly="state != 'draft'"/>
+                            <field name="stock_warehouse_id" readonly="state != 'draft'"/>
+                            <field name="supplier_id" readonly="state != 'draft'"/>
+                            <field name="ttb_categ_ids" widget="many2many_tags"/>
+                            <field name="reason"/>
+                        </group>
+                        <group>
+                            <field name="need_right_invoice_qty"/>
+                            <field name="is_transit_dc"/>
+                            <field name="central_location_id" invisible="is_transit_dc != True"/>
+                            <field name="return_type"/>
+                            <field name="debt_status"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Chi tiết đề nghị trả hàng">
+                            <button name="action_import_product" string="Nhập sản phẩm" type="object" invisible="state != 'draft'"  class="btn btn-primary"/>
+                            <button name="action_export_product" string="Xuất danh sách" type="object" invisible="state != 'draft'"  class="btn btn-primary export-product"/>
+                            <button name="action_update_price_from_excel" string="Cập nhật" type="object" invisible="state != 'draft'" class="btn btn-primary export-product"/>
+                            <button name="%(ttb_return_request.action_update_discount)d" string="Chiết khấu %" type="action" invisible="state != 'draft'" class="btn btn-primary export-product"/>
+                            <button name="%(ttb_return_request.action_update_tax)d" string="Thuế" type="action" invisible="state != 'draft'" class="btn btn-primary export-product"/>
+                            <button name="update_stock_system" string="Tính lại tồn" type="object"  class="btn btn-primary export-product"/>
+                            <field name="line_ids" nolabel="1" mode="list" readonly="state == 'done' ">
+                                <list editable="bottom" decoration-danger="unit_price != confirm_vendor_price">
+                                    <field name="categ_id_level_1" readonly="1"/>
+                                    <field name="default_code" readonly="1"/>
+                                    <field name="product_id" readonly="state != 'draft'"/>
+                                    <field name="vendor_product_name" readonly="state != 'draft'"/>
+                                    <field name="unit_price" readonly="state != 'draft'"/>
+                                    <field name="po_id" string="PO" optional="hide"/>
+                                    <field name="date_approve_po" string="Ngày xác nhận PO" optional="hide"/>
+                                    <field name="confirm_vendor_price" readonly="state != 'draft'"/>
+                                    <field name="quantity" readonly="state != 'draft'"/>
+                                    <field name="quantity_hold" readonly="state != 'draft'"/>
+                                    <field name="stock_system" readonly="1"/>
+                                    <field name="uom_id" readonly="1"/>
+                                    <field name="qty_picked" readonly="1"/>
+                                    <field name="qty_vp_received" readonly="1"/>
+                                    <field name="qty_fail" readonly="1"/>
+                                    <field name="qty_supplier_received" readonly="1"/>
+                                    <field name="qty_supplier_return" readonly="1"/>
+                                    <field name="ttb_taxes_id" widget="many2many_tags"/>
+                                    <field name="price_tax"/>
+                                    <field name="discount" optional="hide"/>
+                                    <field name="ttb_discount_amount"/>
+                                    <field name="amount" readonly="1"/>
+                                </list>
+                          </field>
+                        </page>
+                        <page string="Thông tin phê duyệt" name="approval_info">
+                            <group>
+                                <group>
+                                    <field name="current_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="next_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="notif_user_ids" readonly="1" widget="many2many_tags"/>
+                                </group>
+                                <group groups="base.group_no_one">
+                                    <field name="process_id" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_sent" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_approved" readonly="1" groups="base.group_no_one"/>
+                                </group>
+                            </group>
+                            <field name="rule_line_ids"/>
+                        </page>
+                        <page string="Thông tin phiếu Augges">
+                            <group>
+                                <field name="office_transfer_number" readonly="1"/>
+                                <field name="dc_transfer_number" readonly="1"/>
+                                <field name="supplier_return_number" readonly="1"/>
+                                <field name="supplier_receive_return_number" readonly="1"/>
+                                <field name="current_state"/>
+                                <field name="old_id_auggess"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <group>
+                        <group>
+                            <field name="total_quantity"/>
+                            <field name="total_actual_return"/>
+                            <field name="total_amount"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_ttb_return_request_list" model="ir.ui.view">
+        <field name="name">ttb.return.request.list</field>
+        <field name="model">ttb.return.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="request_date"/>
+                <field name="branch_id"/>
+                <field name="supplier_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_ttb_return_request" model="ir.actions.act_window">
+        <field name="name">Đề nghị trả hàng</field>
+        <field name="res_model">ttb.return.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

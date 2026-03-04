@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="nibot_api_kidzone" model="ttb.nibot.api">
+        <field name="name">CÔNG TY CỔ PHẦN KIDZONE ADVENTURES</field>
+        <field name="masothue">0110683327</field>
+        <field name="enable_mua_vao">True</field>
+    </record>
+</odoo>

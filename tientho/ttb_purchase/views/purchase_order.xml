@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="priority">10</field>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="action_change_purchase_order_status" type="object" string="Mua hàng NCC Trung Quốc"
+                        class="btn-secondary" invisible="purchase_order_status != 'advance_payment' or state != 'purchase'"
+                        context="{'purchase_order_status': 'advance_payment'}"/>/>
+                <button name="action_change_purchase_order_status" type="object" string="Thanh toán NCC"
+                        class="btn-secondary" invisible="purchase_order_status != 'ordered' or state != 'purchase'"
+                        context="{'purchase_order_status': 'ordered'}"/>
+                <button name="action_change_purchase_order_status" type="object" string="Chờ NCC phát hàng"
+                        class="btn-secondary" invisible="purchase_order_status != 'supplier_payment' or state != 'purchase'"
+                        context="{'purchase_order_status': 'supplier_payment'}"/>
+                <button name="action_change_purchase_order_status" type="object" string="Hoàn thành"
+                        class="btn-secondary" invisible="purchase_order_status != 'waiting' or state != 'purchase'"
+                        context="{'purchase_order_status': 'waiting'}"/>
+            </header>
+            <notebook position="inside">
+                <page name="accounting_info" string="Chứng từ kế toán">
+                    <group>
+                        <field name="ttb_receipt_doc" filename="ttb_receipt_doc_name" readonly="1" widget="pdf_viewer" options="{'accepted_file_extensions': '.pdf'}"/>
+                        <field name="ttb_receipt_doc_name" invisible="1"/>
+                        <field name="ttb_vendor_doc" filename="ttb_vendor_doc_name" widget="pdf_viewer" options="{'accepted_file_extensions': '.pdf'}"/>
+                        <field name="ttb_vendor_doc_name" invisible="1"/>
+                        <field name="ttb_vendor_invoice_name" invisible="1"/>
+                        <field name="ttb_vendor_delivery" widget="pdf_viewer" options="{'accepted_file_extensions': '.pdf'}" invisible="ttb_type != 'not_sale'"/>
+                        <field name="ttb_acceptance_report" widget="pdf_viewer" options="{'accepted_file_extensions': '.pdf'}" invisible="ttb_type != 'not_sale'"/>
+                    </group>
+                </page>
+                <page name="other_cost" string="Chi phí khác" invisible="ttb_type != 'imported_goods'">
+                    <group>
+                        <field name="request_type" invisible="1"/>
+                        <group string="Chi phí vận chuyển">
+                            <field name="cost_inland_china"/>
+                            <field name="cost_international_shipping"/>
+                            <field name="cost_shipping_total"/>
+                        </group>
+                        <group string="Chi phí khác">
+                            <field name="cost_vat"/>
+                            <field name="cost_inspection"/>
+                            <field name="cost_sterilize"/>
+                            <field name="cost_chemical_test"/>
+                            <field name="cost_customs"/>
+                            <field name="cost_lift"/>
+                            <field name="cost_other"/>
+                            <field name="cost_other_total"/>
+                        </group>
+                        <h1>
+                            <label string="Tổng chi phí:" for="cost_total"/>
+                            <field name="cost_total" class="o-row"/>
+                        </h1>
+                    </group>
+                </page>
+                <page name="purchase_date" string="Mua hàng NCC Trung Quốc" invisible="ttb_type != 'imported_goods'">
+                    <group>
+                        <field name="purchase_date"/>
+                        <field name="date_of_purchase_completion"/>
+                    </group>
+                </page>
+                <page string="Thanh toán NCC" invisible="ttb_type != 'imported_goods'">
+                    <group>
+                        <field name="payment_date_cn"/>
+                        <field name="payment_bill_cn" widget="binary_preview_ticket"/>
+                        <field name="date_of_payment_completion"/>
+                    </group>
+                </page>
+                <page name="waiting_supplier_shipping" string="Chờ NCC phát hàng"
+                      invisible="ttb_type != 'imported_goods'">
+                    <group>
+                        <field name="shipping_date"/>
+                        <field name="expected_date"/>
+                        <field name="date_of_wait_completion"/>
+                    </group>
+                </page>
+            </notebook>
+            <xpath expr="//label[@for='date_planned']" position="attributes">
+                <attribute name="invisible">ttb_type == 'imported_goods'</attribute>
+            </xpath>
+            <xpath expr="//label[@for='date_planned']" position="after">
+                <label for="date_planned" string="Ngày hàng về kho DC dự kiến" invisible="ttb_type != 'imported_goods'"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="before">
+                <field name="ttb_product_code"/>
+            </xpath>
+            <xpath expr="//field[@name='date_order']" position="before">
+                <field name="ttb_request_id" string="Yêu cầu đặt hàng"/>
+                <field name="order_user_id" invisible="ttb_type != 'imported_goods'"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//list//field[@name='taxes_id']" position="before">
+                <field name="ttb_sale_price" optional="hide"/>
+            </xpath>
+            <!--            <xpath expr="//field[@name='order_line']//list//field[@name='price_unit']" position="attributes">-->
+            <!--                <attribute name="readonly">1</attribute>-->
+            <!--                <attribute name="force_save">1</attribute>-->
+            <!--            </xpath>-->
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_qty']" position="after">
+                <field name="cbm" optional="show" column_invisible="parent.ttb_type != 'imported_goods'"/>
+                <field name="weight" optional="show" column_invisible="parent.ttb_type != 'imported_goods'"/>
+                <field name="ttb_stock_qty" optional="show"/>
+                <field name="ttb_sale_30_qty" optional="show"/>
+                <field name="ttb_sale_90_qty" optional="show"/>
+                <field name="ttb_sale_days" optional="show"/>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']//list//field[@name='price_unit']" position="after">
+                <field name="price_unit_cn" optional="show" column_invisible="parent.ttb_type != 'imported_goods'"/>
+                <field name="purchase_price" optional="show" column_invisible="parent.ttb_type != 'imported_goods'"/>
+                <field name="price_unit" string="Giá nhập(VNĐ)" column_invisible="parent.ttb_type != 'imported_goods'"/>
+                <field name="profit_margin" optional="show" column_invisible="parent.ttb_type != 'imported_goods'"/>
+                <field name="selling_price" optional="show" column_invisible="parent.ttb_type != 'imported_goods'"/>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="product_image" widget="image" column_invisible="parent.ttb_type != 'imported_goods'" readonly="1"/>
+                <button name="button_open_link_prd" type="object" string="Link" class="btn-link" icon="fa-external-link" invisible="not product_link"/>
+                <field name="product_link" column_invisible="parent.ttb_type != 'imported_goods'" optional="hide" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//list//field[@name='price_unit']" position="attributes">
+                <attribute name="column_invisible">parent.ttb_type == 'imported_goods'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_status']" position="after">
+                <field name="advance_payment_status" readonly="True" force_save="1"/>
+            </xpath>
+            <field name="partner_ref" position="after">
+                <field name="ttb_type" readonly="state != 'draft'"/>
+                <field name="product_category_id" readonly="state != 'draft'"/>
+                <field name="ttb_tax_type" readonly="state != 'draft'"/>
+                <field name="is_ttb_open_ok" invisible="1"/>
+                <field name="ttb_open_ok" invisible="1"/>
+                <field name="advance_request_count" invisible="1"/>
+            </field>
+            <field name="order_line" position="attributes">
+               <attribute name="readonly">state != 'draft' and not ttb_open_ok</attribute>
+                <attribute name="context">{'default_state': 'draft', 'disable_column_sort': True}</attribute>
+            </field>
+            <field name="order_line" position="before">
+                <button name="action_import_product" type="object" string="Nhập sản phẩm" class="btn-primary m-2" invisible="state != 'draft'"/>
+                <button name="%(ttb_purchase.purchase_order_add_discount_action)d" type="action" string="Chiết khấu theo %" class="btn-primary m-2" invisible="state != 'draft'"/>
+                <button name="%(ttb_purchase.action_discount_by_money)d" type="action" string="Chiết khấu theo số tền (Tệ)"
+                        class="btn-primary m-2" invisible="state != 'draft'" context="{'money': True}"/>
+                <button name="%(ttb_purchase.purchase_order_add_tax_action)d" context="{'default_tax_country_id':tax_country_id,'default_company_id':company_id}" type="action" string="Thuế" class="btn-primary m-2" invisible="state != 'draft'"/>
+            </field>
+            <field name="fiscal_position_id" position="before">
+                <field name="ttb_company_partner_id" invisible="1"/>
+                <field name="ttb_invoice_partner"
+                       domain="[('id','child_of',ttb_company_partner_id),('type','=','invoice')]"
+                       options="{'no_quick_create': True}"
+                       context="{'default_type':'invoice', 'show_address': False, 'show_vat': False, 'default_parent_id': partner_id}"
+                       readonly="state == 'cancel'"/>
+                <field name="ttb_shipping_partner"
+                       domain="[('id','child_of',ttb_company_partner_id),('type','=','delivery')]"
+                       options="{'no_quick_create': True}"
+                       context="{'default_type':'delivery', 'show_address': False, 'show_vat': False, 'default_parent_id': partner_id}"/>
+            </field>
+            <header position="inside">
+                <button name="ttb_action_open" type="object" string="Mở đơn" class="btn btn-danger" invisible="not is_ttb_open_ok and not ttb_open_ok"/>
+            </header>
+        </field>
+    </record>
+
+    <record id="purchase_order_view_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase_stock.purchase_order_view_form_inherit"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="before">
+                <widget name="web_ribbon" title="Đã khóa" bg_color="text-bg-danger" invisible="state !='done'"/>
+            </div>
+            <field name="tax_calculation_rounding_method" position="before">
+                <field name="ttb_consign"/>
+                <field name="warehouse_id" invisible="1"/>
+                <field name="locker_ok" invisible="1"/>
+                <field name="sent_ok" invisible="1"/>
+                <field name="approve_ok" invisible="1"/>
+            </field>
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="attributes">
+                <attribute name="domain" operation="domain_add" join_operator="AND">
+                    ['|',('product_status_ids', 'any', [('branch_id', '=', parent.ttb_branch_id), ('state', 'in', ['zz','z1'])]),'&amp;',('product_status_ids', 'not any', [('branch_id', '=', parent.ttb_branch_id)]), ('ttb_product_status', 'in', ['zz','z1'])]
+                </attribute>
+            </xpath>
+            <button name="button_done" position="attributes">
+                <attribute name="invisible" operation="text_add">
+                    ({old_value}) or not locker_ok
+                </attribute>
+            </button>
+            <button name="button_unlock" position="attributes">
+                <attribute name="groups"></attribute>
+                <attribute name="invisible" operation="text_add">
+                    ({old_value}) or not locker_ok
+                </attribute>
+            </button>
+            <page name="purchase_delivery_invoice" position="before">
+                <page string="Thông tin phê duyệt" name="approval_info" groups="ttb_purchase.group_purchase_expert,purchase.group_purchase_user">
+                    <group>
+                        <group>
+                            <field name="current_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                            <field name="next_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                            <field name="notif_user_ids" readonly="1" widget="many2many_tags"/>
+                        </group>
+                        <group groups="base.group_no_one">
+                            <field name="process_id" readonly="1" groups="base.group_no_one"/>
+                            <field name="date_sent" readonly="1" groups="base.group_no_one"/>
+                            <field name="date_approved" readonly="1" groups="base.group_no_one"/>
+                        </group>
+                    </group>
+                    <field name="rule_line_ids"/>
+                </page>
+            </page>
+            <button id="bid_confirm" position="attributes">
+                <attribute name="invisible" operation="text_add">
+                    ({old_value}) or not sent_ok
+                </attribute>
+            </button>
+            <button id="draft_confirm" position="attributes">
+                <attribute name="invisible" operation="text_add">
+                    ({old_value}) or not sent_ok
+                </attribute>
+            </button>
+            <button name="button_approve" position="attributes">
+                <attribute name="string">Duyệt</attribute>
+                <attribute name="groups">base.group_user</attribute>
+                <attribute name="invisible" operation="text_add">
+                    ({old_value}) or not approve_ok
+                </attribute>
+            </button>
+            <button name="button_approve" position="after">
+                <button name="action_reject" string="Từ chối" invisible="not approve_ok or state != 'to approve'" type="object"/>
+            </button>
+            <xpath expr="//button[@name='action_rfq_send']" position="attributes">
+                <attribute name="groups">ttb_purchase.group_purchase_expert</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_rfq_send'][2]" position="attributes">
+                <attribute name="groups">ttb_purchase.group_purchase_expert</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_rfq_send'][3]" position="attributes">
+                <attribute name="groups">ttb_purchase.group_purchase_expert</attribute>
+            </xpath>
+            <xpath expr="//button[@name='print_quotation']" position="attributes">
+                <attribute name="groups">ttb_purchase.group_purchase_expert</attribute>
+            </xpath>
+            <xpath expr="//button[@name='print_quotation'][2]" position="attributes">
+                <attribute name="groups">ttb_purchase.group_purchase_expert</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_create_invoice']" position="attributes">
+                <attribute name="groups">ttb_purchase.group_purchase_expert</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_create_invoice'][2]" position="attributes">
+                <attribute name="groups">ttb_purchase.group_purchase_expert</attribute>
+            </xpath>
+            <xpath expr="//header//button[@name='action_view_picking']" position="attributes">
+                <attribute name="groups">stock.group_stock_user,purchase.group_purchase_user</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_button_box')]//button[@name='action_view_picking']" position="attributes">
+                <attribute name="groups">stock.group_stock_user,purchase.group_purchase_user</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_button_box')]//button[@name='action_view_picking']" position="after">
+                <button name="action_view_advance_requests" type="object" class="oe_stat_button" icon="fa-money" invisible="advance_request_count == 0">
+                    <field name="advance_request_count" widget="statinfo" string="Phiếu tạm ứng"/>
+                </button>
+            </xpath>
+            <button name="confirm_reminder_mail" position="attributes">
+                <attribute name="groups">ttb_purchase.group_purchase_expert</attribute>
+            </button>
+            <button name="button_draft" position="attributes">
+                <attribute name="groups">ttb_purchase.group_purchase_expert</attribute>
+            </button>
+            <button name="button_cancel" position="attributes">
+                <attribute name="groups">ttb_purchase.group_purchase_expert</attribute>
+            </button>
+            <button name="button_done" position="attributes">
+                <attribute name="groups">ttb_purchase.group_purchase_expert</attribute>
+            </button>
+            <field name="picking_type_id" position="before">
+                <field name="ttb_branch_id" readonly="ttb_type == 'imported_goods'" force_save="1"/>
+            </field>
+            <field name="picking_type_id" position="attributes">
+                <attribute name="domain" operation="domain_add" join_operator="AND">
+                    [('ttb_branch_id', '=?', ttb_branch_id),('ttb_type','=?',ttb_type),('ttb_type','!=','material')]
+                </attribute>
+                <attribute name="readonly" operation="text_add">
+                    ({old_value}) or ttb_type == 'imported_goods'
+                </attribute>
+            </field>
+            <xpath expr="//field[@name='order_line']//list//field[@name='discount']" position="after">
+                <field name="ttb_discount_amount" readonly="qty_invoiced != 0" optional="hide"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//list//field[@name='price_subtotal']" position="after">
+                <field name="price_total"/>
+                <field name="ttb_duplicated_ok" column_invisible="1"/>
+            </xpath>
+            <field name="order_line" position="attributes">
+                <attribute name="widget">section_and_note_one2many</attribute>
+            </field>
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="attributes">
+                <attribute name="widget"></attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//list//field[@name='name']" position="attributes">
+                <attribute name="widget"></attribute>
+            </xpath>
+            <field name="notes" position="before">
+                <field name="ttb_quantity_total"/>
+                <field name="price_amount_cn" invisible="ttb_type != 'imported_goods'"/>
+                <field name="discount_total" invisible="ttb_type != 'imported_goods'"/>
+            </field>
+            <field name="ttb_consign" position="after">
+                <field name="notes" position="move"/>
+            </field>
+            <!--            <xpath expr="//field[@name='order_line']//list//field[@name='product_qty']" position="attributes">-->
+            <!--                <attribute name="sum">SUM</attribute>-->
+            <!--            </xpath>-->
+            <xpath expr="//field[@name='order_line']//list" position="attributes">
+                <attribute name="decoration-danger">ttb_duplicated_ok</attribute>
+            </xpath>
+            <field name="notes" position="attributes">
+                <attribute name="colspan"></attribute>
+                <attribute name="nolabel"></attribute>
+                <attribute name="placeholder"></attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_filter" model="ir.ui.view">
+        <field name="name">request.quotation.select</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="description"/>
+            </search>
+            <filter name="my_purchases" position="after">
+                <filter string="Đơn hàng cần duyệt" name="my_approve" domain="[('state','=','to approve'),('current_approve_user_ids', '=', uid)]"/>
+            </filter>
+            <filter name="approved" position="before">
+                <filter name="state_sent" string="Đã gửi duyệt" domain="[('state', '=', 'to approve')]"/>
+                <filter name="state_approved" string="Đã duyệt" domain="[('state', '=', 'purchase')]"/>
+                <filter name="state_done" string="Đã hoàn thành" domain="[('state', '=', 'done')]"/>
+            </filter>
+            <filter name="vendor" position="after">
+                <filter string="Cơ sở" name="groupby_ttb_branch_id" domain="[]" context="{'group_by': 'ttb_branch_id'}"/>
+            </filter>
+            <filter name="representative" position="after">
+                <filter string="Loại đơn hàng" name="groupby_ttb_type" domain="[]" context="{'group_by': 'ttb_type'}"/>
+            </filter>
+            <field name="partner_id" position="after">
+                <field name="ttb_branch_id"/>
+                <field name="notes"/>
+            </field>
+            <filter name="starred" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </filter>
+            <filter name="draft" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </filter>
+            <filter name="unconfirmed" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </filter>
+            <filter name="approved" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </filter>
+            <filter name="to_approve" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </filter>
+            <filter name="draft_rfqs" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </filter>
+            <filter name="waiting_rfqs" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </filter>
+            <filter name="late_rfqs" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </filter>
+        </field>
+    </record>
+
+    <record id="purchase_order_kpis_tree" model="ir.ui.view">
+        <field name="name">purchase.order.inherit.purchase.order.list</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+        <field name="arch" type="xml">
+            <list position="attributes">
+                <attribute name="class"/>
+                <attribute name="js_class"/>
+            </list>
+            <field name="name" position="after">
+                <field name="description" optional="show"/>
+            </field>
+            <field name="partner_id" position="after">
+                <field name="ttb_branch_id"/>
+            </field>
+            <field name="date_approve" position="attributes">
+                <attribute name="invisible"></attribute>
+                <attribute name="column_invisible"></attribute>
+            </field>
+            <field name="date_order" position="attributes">
+                <attribute name="widget"></attribute>
+                <attribute name="optional">hide</attribute>
+            </field>
+            <field name="origin" position="after">
+                <field name="ttb_quantity_total"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="purchase_order_accounting_account_list" model="ir.ui.view">
+        <field name="name">Kế toán</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <list create="0" multi_edit="1">
+                <field name="priority" optional="show" widget="priority" nolabel="1"/>
+                <field name="ttb_partner_code" optional="show"/>
+                <field name="name"/>
+                <field name="date_approve" optional="show"/>
+                <field name="ttb_vendor_invoice_date" optional="hide"/>
+                <field name="partner_id"/>
+                <field name="user_id" optional="show"/>
+                <field name="ttb_branch_id" optional="show"/>
+                <field name="ttb_receipt_doc" filename="ttb_receipt_doc_name" readonly="1" widget="binary_preview" options="{'accepted_file_extensions': '.pdf'}"/>
+                <field name="ttb_receipt_doc_name" column_invisible="1"/>
+                <field name="ttb_vendor_doc" filename="ttb_vendor_doc_name" readonly="1" widget="binary_preview" options="{'accepted_file_extensions': '.pdf'}"/>
+                <field name="ttb_vendor_doc_name" column_invisible="1"/>
+                <field name="ttb_vendor_invoice" filename="ttb_vendor_invoice_name" readonly="1" widget="binary_preview" options="{'accepted_file_extensions': '.pdf'}"/>
+                <field name="ttb_vendor_invoice_name" column_invisible="1"/>
+                <field name="ttb_doc_user_id" column_invisible="1"/>
+                <field name="ttb_accountant_id" column_invisible="1"/>
+                <field name="ttb_document_done" column_invisible="1"/>
+                <field name="ttb_vendor_invoice_no" optional="show"/>
+                <field name="ttb_vendor_invoice_code" optional="show"/>
+                <field name="ttb_accountant_accept"/>
+                <field name="ttb_accountant_note" optional="show"/>
+                <field name="state" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_order_accounting_account_search" model="ir.ui.view">
+        <field name="name">Kế toán</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="ttb_branch_id"/>
+                <field name="ttb_accountant_id" string="Kế toán xác nhận"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <filter string="Chứng từ cần xác nhận" name="ttb_document_done_not_ok" domain="[('ttb_document_done','=',True),('ttb_accountant_accept', '!=', 'ok')]"/>
+                <filter string="Chứng từ cần điểu chỉnh" name="ttb_accountant_accept_not_ok" domain="[('ttb_accountant_accept', '=', 'not_ok')]"/>
+                <filter string="Chứng từ đã xác nhận" name="ttb_accountant_accept_ok" domain="[('ttb_accountant_accept', '=', 'ok')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Cơ sở" name="groupby_ttb_branch_id" domain="[]" context="{'group_by': 'ttb_branch_id'}"/>
+                    <filter string="Ngày xác nhận" name="groupby_date_approve" domain="[]" context="{'group_by': 'date_approve:month'}"/>
+                    <filter string="Ngày nhập kho" name="groupby_ttb_receipt_date" domain="[]" context="{'group_by': 'ttb_receipt_date:month'}"/>
+                    <filter string="Xác nhận của kế toán" name="groupby_ttb_accountant_accept" domain="[]" context="{'group_by': 'ttb_accountant_accept'}"/>
+                    <filter string="Kế toán xác nhận" name="groupby_ttb_accountant_id" domain="[]" context="{'group_by': 'ttb_accountant_id'}"/>
+                    <filter string="Nhà cung cấp" name="groupby_partner_id" domain="[]" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="purchase_order_accounting_account_act" model="ir.actions.act_window">
+        <field name="name">Kế toán</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="purchase_order_accounting_account_list"/>
+        <field name="search_view_id" ref="purchase_order_accounting_account_search"/>
+        <field name="domain">['|',('ttb_document_done','=',True),('ttb_accountant_accept','!=',False)]</field>
+    </record>
+
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+        <field name="context">{'quotation_only': True,'display_default_code': False}</field>
+    </record>
+    <record id="purchase_order_sale_action" model="ir.actions.act_window">
+        <field name="name">Đơn mua hàng kinh doanh</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+        <field name="view_id" ref="purchase_order_kpis_tree"/>
+        <field name="domain">[('ttb_type', '=', 'sale')]</field>
+        <field name="search_view_id" ref="view_purchase_order_filter"/>
+        <field name="context">{'quotation_only': True,'display_default_code': False, 'default_ttb_type': 'sale'}</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            No request for quotation found. Let's create one!
+          </p><p>
+            Requests for quotation are documents that will be sent to your suppliers to request prices for different products you consider buying.
+            Once an agreement has been found with the supplier, they will be confirmed and turned into purchase orders.
+          </p>
+        </field>
+    </record>
+    <record id="purchase_order_not_sale_action" model="ir.actions.act_window">
+        <field name="name">Đơn mua hàng không kinh doanh</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+        <field name="view_id" ref="purchase_order_kpis_tree"/>
+        <field name="domain">[('ttb_type', '=', 'not_sale')]</field>
+        <field name="search_view_id" ref="view_purchase_order_filter"/>
+        <field name="context">{'quotation_only': True,'display_default_code': False, 'default_ttb_type': 'not_sale' }</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            No request for quotation found. Let's create one!
+          </p><p>
+            Requests for quotation are documents that will be sent to your suppliers to request prices for different products you consider buying.
+            Once an agreement has been found with the supplier, they will be confirmed and turned into purchase orders.
+          </p>
+        </field>
+    </record>
+    <record id="purchase_order_raw_material_action" model="ir.actions.act_window">
+        <field name="name">Đơn mua hàng nguyên vật liệu</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+        <field name="view_id" ref="purchase_order_kpis_tree"/>
+        <field name="domain">[('ttb_type', '=', 'material')]</field>
+        <field name="search_view_id" ref="view_purchase_order_filter"/>
+        <field name="context">{'quotation_only': True,'display_default_code': False, 'default_ttb_type': 'material' }</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            No request for quotation found. Let's create one!
+          </p><p>
+            Requests for quotation are documents that will be sent to your suppliers to request prices for different products you consider buying.
+            Once an agreement has been found with the supplier, they will be confirmed and turned into purchase orders.
+          </p>
+        </field>
+    </record>
+    <record id="view_purchase_order_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='project_id']" position="after">
+                <field name="payment_term_note" invisible="ttb_type != 'not_sale'"/>
+                <field name="additional_note" invisible="ttb_type != 'not_sale'"/>
+                <field name="profit_margin" invisible="ttb_type != 'imported_goods'"/>
+                <field name="cbm_total" invisible="ttb_type != 'imported_goods'" readonly="request_type == True"/>
+                <field name="number_of_cases_total" invisible="ttb_type != 'imported_goods'" readonly="is_gift_category == False"/>
+                <field name="exchange_rate" invisible="ttb_type != 'imported_goods'"/>
+            </xpath>
+            <xpath expr="//field[@name='notes']" position="after">
+                <field name="china_stock_location" invisible="ttb_type != 'imported_goods'"/>
+                <field name="vietnam_stock_location" invisible="ttb_type != 'imported_goods'"/>
+                <field name="shipping_warehouse_id" invisible="ttb_type != 'imported_goods'"/>
+                <field name="purchase_order_status" invisible="ttb_type != 'imported_goods'" readonly="1"/>
+                <field name="attachment" invisible="ttb_type != 'imported_goods'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_print_estimated_costs" model="ir.actions.report">
+        <field name="name">In đề nghị tạm ứng</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ttb_purchase.template_print_estimated_costs_document</field>
+        <field name="binding_model_id" ref="model_purchase_order"/>
+        <field name="binding_type">report</field>
+        <field name="multi">True</field>
+        <field name="paperformat_id" ref="paperformat_landscape_a4"/>
+    </record>
+</odoo>

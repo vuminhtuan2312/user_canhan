@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_kvc_inventory_session_form" model="ir.ui.view">
+        <field name="name">kvc.inventory.session.form</field>
+        <field name="model">kvc.inventory.session</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="True"/>
+                        <field name="user_by" readonly="True"/>
+                        <field name="branch_id" readonly="True"/>
+                        <field name="week_number" readonly="True"/>
+                        <field name="product_sector" readonly="True" />
+                        <field name="create_date" readonly="True"/>
+                        <field name="done_date" readonly="True"/>
+                    </group>
+                    <notebook>
+                        <page string="Danh sách sản phẩm">
+<!--                            <button name="button_update_stock_to_augges" type="object" class="btn btn-primary btn-sm mt-2 update_stock_augges" invisible="state == 'draft' or check_update_stock_button == False">Xác nhận tồn</button>-->
+                            <field name="inventory_line_ids">
+                                <kanban create="false" limit="2000" can_open="0">
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div class="oe_kanban_card">
+                                                <div>
+                                                    <strong><field name="product_name"/></strong>
+                                                </div>
+                                                <div>
+                                                    <span>Nhóm hàng: <field name="product_sector"/></span>
+                                                </div>
+                                                <div>
+                                                    <span>Mã hàng: <field name="product_code"/></span>
+                                                </div>
+                                                <div>
+                                                    <span>Mã hàng 1: <field name="product_code_1"/></span>
+                                                </div>
+                                                <div>
+                                                    <span>Mã vạch: <field name="barcode"/></span>
+                                                </div>
+                                                <div>
+                                                    <span>Mã vạch K: <field name="barcode_k"/></span>
+                                                </div>
+                                                <div>
+                                                    <span>Đơn vị tính: <field name="uom"/></span>
+                                                </div>
+                                                <div>
+                                                    <span>Số lượng tồn thực tế: <field name="qty_real" /></span>
+                                                </div>
+                                                <div>
+                                                    <span>Số lượng nhập bổ sung: <field name="last_qty_add" /></span>
+                                                </div>
+                                                <div>
+                                                    <span>Trạng thái kiểm: <field name="state_check" /></span>
+                                                </div>
+                                                <div>
+                                                    <button type="object" name="open_check_wizard" class="btn btn-primary btn-sm mt-2" invisible="state == 'done' or state_check == 'done'">Kiểm tồn</button>
+                                                    <button name="open_add_qty_wizard" type="object" class="btn btn-primary btn-sm mt-2" invisible="not can_check_inventory or is_update_augges">Nhập bổ sung</button>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                    </notebook>
+                    <div>
+                        <button name="action_done" type="object" string="Hoàn thành" class="oe_highlight mt-2" invisible="state == 'done'"/>
+                    </div>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+    <record id="view_kvc_inventory_session_list" model="ir.ui.view">
+        <field name="name">kvc.inventory.session.list</field>
+        <field name="model">kvc.inventory.session</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="name" />
+                <field name="branch_id" />
+                <field name="product_sector" />
+                <field name="product_name" />
+                <field name="create_date" />
+                <field name="user_by" />
+                <field name="state" />
+                <field name="done_date" />
+            </list>
+        </field>
+    </record>
+    <record id="view_kvc_inventory_line_form" model="ir.ui.view">
+        <field name="name">kvc.inventory.line.form</field>
+        <field name="model">kvc.inventory.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="session_id"/>
+                        <field name="product_code"/>
+                        <field name="barcode"/>
+                        <field name="product_name"/>
+                        <field name="qty_real"/>
+                        <field name="state"/>
+                        <field name="state_check"/>
+                    </group>
+                    <group>
+                        <field name="product_sector"/>
+                        <field name="product_code_1"/>
+                        <field name="barcode_k"/>
+                        <field name="uom"/>
+                        <field name="diff_qty"/>
+                        <field name="can_check_inventory"/>
+                        <field name="last_qty_add"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+    <record id="action_check_session_kvc" model="ir.actions.act_window">
+        <field name="name">Kiểm kê khu vui chơi</field>
+        <field name="res_model">kvc.inventory.session</field>
+        <field name="view_mode">list,form,pivot</field>
+    </record>
+</odoo>

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_product_product_form_custom" model="ir.ui.view">
+        <field name="name">product.product.form.custom</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <form string="Product Form">
+                <sheet>
+                    <field name="active" invisible="1"/>
+                    <div class="alert alert-danger" role="alert" invisible="active">
+                        Sản phẩm đã ngừng theo dõi
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="purchase_ok">
+                        Sản phẩm đã ngừng nhập hàng
+                    </div>
+                    <group>
+                        <group class="col-8">
+                            <h1>
+                                <field name="barcode" readonly="1" nolabel="1"/>
+                            </h1>
+                        </group>
+                        <group class="col-4">
+                            <field name="list_price"/>
+                        </group>
+                    </group>
+                    
+                    <label for="name"/>
+                    <h1>
+                        <field class="text-break" name="name" options="{'line_breaks': False}" widget="text" placeholder="e.g. Cheese Burger"/>
+                    </h1>
+
+                    <group>
+                        <group class="col-6">
+                            <field name="sale_ok" readonly="1"/>
+                        </group>
+                        <group class="col-6">
+                            <field name="purchase_ok" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Nhóm danh mục cấp 1 - 5 -->
+                        <!-- Danh mục cấp 1 - 5 (label 3 cột, input 9 cột) -->
+                    <div>
+                        <div class="row">
+                            <div class="col-2">
+                                <label for="categ_id_level_1"/>
+                            </div>
+                            <div class="col-10">
+                                <field name="categ_id_level_1" style="width: 100%"  options="{'no_create': True,'no_open': True}"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-2">
+                                <label for="categ_id_level_2"/>
+                            </div>
+                            <div class="col-10">
+                                <field name="categ_id_level_2" style="width: 100%" options="{'no_create': True,'no_open': True}"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-2">
+                                <label for="categ_id_level_3"/>
+                            </div>
+                            <div class="col-10">
+                                <field name="categ_id_level_3" style="width: 100%" options="{'no_create': True,'no_open': True}"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-2">
+                                <label for="categ_id_level_4"/>
+                            </div>
+                            <div class="col-10">
+                                <field name="categ_id_level_4" style="width: 100%" options="{'no_create': True,'no_open': True}"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-2">
+                                <label for="categ_id_level_5"/>
+                            </div>
+                            <div class="col-10">
+                                <field name="categ_id_level_5" style="width: 100%" options="{'no_create': True,'no_open': True}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <notebook>
+                        <page string="Ảnh" name="image">
+                            <!-- Ảnh sản phẩm hiển thị rộng trên mobile -->
+                            <field name="last_image_1920" widget="image" class="oe_full_mobile"/>
+                        </page>
+                        <page string="Toàn bộ ảnh" name="all_image">
+                            <!-- Ảnh sản phẩm (Many2many) -->
+                            <field name="ttb_product_template_image_ids" readonly="1">
+                                <list>
+                                    <field name="create_uid" string="Người chụp"/>
+                                    <field name="create_date" string="Ngày chụp" widget="remaining_days" optional="show"/>
+                                    <field name="image_1920" string="Ảnh" class="oe_avatar" widget="image" options="{'zoom': true, 'preview_image': 'image_128'}"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Thông tin khác" name="other_info">
+                            <group>
+                                <field name="description_sale" string="Chỉ định thương mại"/>
+                                <field name="default_code" string="Ma_Vach"/>
+                                <field name="barcode" string="Ma_Hang"/>
+                                <field name="barcode_vendor" string="Ma_Hang1"/>
+                                <field name="barcode_k" string="Ma_VachK"/>
+                            </group>
+                        </page>
+
+                        <page string="Hướng dẫn" name="mch_description">
+                            <field name="mch_description"/>
+                            <div invisible="mch_description" class="alert alert-warning" role="alert">
+                                Hiện chưa có hướng dẫn cho MCH này.
+                            </div>
+                        </page>
+
+                    </notebook>
+                    <group name="internal_notes" string="Internal Notes">
+                        <field colspan="2" name="description" nolabel="1" placeholder="This note is only for internal purposes."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_product_product_form_custom" model="ir.actions.act_window">
+        <field name="name">Open Product</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_product_product_form_custom"/>
+    </record>
+
+
+    <record id="ir_cron_sync_new_products" model="ir.cron">
+        <field name="name">Đồng bộ sản phẩm mới từ MSSQL</field>
+        <field name="model_id" ref="model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_products_from_mssql_create()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_sync_updated_products" model="ir.cron">
+        <field name="name">Cập nhật sản phẩm từ MSSQL</field>
+        <field name="model_id" ref="model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_products_from_mssql_update()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+
+    <record id="ir_cron_sync_new_vendors" model="ir.cron">
+        <field name="name">Đồng bộ nhà cung cấp từ MSSQL Augges (Create)</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_vendors_from_mssql_create()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_sync_new_customers" model="ir.cron">
+        <field name="name">Đồng bộ khách hàng từ MSSQL Augges (Create)</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_customers_from_mssql_create()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_sync_update_vendors" model="ir.cron">
+        <field name="name">Đồng bộ nhà cung cấp từ MSSQL Augges (Update)</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_vendors_from_mssql_update()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_sync_update_customers" model="ir.cron">
+        <field name="name">Đồng bộ khách hàng từ MSSQL Augges (Update)</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_customers_from_mssql_update()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_sync_create_vendor_price" model="ir.cron">
+        <field name="name">Đồng bộ Bảng giá nhà cung cấp từ MSSQL Augges (Create)</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">env['product.supplierinfo'].sync_create()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+</odoo>

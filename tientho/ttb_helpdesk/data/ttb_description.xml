@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="ttb_description_under_control_data" model="ttb.description">
+        <field name="name">Khách hàng chưa hài lòng trong tầm kiểm soát của chi nhánh</field>
+        <field name="type">under_control</field>
+    </record>
+
+    <record id="ttb_description_out_control_data" model="ttb.description">
+        <field name="name">Khách hàng chưa hài lòng ngoài tầm kiểm soát của chi nhánh</field>
+        <field name="type">out_control</field>
+    </record>
+    <record id="ttb_description_consulting_data" model="ttb.description">
+        <field name="name">Tư vấn thông tin</field>
+        <field name="type">consulting</field>
+    </record>
+    <record id="ttb_description_other_data" model="ttb.description">
+        <field name="name">Khác</field>
+        <field name="type">other</field>
+    </record>
+
+</odoo>

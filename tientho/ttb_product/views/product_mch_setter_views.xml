@@ -1,0 +1,204 @@
+<odoo>
+    <record id="product_mch_setter_list" model="ir.ui.view">
+        <field name="name">product.mch.setter.list</field>
+        <field name="model">product.mch.setter</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_id"/>
+                <field name="default_code"/>
+                <field name="list_price" optional="show"/>
+                <field name="branch_id" optional="show"/>
+                <field name="categ_id_level_1"/>
+                <field name="categ_id_level_2"/>
+                <field name="categ_id_level_3"/>
+                <field name="categ_id_level_4"/>
+                <field name="categ_id_level_5"/>
+                <field name="user_id"/>
+                <field name="processed"/>
+                <field name="menu_type" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="product_mch_setter_form" model="ir.ui.view">
+        <field name="name">product.mch.setter.list</field>
+        <field name="model">product.mch.setter</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_processed_and_next" type="object" string="Xác nhận" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="product_id"/>
+                        <field name="default_code" readonly="1"/>
+                        <field name="list_price" optional="show" readonly="1"/>
+                        <field name="branch_id" optional="show"/>
+                        <field name="categ_id_level_1"/>
+                        <field name="categ_id_level_2"/>
+                        <field name="categ_id_level_3"/>
+                        <field name="categ_id_level_4"/>
+                        <field name="categ_id_level_5"/>
+                        <field name="user_id"/>
+                        <field name="processed"/>
+                        <field name="menu_type"/>
+                    </group>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <!-- # Root menu -->
+    <menuitem id="menu_master_data_root" name="Master Data" sequence="1" web_icon="ttb_product,static/description/icon.png"/>
+    <menuitem id="menu_master_data_root_mch" name="Xác nhận MCH" parent="menu_master_data_root"/>
+
+    <!-- Các menu xác nhận MCH theo cơ sở -->
+    <record id="action_mch_setter_branch_15" model="ir.actions.act_window">
+        <field name="name">Nguyễn Trãi</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 15)]</field>
+        <field name="context">{"default_branch_id": 15}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_15" name="Nguyễn Trãi"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_15"/>
+
+    <record id="action_mch_setter_branch_14" model="ir.actions.act_window">
+        <field name="name">Giải phóng</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 14)]</field>
+        <field name="context">{"default_branch_id": 14}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_14" name="Giải phóng"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_14"/>
+
+    <record id="action_mch_setter_branch_16" model="ir.actions.act_window">
+        <field name="name">Hải Phòng</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 16)]</field>
+        <field name="context">{"default_branch_id": 16}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_16" name="Hải Phòng"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_16"/>
+
+    <record id="action_mch_setter_branch_17" model="ir.actions.act_window">
+        <field name="name">Bắc Giang</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 17)]</field>
+        <field name="context">{"default_branch_id": 17}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_17" name="Bắc Giang"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_17"/>
+
+              <record id="action_mch_setter_branch_18" model="ir.actions.act_window">
+        <field name="name">Xuân Thuỷ</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 18)]</field>
+        <field name="context">{"default_branch_id": 18}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_18" name="Xuân Thuỷ"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_18"/>
+
+              <record id="action_mch_setter_branch_19" model="ir.actions.act_window">
+        <field name="name">Láng</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 19)]</field>
+        <field name="context">{"default_branch_id": 19}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_19" name="Láng"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_19"/>
+
+              <record id="action_mch_setter_branch_20" model="ir.actions.act_window">
+        <field name="name">Nghệ An</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 20)]</field>
+        <field name="context">{"default_branch_id": 20}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_20" name="Nghệ An"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_20"/>
+
+              <record id="action_mch_setter_branch_21" model="ir.actions.act_window">
+        <field name="name">Thanh Hoá</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 21)]</field>
+        <field name="context">{"default_branch_id": 21}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_21" name="Thanh Hoá"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_21"/>
+
+              <record id="action_mch_setter_branch_22" model="ir.actions.act_window">
+        <field name="name">Thái Bình</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 22)]</field>
+        <field name="context">{"default_branch_id": 22}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_22" name="Thái Bình"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_22"/>
+
+              <record id="action_mch_setter_branch_23" model="ir.actions.act_window">
+        <field name="name">Thái Nguyên</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 23)]</field>
+        <field name="context">{"default_branch_id": 23}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_23" name="Thái Nguyên"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_23"/>
+
+              <record id="action_mch_setter_branch_24" model="ir.actions.act_window">
+        <field name="name">Quận 12</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 24)]</field>
+        <field name="context">{"default_branch_id": 24}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_24" name="Quận 12"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_24"/>
+
+              <record id="action_mch_setter_branch_25" model="ir.actions.act_window">
+        <field name="name">Thủ Dầu 1</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 25)]</field>
+        <field name="context">{"default_branch_id": 25}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_25" name="Thủ Dầu 1"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_25"/>
+
+              <record id="action_mch_setter_branch_26" model="ir.actions.act_window">
+        <field name="name">Thuận An</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="domain">[("branch_id", "=", 26)]</field>
+        <field name="context">{"default_branch_id": 26, "default_menu_type": "menu1"}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_mch_setter_branch_26" name="Thuận An"
+              parent="menu_master_data_root_mch" action="action_mch_setter_branch_26"/>
+
+
+    <!-- Danh sách sản phẩm -->
+    <record id="action_mch_setter_branch_all" model="ir.actions.act_window">
+        <field name="name">Danh sách sản phẩm</field>
+        <field name="res_model">product.mch.setter</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_product_mch_list" name="Danh sách sản phẩm"
+              parent="menu_master_data_root" action="action_mch_setter_branch_all" sequence="100"/>
+
+    <!-- Báo cáo sản phẩm theo thuộc tính   -->
+    <menuitem id="menu_report_mch" name="MCH" parent="menu_master_data_root" sequence="100"/>
+    <menuitem
+        id="ttb_product_report_mch_menu"
+        name="Báo cáo sản phẩm theo thuộc tính"
+        parent="menu_report_mch"
+        action="action_report_attribute_product"/>
+</odoo>

@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="report_purchaseorder_content">
+        <t t-call="ttb_purchase.ttb_report_purchase_layout">
+            <style>
+                table {
+                border-color: white;
+                }
+                td, th {
+                vertical-align: middle;
+                padding: 1px;
+                border-color: white;
+                }
+                table {
+                word-wrap: break-word;
+                }
+            </style>
+            <div class="page">
+                <t t-set="ttb_type" t-value="context.get('default_ttb_type')"/>
+                <t t-if="ttb_type == 'not_sale'">
+                    <table style="font-size:12px;font-family:Cambria;width:100%">
+                        <colgroup width="6%"></colgroup>
+                        <colgroup width="27%"></colgroup>
+                        <colgroup width="19%"></colgroup>
+                        <colgroup width="12%"></colgroup>
+                        <colgroup width="2%"></colgroup>
+                        <colgroup width="9%"></colgroup>
+                        <colgroup width="7%"></colgroup>
+                        <colgroup width="8%"></colgroup>
+                        <colgroup width="10%"></colgroup>
+                        <tr>
+                            <td colspan="1"><![CDATA[&nbsp;]]></td>
+                            <td colspan="1"><![CDATA[&nbsp;]]></td>
+                            <td colspan="1"><![CDATA[&nbsp;]]></td>
+                            <td colspan="1"><![CDATA[&nbsp;]]></td>
+                            <td colspan="1"><![CDATA[&nbsp;]]></td>
+                            <td colspan="1"><![CDATA[&nbsp;]]></td>
+                            <td colspan="1"><![CDATA[&nbsp;]]></td>
+                            <td colspan="1"><![CDATA[&nbsp;]]></td>
+                            <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border-top:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                                <b>Thông tin xuất hóa đơn</b>
+                            </td>
+                            <td><![CDATA[&nbsp;]]></td>
+                            <td colspan="4" style="border-top:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                                <b>Thông tin đơn hàng</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                                <span style="color:#215e99">
+                                    <t t-out="o.ttb_invoice_partner.name"/>
+                                </span>
+                            </td>
+                            <td><![CDATA[&nbsp;]]></td>
+                            <td colspan="2" style="border-left:1px solid black;">Số đơn hàng</td>
+                            <td colspan="2" style="border-right:1px solid black;">
+                                <t t-out="o.name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                                <span style="color:#215e99">
+                                    <t t-out="o.ttb_invoice_partner._display_address(True)"/>
+                                </span>
+                            </td>
+                            <td><![CDATA[&nbsp;]]></td>
+                            <td colspan="2" style="border-left:1px solid black;">Ngày đặt hàng</td>
+                            <td colspan="2" style="border-right:1px solid black;">
+                                <span t-field="o.date_order" t-options="{'widget':'date'}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                                <span style="color:#215e99">
+                                    MST:
+                                    <t t-out="o.ttb_invoice_partner.vat"/>
+                                </span>
+                            </td>
+                            <td><![CDATA[&nbsp;]]></td>
+                            <td colspan="2" style="border-left:1px solid black;">Người đặt hàng</td>
+                            <td colspan="2" style="border-right:1px solid black;">
+                                <span>
+                                    <t t-out="o.user_id.name"/>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                                <b>
+                                    Địa chỉ giao hàng
+                                </b>
+                            </td>
+                            <td><![CDATA[&nbsp;]]></td>
+                            <td colspan="2" style="border-left:1px solid black;">Số điện thoại</td>
+                            <td colspan="2" style="border-right:1px solid black;">
+                                <span>
+                                    <t t-out="o.user_id.phone"/>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                                <span style="color:#215e99">
+                                    <t t-out="o.ttb_shipping_partner.name"/>
+                                </span>
+                            </td>
+                            <td><![CDATA[&nbsp;]]></td>
+                            <td colspan="2" style="border-left:1px solid black">Email</td>
+                            <td colspan="2" style="border-right:1px solid black;">
+                                <span>
+                                    <t t-out="o.user_id.email"/>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border-bottom:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                                <span style="color:#215e99">
+                                    <t t-out="o.ttb_shipping_partner._display_address(True)"/>
+                                </span>
+                            </td>
+                            <td><![CDATA[&nbsp;]]></td>
+                            <td colspan="2" style="border-left:1px solid black;">Ngày giao hàng</td>
+                            <td colspan="2" style="border-right:1px solid black;">
+                                <span t-field="o.date_planned" t-options="{'widget':'date'}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td><![CDATA[&nbsp;]]></td>
+                            <td colspan="2" style="border-left:1px solid black;">Ghi chú</td>
+                            <td colspan="2" style="border-right:1px solid black;">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border-top:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                                <b>Nhà cung cấp</b>
+                            </td>
+                            <td><![CDATA[&nbsp;]]></td>
+                            <td colspan="4" rowspan="3" style="border-bottom:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                                <t t-out="o.notes"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                                <span style="color:#215e99">
+                                    <t t-out="o.partner_id.name"/>
+                                </span>
+                            </td>
+                            <td><![CDATA[&nbsp;]]></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border-bottom:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                                <span style="color:#215e99">
+                                    <t t-out="o.partner_id._display_address(True)"/>
+                                </span>
+                            </td>
+                            <td><![CDATA[&nbsp;]]></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td>
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td colspan="4">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="9">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                        </tr>
+                        <tr style="border:1px solid black;">
+                            <th colspan="1" rowspan="2">
+                                <b>STT</b>
+                            </th>
+                            <th colspan="1" rowspan="2">
+                                <b>Tên hàng</b>
+                            </th>
+                            <th colspan="1" rowspan="2">
+                                <b>Mô tả</b>
+                            </th>
+                            <th colspan="1" rowspan="2">
+                                <b>Mã vạch</b>
+                            </th>
+                            <th colspan="1" style="border-bottom:1px solid white">
+                                <![CDATA[&nbsp;]]>
+                            </th>
+                            <th colspan="1" rowspan="2">
+                                <b>Số lượng</b>
+                            </th>
+                            <th colspan="1" rowspan="2">
+                                <b>ĐVT</b>
+                            </th>
+                            <th colspan="1" rowspan="2">
+                                <b>Đơn giá</b>
+                            </th>
+                            <th colspan="1" rowspan="2">
+                                <b>Thành tiền</b>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="1" style="border-top:1px solid white">
+                                <![CDATA[&nbsp;]]>
+                            </th>
+                        </tr>
+
+                        <tr t-foreach="o.order_line" t-as="line" style="border:1px solid black">
+                            <td colspan="1" style="text-align:center;">
+                                <span t-esc="line_index+1"/>
+                            </td>
+                            <td colspan="1">
+                                <span t-out="line.product_id.name"/>
+                            </td>
+                            <td colspan="1">
+                                <span t-out="line.name"/>
+                            </td>
+                            <td colspan="1">
+                                <span t-out="line.product_id.barcode"/>
+                            </td>
+                            <td colspan="1">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td colspan="1" style="text-align:center;">
+                                <span t-out="line.product_qty">Số lượng</span>
+                            </td>
+                            <td colspan="1" style="text-align:center;">
+                                <span t-out="line.product_uom.name">ĐVT</span>
+                            </td>
+                            <td colspan="1" style="text-align:right;">
+                                <span t-out="line.currency_id.format(line.price_unit).replace('₫',' ')">Đơn giá</span>
+                            </td>
+                            <td colspan="1" style="text-align:right;">
+                                <span t-out="line.currency_id.format(line.price_subtotal).replace('₫',' ')">Thành tiền</span>
+                            </td>
+                        </tr>
+                        <tr style="border-left:1px solid black;border-right:1px solid black">
+                            <td colspan="4">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td colspan="3">
+                                <span>Tổng giá trị trước thuế</span>
+                            </td>
+                            <td colspan="1">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td colspan="1" style="text-align:right;">
+                                <span t-out="o.currency_id.format(o.amount_untaxed).replace('₫',' ')"/>
+                            </td>
+                        </tr>
+                        <t t-foreach="o.tax_totals['subtotals']" t-as="subtotal">
+                            <tr style="border-left:1px solid black;border-right:1px solid black" t-foreach="subtotal['tax_groups']" t-as="tax">
+                                <td colspan="5">
+                                    <![CDATA[&nbsp;]]>
+                                </td>
+                                <td colspan="2">
+                                    <span t-out="tax['group_name']"/>
+                                </td>
+                                <td colspan="1">
+                                    <![CDATA[&nbsp;]]>
+                                </td>
+                                <td colspan="1" style="text-align:right;">
+                                    <span t-out="o.currency_id.format(tax['tax_amount']).replace('₫',' ')"/>
+                                </td>
+                            </tr>
+                        </t>
+                        <tr style="border-left:1px solid black;border-right:1px solid black">
+                            <td colspan="4">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td colspan="3">
+                                <span>Thuế GTGT</span>
+                            </td>
+                            <td colspan="1">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td colspan="1" style="text-align:right;">
+                                <span t-out="o.currency_id.format(o.amount_tax).replace('₫',' ')"/>
+                            </td>
+                        </tr>
+                        <tr style="border-left:1px solid black;border-right:1px solid black;border-bottom:1px solid black">
+                            <td colspan="4">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td colspan="3">
+                                <span>Tổng giá trị đơn hàng</span>
+                            </td>
+                            <td colspan="1">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td colspan="1" style="text-align:right;">
+                                <span t-out="o.currency_id.format(o.amount_total).replace('₫',' ')"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="9">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="1" style="text-align:center; white-space: nowrap;">
+                                <b>Người lập phiếu</b>
+                            </td>
+                            <td colspan="2" style="text-align:center; white-space: nowrap;">
+                                <b>Trưởng phòng mua hàng</b>
+                            </td>
+                            <td colspan="2" style="text-align:center; white-space: nowrap;">
+                                <b>Giám đốc khối</b>
+                            </td>
+                            <td colspan="2" style="text-align:center; white-space: nowrap;">
+                                <b>CEO</b>
+                            </td>
+                            <td colspan="2" style="text-align:center; white-space: nowrap;">
+                                <b>Bộ phận có liên quan</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="9">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="9">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="9">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="9">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="9">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="1" style="text-align:center;">
+                                <b t-out="o.user_id.name"/>
+                            </td>
+                            <td colspan="2">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td colspan="2" style="text-align:center;">
+                                <b t-out="o.env['hr.employee'].sudo().search([('job_id.name','=','Giám đốc Khối Cung ứng')], limit=1).name"/>
+                            </td>
+
+                            <td colspan="2" style="text-align:center;">
+                                <b t-out="o.env['hr.employee'].sudo().search([('job_id.name','=','Tổng Giám đốc')], limit=1).name"/>
+                            </td>
+                        </tr>
+
+                    </table>
+                </t>
+                <t t-elif="ttb_type == 'sale'">
+                    <table style="font-size:12px;font-family:Cambria;width:100%">
+                    <colgroup width="6%"></colgroup>
+                    <colgroup width="27%"></colgroup>
+                    <colgroup width="19%"></colgroup>
+                    <colgroup width="12%"></colgroup>
+                    <colgroup width="2%"></colgroup>
+                    <colgroup width="9%"></colgroup>
+                    <colgroup width="7%"></colgroup>
+                    <colgroup width="8%"></colgroup>
+                    <colgroup width="10%"></colgroup>
+                    <tr>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="border-top:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                            <b>Thông tin xuất hóa đơn</b>
+                        </td>
+                        <td><![CDATA[&nbsp;]]></td>
+                        <td colspan="4" style="border-top:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                            <b>Thông tin đơn hàng</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                            <span style="color:#215e99">
+                                <t t-out="o.ttb_invoice_partner.name"/>
+                            </span>
+                        </td>
+                        <td><![CDATA[&nbsp;]]></td>
+                        <td colspan="2" style="border-left:1px solid black;">Số đơn hàng</td>
+                        <td colspan="2" style="border-right:1px solid black;">
+                            <t t-out="o.name"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                            <span style="color:#215e99">
+                                <t t-out="o.ttb_invoice_partner._display_address(True)"/>
+                            </span>
+                        </td>
+                        <td><![CDATA[&nbsp;]]></td>
+                        <td colspan="2" style="border-left:1px solid black;">Ngày đặt hàng</td>
+                        <td colspan="2" style="border-right:1px solid black;">
+                            <span t-field="o.date_order" t-options="{'widget':'date'}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                            <span style="color:#215e99">
+                                MST:
+                                <t t-out="o.ttb_invoice_partner.vat"/>
+                            </span>
+                        </td>
+                        <td><![CDATA[&nbsp;]]></td>
+                        <td colspan="2" style="border-left:1px solid black;">Người đặt hàng</td>
+                        <td colspan="2" style="border-right:1px solid black;">
+                            <span>
+                                <t t-out="o.user_id.name"/>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                            <b>
+                                Địa chỉ giao hàng
+                            </b>
+                        </td>
+                        <td><![CDATA[&nbsp;]]></td>
+                        <td colspan="2" style="border-left:1px solid black;">Số điện thoại</td>
+                        <td colspan="2" style="border-right:1px solid black;">
+                            <span>
+                                <t t-out="o.user_id.phone"/>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                            <span style="color:#215e99">
+                                <t t-out="o.ttb_shipping_partner.name"/>
+                            </span>
+                        </td>
+                        <td><![CDATA[&nbsp;]]></td>
+                        <td colspan="2" style="border-left:1px solid black">Email</td>
+                        <td colspan="2" style="border-right:1px solid black;">
+                            <span>
+                                <t t-out="o.user_id.email"/>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="border-bottom:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                            <span style="color:#215e99">
+                                <t t-out="o.ttb_shipping_partner._display_address(True)"/>
+                            </span>
+                        </td>
+                        <td><![CDATA[&nbsp;]]></td>
+                        <td colspan="2" style="border-left:1px solid black;">Ngày giao hàng</td>
+                        <td colspan="2" style="border-right:1px solid black;">
+                            <span t-field="o.date_planned" t-options="{'widget':'date'}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td><![CDATA[&nbsp;]]></td>
+                        <td colspan="2" style="border-left:1px solid black;">Ghi chú</td>
+                        <td colspan="2" style="border-right:1px solid black;">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="border-top:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                            <b>Nhà cung cấp</b>
+                        </td>
+                        <td><![CDATA[&nbsp;]]></td>
+                        <td colspan="4" rowspan="3" style="border-bottom:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                            <t t-out="o.notes"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="border-left:1px solid black;border-right:1px solid black;">
+                            <span style="color:#215e99">
+                                <t t-out="o.partner_id.name"/>
+                            </span>
+                        </td>
+                        <td><![CDATA[&nbsp;]]></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="border-bottom:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                            <span style="color:#215e99">
+                                <t t-out="o.partner_id._display_address(True)"/>
+                            </span>
+                        </td>
+                        <td><![CDATA[&nbsp;]]></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td>
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="4">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="9">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                    </tr>
+                    <tr style="border:1px solid black;">
+                        <th colspan="1" rowspan="2">
+                            <b>STT</b>
+                        </th>
+                        <th colspan="1" rowspan="2">
+                            <b>Tên hàng</b>
+                        </th>
+                        <th colspan="1" rowspan="2">
+                            <b>Mô tả</b>
+                        </th>
+                        <th colspan="1" rowspan="2">
+                            <b>Mã vạch</b>
+                        </th>
+                        <th colspan="1" style="border-bottom:1px solid white">
+                            <![CDATA[&nbsp;]]>
+                        </th>
+                        <th colspan="1" rowspan="2">
+                            <b>Số lượng</b>
+                        </th>
+                        <th colspan="1" rowspan="2">
+                            <b>ĐVT</b>
+                        </th>
+                        <th colspan="1" rowspan="2">
+                            <b>Đơn giá</b>
+                        </th>
+                        <th colspan="1" rowspan="2">
+                            <b>Thành tiền</b>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="1" style="border-top:1px solid white">
+                            <![CDATA[&nbsp;]]>
+                        </th>
+                    </tr>
+
+                    <tr t-foreach="o.order_line" t-as="line" style="border:1px solid black">
+                        <td colspan="1" style="text-align:center;">
+                            <span t-esc="line_index+1"/>
+                        </td>
+                        <td colspan="1">
+                            <span t-out="line.product_id.name"/>
+                        </td>
+                        <td colspan="1">
+                            <span t-out="line.name"/>
+                        </td>
+                        <td colspan="1">
+                            <span t-out="line.product_id.barcode"/>
+                        </td>
+                        <td colspan="1">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="1" style="text-align:center;">
+                            <span t-out="line.product_qty">Số lượng</span>
+                        </td>
+                        <td colspan="1" style="text-align:center;">
+                            <span t-out="line.product_uom.name">ĐVT</span>
+                        </td>
+                        <td colspan="1" style="text-align:right;">
+                            <span t-out="line.currency_id.format(line.price_unit).replace('₫',' ')">Đơn giá</span>
+                        </td>
+                        <td colspan="1" style="text-align:right;">
+                            <span t-out="line.currency_id.format(line.price_subtotal).replace('₫',' ')">Thành tiền</span>
+                        </td>
+                    </tr>
+                    <tr style="border-left:1px solid black;border-right:1px solid black">
+                        <td colspan="4">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="3">
+                            <span>Tổng giá trị trước thuế</span>
+                        </td>
+                        <td colspan="1">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="1" style="text-align:right;">
+                            <span t-out="o.currency_id.format(o.amount_untaxed).replace('₫',' ')"/>
+                        </td>
+                    </tr>
+                    <t t-foreach="o.tax_totals['subtotals']" t-as="subtotal">
+                        <tr style="border-left:1px solid black;border-right:1px solid black" t-foreach="subtotal['tax_groups']" t-as="tax">
+                            <td colspan="5">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td colspan="2">
+                                <span t-out="tax['group_name']"/>
+                            </td>
+                            <td colspan="1">
+                                <![CDATA[&nbsp;]]>
+                            </td>
+                            <td colspan="1" style="text-align:right;">
+                                <span t-out="o.currency_id.format(tax['tax_amount']).replace('₫',' ')"/>
+                            </td>
+                        </tr>
+                    </t>
+                    <tr style="border-left:1px solid black;border-right:1px solid black">
+                        <td colspan="4">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="3">
+                            <span>Thuế GTGT</span>
+                        </td>
+                        <td colspan="1">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="1" style="text-align:right;">
+                            <span t-out="o.currency_id.format(o.amount_tax).replace('₫',' ')"/>
+                        </td>
+                    </tr>
+                    <tr style="border-left:1px solid black;border-right:1px solid black;border-bottom:1px solid black">
+                        <td colspan="4">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="3">
+                            <span>Tổng giá trị đơn hàng</span>
+                        </td>
+                        <td colspan="1">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="1" style="text-align:right;">
+                            <span t-out="o.currency_id.format(o.amount_total).replace('₫',' ')"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="9">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align:center;">
+                            <b>Người lập phiếu</b>
+                        </td>
+                        <td colspan="2" style="text-align:center;">
+                            <b>Bộ phận kho vận</b>
+                        </td>
+                        <td colspan="1">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="3" style="text-align:center;">
+                            <b>Người giao hàng</b>
+                        </td>
+                        <td colspan="1">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="9">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="9">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="9">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align:center;">
+                            <b t-out="o.env.user.name"/>
+                        </td>
+                         <td colspan="7">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                    </tr>
+                </table>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="purchase.report_purchaseorder">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="ttb_purchase.report_purchaseorder_content" t-lang="o.partner_id.lang"/>
+        </t>
+    </template>
+
+    <record id="paperformat_ttb_purchase" model="report.paperformat">
+        <field name="name">Đơn mua hàng không ảnh</field>
+        <field name="disable_shrinking" eval="True"/>
+        <field name="dpi">96</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">25</field>
+        <field name="header_spacing">25</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">7</field>
+    </record>
+
+    <record id="purchase.action_report_purchase_order" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_ttb_purchase"/>
+    </record>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+	<t t-name="ImportDataContent" t-inherit="ImportDataContent" t-inherit-mode="extension">
+		<xpath expr="//table[@t-if='!props.previewError']//thead//tr//th[2]" position="after">
+			<th scope="col">Lựa chọn </th>
+		</xpath>
+		<xpath expr="//table[@t-if='!props.previewError']//tbody//tr//td[2]" position="after">
+			<td>
+				<t t-if="column.fieldInfo">
+					<ImportDataCheckBox fieldInfo="column.fieldInfo" onOptionChanged.bind="props.onOptionChanged"/>
+				</t>
+			</td>
+		</xpath>
+	</t>
+</templates>

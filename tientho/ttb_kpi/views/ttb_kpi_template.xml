@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_kpi_template_view_tree" model="ir.ui.view">
+        <field name="name">ttb.kpi.template.view.list</field>
+        <field name="model">ttb.kpi.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="job_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_kpi_template_view_form" model="ir.ui.view">
+        <field name="name">ttb.kpi.template.view.form</field>
+        <field name="model">ttb.kpi.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="job_ids" widget="many2many_tags"/>
+                            <field name="employee_level" />
+                        </group>
+                        <group>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="ttb_kpi_template_line" string="Danh sách">
+                            <field name="line_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="type_id"/>
+                                    <field name="weight" widget="percentage"/>
+                                    <field name="min_score"/>
+                                    <field name="max_score"/>
+                                    <field name="overdue_rate" widget="percentage"/>
+                                    <field name="bonus_rate" widget="percentage"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="detail_ids" string="Chi tiết KPI">
+                            <field name="detail_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="type_id"/>
+                                    <field name="group"/>
+                                    <field name="weight" widget="percentage"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+     <record id="ttb_kpi_template_action" model="ir.actions.act_window">
+        <field name="name">Cài đặt KPI</field>
+        <field name="res_model">ttb.kpi.template</field>
+        <field name="view_mode">list,form</field>
+     </record>
+
+</odoo>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Báo cáo: Pivot + Graph + 3 Actions + Menu cha + 3 Menu con -->
+
+    <record id="view_ttb_operational_task_pivot" model="ir.ui.view">
+        <field name="name">ttb.operational.task.pivot</field>
+        <field name="model">ttb.operational.task</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="area_id" type="row"/>
+                <field name="employee_id" type="row"/>
+                <field name="planned_date_start" interval="month" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_ttb_operational_task_graph" model="ir.ui.view">
+        <field name="name">ttb.operational.task.graph</field>
+        <field name="model">ttb.operational.task</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="True">
+                <field name="planned_date_start" interval="day"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_report_operations" model="ir.actions.act_window">
+        <field name="name">Tổng quan Vận hành</field>
+        <field name="res_model">ttb.operational.task</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+
+    <record id="action_report_performance" model="ir.actions.act_window">
+        <field name="name">Hiệu suất Nhân sự</field>
+        <field name="res_model">ttb.operational.task</field>
+        <field name="view_mode">pivot,graph</field>
+    </record>
+
+    <record id="action_report_quality" model="ir.actions.act_window">
+        <field name="name">Chất lượng &amp; Hậu kiểm</field>
+        <field name="res_model">ttb.operational.task</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="domain">[('is_audit_required', '=', True)]</field>
+    </record>
+
+    <menuitem id="ttb_menu_report_operations" name="Tổng quan Vận hành" parent="ttb_menu_reporting" action="action_report_operations" sequence="10"/>
+    <menuitem id="ttb_menu_report_performance" name="Hiệu suất Nhân sự" parent="ttb_menu_reporting" action="action_report_performance" sequence="20"/>
+    <menuitem id="ttb_menu_report_quality" name="Chất lượng &amp; Hậu kiểm" parent="ttb_menu_reporting" action="action_report_quality" sequence="30"/>
+</odoo>

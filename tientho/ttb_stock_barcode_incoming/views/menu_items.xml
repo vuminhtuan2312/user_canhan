@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem
+        id="menu_kiem_ke_root"
+        name="Kiểm kê"
+        web_icon="stock,static/description/icon.png"
+        sequence="2"
+    />
+<!--    Phiếu kiểm kê lần 1-->
+    <menuitem
+        id="menu_kiem_ke_lan1_root"
+        name="Kiểm kê lần 1"
+        parent="menu_kiem_ke_root"
+        sequence="1"
+    />
+
+    <record id="stock_barcode_action_all_kiem_ke" model="ir.actions.act_window">
+        <field name="name">Tất cả phiếu kiểm kê</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM')]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_all_kiem_ke"
+        parent="menu_kiem_ke_lan1_root"
+        name="Tất cả phiếu kiểm kê"
+        sequence="1"
+        action="stock_barcode_action_all_kiem_ke"
+    />
+
+    <record id="stock_barcode_action_my_kiem_ke" model="ir.actions.act_window">
+        <field name="name">Phiếu kiểm kê của tôi</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM'), ('user_id', '=', uid)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_kiem_ke_myself"
+        parent="menu_kiem_ke_lan1_root"
+        name="Phiếu kiểm kê của tôi"
+        sequence="2"
+        action="stock_barcode_action_my_kiem_ke"
+    />
+
+    <record id="stock_barcode_action_kiem_ke_not_yet" model="ir.actions.act_window">
+        <field name="name">Phiếu chưa kiểm kê</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM'), ('state', '=', 'draft'), ('picking_type_id', '!=', 2488)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_kiem_ke_not_yet"
+        parent="menu_kiem_ke_lan1_root"
+        name="Phiếu chưa kiểm kê"
+        sequence="3"
+        action="stock_barcode_action_kiem_ke_not_yet"
+    />
+
+    <record id="stock_barcode_action_going_kiem_ke" model="ir.actions.act_window">
+        <field name="name">Phiếu đang kiểm kê</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM'), ('inventory_scan_start_time', '!=', False), ('state', 'not in', ['draft', 'done', 'cancel'])]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_going_kiem_ke"
+        parent="menu_kiem_ke_lan1_root"
+        name="Phiếu đang kiểm kê"
+        sequence="4"
+        action="stock_barcode_action_going_kiem_ke"
+    />
+
+    <record id="stock_barcode_action_was_kiem_ke" model="ir.actions.act_window">
+        <field name="name">Phiếu đã kiểm kê</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM'), ('state', '=', 'done')]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_was_kiem_ke"
+        parent="menu_kiem_ke_lan1_root"
+        name="Phiếu đã kiểm kê"
+        sequence="5"
+        action="stock_barcode_action_was_kiem_ke"
+
+    />
+<!--    Hậu kiểm lần 1-->
+    <menuitem
+        id="menu_hau_kiem_l1_root"
+        name="Hậu kiểm lần 1"
+        sequence="2"
+        parent="menu_kiem_ke_root"
+    />
+
+    <record id="stock_barcode_action_hau_kiem_all" model="ir.actions.act_window">
+        <field name="name">Tất cả phiếu hậu kiểm lần 1</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">[('shelf_location', 'ilike', 'Hậu kiểm'), ('shelf_location', 'not ilike', 'Hậu kiểm lần 2'), ('picking_type_id', 'ilike', 'Kiểm kê'), ('picking_type_id', '!=', 2488)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_hau_kiem_all"
+        parent="menu_hau_kiem_l1_root"
+        name="Tất cả phiếu hậu kiểm lần 1"
+        sequence="1"
+        action="stock_barcode_action_hau_kiem_all"
+    />
+
+    <record id="stock_barcode_action_hau_kiem_myself" model="ir.actions.act_window">
+        <field name="name">Phiếu hậu kiểm lần 1 của tôi</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">[('shelf_location', 'ilike', 'Hậu kiểm'), ('shelf_location', 'not ilike', 'Hậu kiểm lần 2'), ('picking_type_id', 'ilike', 'Kiểm kê'), ('user_id', '=', uid)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_hau_kiem_myself"
+        parent="menu_hau_kiem_l1_root"
+        name="Phiếu hậu kiểm lần 1 của tôi"
+        sequence="2"
+        action="stock_barcode_action_hau_kiem_myself"
+
+    />
+
+    <record id="stock_barcode_action_hau_kiem_not_yet" model="ir.actions.act_window">
+        <field name="name">Phiếu chưa hậu kiểm lần 1</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">[('shelf_location', 'ilike', 'Hậu kiểm'), ('shelf_location', 'not ilike', 'Hậu kiểm lần 2'), ('picking_type_id', 'ilike', 'Kiểm kê'), ('state', '=', 'draft')]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_hau_kiem_not_yet"
+        parent="menu_hau_kiem_l1_root"
+        name="Phiếu chưa hậu kiểm lần 1"
+        sequence="3"
+        action="stock_barcode_action_hau_kiem_not_yet"
+    />
+
+    <record id="stock_barcode_action_going_hau_kiem" model="ir.actions.act_window">
+        <field name="name">Phiếu đang hậu kiểm lần 1</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">
+            [
+                ('picking_type_id.code', '=', 'inventory_counting'),
+                ('inventory_scan_start_time', '!=', False),
+                ('shelf_location', 'ilike', 'Hậu kiểm'),
+                ('shelf_location', 'not ilike', 'Hậu kiểm lần 2'),
+                ('state', 'in', ['assigned'])
+            ]
+        </field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_going_hau_kiem"
+        parent="menu_hau_kiem_l1_root"
+        name="Phiếu đang hậu kiểm lần 1"
+        sequence="4"
+        action="stock_barcode_action_going_hau_kiem"
+    />
+    <menuitem
+        id="menu_was_hau_kiem"
+        parent="menu_hau_kiem_l1_root"
+        name="Phiếu đã hậu kiểm lần 1"
+        sequence="5"
+    />
+    <record id="stock_barcode_action_need_create_hau_kiem_l2" model="ir.actions.act_window">
+        <field name="name">Phiếu cần sinh hậu kiểm lần 2</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">
+            [
+                ('picking_type_code', '=', 'inventory_counting'),
+                ('state', '=', 'done'),
+                ('shelf_location', 'ilike', 'Hậu kiểm'),
+                ('shelf_location', 'not ilike', 'Hậu kiểm lần 2'),
+                ('diff_product_rate', '!=', 0),
+                ('create_inventory_picking', '=', False)
+            ]
+        </field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_need_create_hau_kiem_l2"
+        parent="menu_hau_kiem_l1_root"
+        name="Phiếu cần sinh hậu kiểm lần 2"
+        sequence="6"
+        action="stock_barcode_action_going_hau_kiem"
+    />
+    <record id="stock_barcode_action_was_create_hau_kiem_l1" model="ir.actions.act_window">
+        <field name="name">Phiếu đã hậu kiểm lần 1</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">
+            [
+                ('picking_type_code', '=', 'inventory_counting'),
+                ('shelf_location', 'ilike', 'Hậu kiểm'),
+                ('shelf_location', 'not ilike', 'Hậu kiểm lần 2'),
+                ('state', '=', 'done')
+            ]
+        </field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_was_create_hau_kiem_l1"
+        parent="menu_hau_kiem_l1_root"
+        name="Phiếu đã hậu kiểm lần 1"
+        sequence="7"
+        action="stock_barcode_action_was_create_hau_kiem_l1"
+    />
+
+<!--    Hậu kiểm lần 2-->
+    <menuitem
+        id="menu_hau_kiem_lan2_root"
+        name="Hậu kiểm lần 2"
+        sequence="3"
+        parent="menu_kiem_ke_root"
+    />
+
+    <record id="stock_barcode_action_all_hau_kiem_lan_2" model="ir.actions.act_window">
+        <field name="name">Tất cả phiếu hậu kiểm lần 2</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">
+            [
+                ('shelf_location', 'ilike', 'Hậu kiểm lần 2'),
+                ('picking_type_id', 'ilike', 'kiểm kê'),
+                ('state', '!=', 'cancel'),
+                ('picking_type_id', '!=', 2488)
+            ]
+        </field>
+        <field name="context">{}</field>
+    </record>
+
+
+    <menuitem
+        id="menu_hau_kiem_lan2_all"
+        parent="menu_hau_kiem_lan2_root"
+        name="Tất cả phiếu hậu kiểm lần 2"
+        action="stock_barcode_action_all_hau_kiem_lan_2"
+        sequence="1"
+    />
+
+    <record id="stock_barcode_action_hau_kiem_lan_2_not_yet" model="ir.actions.act_window">
+        <field name="name">Phiếu chưa hậu kiểm lần 2</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">
+        [
+            ('picking_type_code', '=', 'inventory_counting'),
+            ('shelf_location', 'ilike', 'Hậu kiểm lần 2'),
+            ('state', '=', 'assigned')
+        ]
+        </field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_hau_kiem_lan2_not_yet"
+        parent="menu_hau_kiem_lan2_root"
+        name="Phiếu chưa hậu kiểm lần 2"
+        action="stock_barcode_action_hau_kiem_lan_2_not_yet"
+        sequence="2"
+    />
+
+    <record id="stock_barcode_action_hau_kiem_lan_2_going" model="ir.actions.act_window">
+        <field name="name">Phiếu đang hậu kiểm lần 2</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">
+            [
+                ('picking_type_code', '=', 'inventory_counting'),
+                ('shelf_location', 'ilike', 'Hậu kiểm lần 2'),
+                ('state', '=', 'assigned')
+            ]
+        </field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_going_hau_kiem_lan2"
+        parent="menu_hau_kiem_lan2_root"
+        name="Phiếu đang hậu kiểm lần 2"
+        action="stock_barcode_action_hau_kiem_lan_2_going"
+        sequence="3"
+    />
+
+    <record id="stock_barcode_action_hau_kiem_lan_2_done" model="ir.actions.act_window">
+        <field name="name">Phiếu đã hậu kiểm lần 2</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">
+            [
+                ('picking_type_code', '=', 'inventory_counting'),
+                ('shelf_location', 'ilike', 'Hậu kiểm lần 2'),
+                ('state', '=', 'done')
+            ]
+        </field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_was_hau_kiem_lan2"
+        parent="menu_hau_kiem_lan2_root"
+        name="Phiếu đã hậu kiểm lần 2"
+        action="stock_barcode_action_hau_kiem_lan_2_done"
+        sequence="4"
+    />
+    <record id="stock_barcode_action_hau_kiem_done_filter" model="ir.actions.act_window">
+        <field name="name">Phiếu đã hoàn thành</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
+        <field name="domain">
+            [
+                ('state', '=', 'done'),
+                ('shelf_location', 'ilike', 'Hậu kiểm'),
+                '|',
+                    ('diff_product_rate', '=', 0),
+                    ('shelf_location', 'ilike', 'Hậu kiểm lần 2')
+            ]
+        </field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_kiem_ke_done_root"
+        parent="menu_kiem_ke_root"
+        name="Phiếu đã hoàn thành"
+        action="stock_barcode_action_hau_kiem_done_filter"
+        sequence="4"
+    />
+
+    <menuitem
+        id="menu_kiem_ke_configuration_root"
+        parent="menu_kiem_ke_root"
+        name="Cấu hình kiểm kê"
+        action="stock_barcode_action_hau_kiem_done_filter"
+        sequence="4"
+        groups="stock.group_stock_manager"
+    />
+
+    <menuitem
+        id="menu_inventory_barcode_incoming_root"
+        parent="menu_kiem_ke_configuration_root"
+        name="Kiểm kê"
+        action="inventory_picking_action"
+        sequence="1"
+    />
+    <menuitem
+        id="menu_inventory_barcode_incoming_old_root"
+        parent="menu_kiem_ke_configuration_root"
+        name="Hậu kiểm"
+        action="inventory_result_action"
+        sequence="2"
+    />
+    <menuitem
+        id="menu_period_inventory_configuration_root"
+        parent="menu_kiem_ke_configuration_root"
+        name="Đợt kiểm kê"
+        action="action_period_inventory"
+        sequence="3"
+    />
+    <menuitem
+        id="menu_shelf_location_configuration_root"
+        parent="menu_kiem_ke_configuration_root"
+        name="Quầy kệ"
+        action="action_shelf_location"
+        sequence="4"
+    />
+    <!-- Menu cho Báo cáo KVC -->
+    <menuitem id="menu_kvc_inventory_root" name="Báo cáo KVC" parent="menu_kiem_ke_root" sequence="50"/>
+
+    <menuitem
+        id="menu_kvc_inventory_report_root"
+        parent="menu_kvc_inventory_root"
+        name="Báo cáo KVC"
+        sequence="10"
+        action="action_kvc_inventory_report"
+    />
+
+
+    <menuitem
+        id="menu_kvc_inventory_report_branch"
+        parent="menu_kvc_inventory_root"
+        name="Báo cáo chi tiết cơ sở"
+        sequence="20"
+        action="action_kvc_inventory_report_branch"
+    />
+    <menuitem id="menu_period_inventory_branch" name="Đợt kiểm kê (Cơ sở)" parent="menu_kvc_inventory_root" action="action_period_inventory_branch" sequence="10"/>
+    <menuitem
+        id="menu_kvc_inventory_report_branch_line_pivot"
+        parent="menu_kvc_inventory_root"
+        name="Báo cáo Tổng hợp KVC - Pivot"
+        sequence="30"
+        action="action_kvc_inventory_report_branch_line_pivot"
+    />
+
+</odoo>

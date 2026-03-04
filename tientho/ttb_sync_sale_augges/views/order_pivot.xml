@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_order_pivot" model="ir.ui.view">
+            <field name="name">pos.order.pivot</field>
+            <field name="model">pos.order</field>
+            <field name="arch" type="xml">
+                <pivot string="Đơn hàng">
+                    <field name="amount_total_avg" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+    </data>
+</odoo>

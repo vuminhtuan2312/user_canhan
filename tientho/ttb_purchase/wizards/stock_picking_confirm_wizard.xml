@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_picking_confirm_wizard_form" model="ir.ui.view">
+        <field name="name">stock.picking.confirm.wizard.form</field>
+        <field name="model">stock.picking.confirm.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Xác nhận hàng về">
+                <group>
+                    <field name="total_packages"/>
+                    <field name="received_date" force_save="1"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Xác nhận" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+        <record id="view_picking_form_inherit_ttb" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.ttb</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="ttb_require_confirm_receipt" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//button[@name='button_validate'][hasclass('oe_highlight')]" position="before">
+                <button name="action_open_confirm_receipt_wizard"
+                        string="Xác nhận hàng về"
+                        type="object"
+                        class="btn-primary"
+                        invisible="not ttb_require_confirm_receipt or ttb_received_date"/>
+            </xpath>
+
+            <xpath expr="//button[@name='button_validate'][hasclass('oe_highlight')]" position="attributes">
+                <attribute name="invisible">state in ('draft', 'confirmed', 'done', 'cancel') or (ttb_require_confirm_receipt and not ttb_received_date)</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='button_validate'][not(hasclass('oe_highlight'))]" position="attributes">
+                <attribute name="invisible">state in ('waiting', 'assigned', 'done', 'cancel') or (ttb_require_confirm_receipt and not ttb_received_date)</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="ttb_received_date" invisible="not ttb_received_date"/>
+                <field name="ttb_received_packages" invisible="not ttb_received_packages"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

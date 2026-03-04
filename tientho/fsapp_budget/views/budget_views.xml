@@ -1,0 +1,106 @@
+<odoo>
+    <!-- Tree View -->
+    <record id="view_fsapp_budget_tree" model="ir.ui.view">
+        <field name="name">fsapp.budget.tree</field>
+        <field name="model">fsapp.budget</field>
+        <field name="arch" type="xml">
+            <list string="Lập ngân sách">
+                <field name="name"/>
+                <field name="manager_id"/>
+                <field name="department_id"/>
+                <field name="total_budget"/>
+                <field name="project_budget_id"/>
+                <field name="budget_type"/>
+                <field name="approve_user_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_fsapp_budget_form" model="ir.ui.view">
+        <field name="name">fsapp.budget.form</field>
+        <field name="model">fsapp.budget</field>
+        <field name="arch" type="xml">
+            <form string="Ngân sách">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting,approved,rejected,cancelled"/>
+
+                    <field name="can_submit" invisible="1"/>
+                    <field name="can_approve" invisible="1"/>
+                    <field name="can_cancel" invisible="1"/>
+                    <field name="can_reset" invisible="1"/>
+
+                    <button name="action_submit" type="object" string="Gửi duyệt"
+                            class="btn-primary"
+                            invisible="not can_submit"/>
+
+                    <button name="action_cancel" type="object" string="Hủy"
+                            invisible="not can_cancel"/>
+
+                    <button name="action_approve" type="object" string="Duyệt"
+                            class="btn-primary"
+                            invisible="not can_approve"/>
+
+                    <button name="action_reject" type="object" string="Không duyệt"
+                            invisible="not can_approve"/>
+
+                    <button name="action_reset_to_draft" type="object" string="Về mới"
+                            invisible="not can_reset"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" readonly="state in ['waiting', 'approved']"/></h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="department_id" readonly="state in ['waiting', 'approved']"/>
+                            <field name="manager_id"/>
+                            <field name="project_budget_id" readonly="state in ['waiting', 'approved']"/>
+                        </group>
+                        <group>
+                            <field name="budget_type" readonly="state in ['waiting', 'approved']"/>
+                            <field name="date_from" readonly="state in ['waiting', 'approved']"/>
+                            <field name="date_to" readonly="state in ['waiting', 'approved']"/>
+                            <field name="approve_user_id" readonly="1"/>
+                            <field name="total_budget" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <field name="budget_line_ids" readonly="state in ['waiting', 'approved']">
+                        <list editable="bottom">
+                            <field name="cost_group"/>
+                            <field name="analytic_account_id"/>
+                            <field name="planned_cost"/>
+                            <field name="adjustment_cost"/>
+                            <field name="adjustment_count"/>
+                            <field name="final_cost"/>
+                            <field name="description"/>
+                        </list>
+                    </field>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                      </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fsapp_budget" model="ir.actions.act_window">
+        <field name="name">Ngân sách</field>
+        <field name="res_model">fsapp.budget</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Tạo ngân sách đầu tiên</p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_fsapp_budget_root" name="Ngân sách"/>
+    <menuitem id="menu_fsapp_budget" name="Lập ngân sách" parent="menu_fsapp_budget_root" action="action_fsapp_budget"/>
+</odoo>

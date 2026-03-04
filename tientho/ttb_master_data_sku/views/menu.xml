@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="menu_master_data_sku_root" name="Master Data SKU" sequence="10"/>
+
+    <menuitem id="menu_product_master" name="Sản phẩm"
+              parent="menu_master_data_sku_root" action="action_product_master" sequence="10"/>
+    <menuitem id="menu_vendor_master" name="Nhà cung cấp"
+              parent="menu_master_data_sku_root" action="action_vendor_master" sequence="20"/>
+</odoo>

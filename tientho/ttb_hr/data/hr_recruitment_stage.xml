@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="stage_common_inactive" model="hr.job">
+            <field name="name">common</field>
+            <field name="active" eval="False"/>
+        </record>
+    </data>
+</odoo>

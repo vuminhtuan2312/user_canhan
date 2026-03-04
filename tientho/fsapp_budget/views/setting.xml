@@ -1,0 +1,35 @@
+<odoo>
+  <record id="res_config_settings_view_form_inherit_fsapp_budget" model="ir.ui.view">
+    <field name="name">res.config.settings.view.form.fsapp.budget</field>
+    <field name="model">res.config.settings</field>
+    <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+    <field name="arch" type="xml">
+      <!-- 
+        Điểm chèn mới là bên trong thẻ <form>.
+        Cấu trúc mới sử dụng các thẻ <app>, <block>, và <setting>.
+      -->
+      <xpath expr="//form" position="inside">
+        <app data-string="Ngân sách" string="Ngân sách" name="budget" groups="base.group_system">
+            <block title="Cấu hình Phê duyệt" name="budget_approval_settings">
+                <setting string="Người duyệt Ngân sách" help="Người dùng mặc định sẽ phê duyệt các bản ghi ngân sách.">
+                    <div class="content-group">
+                        <div class="row mt16">
+                            <label for="budget_approver_id" class="col-lg-3 o_light_label"/>
+                            <field name="budget_approver_id"/>
+                        </div>
+                    </div>
+                </setting>
+                <setting string="Người duyệt Thanh toán" help="Người dùng mặc định sẽ phê duyệt các đề xuất thanh toán.">
+                    <div class="content-group">
+                        <div class="row mt16">
+                            <label for="payment_request_approver_id" class="col-lg-3 o_light_label"/>
+                            <field name="payment_request_approver_id"/>
+                        </div>
+                    </div>
+                </setting>
+            </block>
+        </app>
+      </xpath>
+    </field>
+  </record>
+</odoo>

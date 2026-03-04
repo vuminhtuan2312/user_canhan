@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ======================================================== -->
+        <!-- KHU VỰC: KHU VUI CHƠI (Map -> ttb_area_1_914cc4da) -->
+        <!-- ======================================================== -->
+        <record id="work_playground_01" model="ttb.work.template">
+            <field name="name">Kiểm tra an toàn nhà bóng</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_1_914cc4da'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">120</field>
+            <field name="description"><p>Kiểm tra các vật sắc nhọn, vệ sinh sơ bộ trong nhà bóng.</p></field>
+        </record>
+        <record id="work_playground_02" model="ttb.work.template">
+            <field name="name">Sắp xếp lại khu vực Lego</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_1_914cc4da'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_playground_03" model="ttb.work.template">
+            <field name="name">Vệ sinh bề mặt cầu trượt</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_1_914cc4da'))]"/>
+            <field name="duration_minutes">20</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_playground_04" model="ttb.work.template">
+            <field name="name">Kiểm tra lưới bảo vệ sàn nhún</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_1_914cc4da'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_playground_05" model="ttb.work.template">
+            <field name="name">Tổ chức hoạt động hoạt náo mini</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_1_914cc4da'))]"/>
+            <field name="duration_minutes">30</field>
+            <field name="frequency_minutes">180</field>
+        </record>
+        <record id="work_playground_06" model="ttb.work.template">
+            <field name="name">Nhắc nhở bé đeo tất chống trượt</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_1_914cc4da'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">30</field>
+        </record>
+        <record id="work_playground_07" model="ttb.work.template">
+            <field name="name">Thu gom đồ chơi rời rạc</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_1_914cc4da'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_playground_08" model="ttb.work.template">
+            <field name="name">Khử khuẩn tay vịn và thảm</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_1_914cc4da'))]"/>
+            <field name="duration_minutes">20</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_playground_09" model="ttb.work.template">
+            <field name="name">Kiểm tra máy game thùng</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_1_914cc4da'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_playground_10" model="ttb.work.template">
+            <field name="name">Kiểm tra nhiệt độ điều hòa khu vui chơi</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_1_914cc4da'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+
+        <!-- ======================================================== -->
+        <!-- KHU VỰC: THU NGÂN (Map -> ttb_area_3_07256ee3) -->
+        <!-- ======================================================== -->
+        <record id="work_cashier_01" model="ttb.work.template">
+            <field name="name">Vệ sinh quầy thu ngân</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_3_07256ee3'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_cashier_02" model="ttb.work.template">
+            <field name="name">Kiểm tra tiền lẻ đầu ca</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_3_07256ee3'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">480</field>
+        </record>
+        <record id="work_cashier_03" model="ttb.work.template">
+            <field name="name">Kiểm tra giấy in hóa đơn</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_3_07256ee3'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_cashier_04" model="ttb.work.template">
+            <field name="name">Sắp xếp lại tờ rơi khuyến mãi</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_3_07256ee3'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_cashier_05" model="ttb.work.template">
+            <field name="name">Tổng kết doanh thu giữa ca</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_3_07256ee3'))]"/>
+            <field name="duration_minutes">20</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_cashier_06" model="ttb.work.template">
+            <field name="name">Vệ sinh máy POS và màn hình</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_3_07256ee3'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_cashier_07" model="ttb.work.template">
+            <field name="name">Kiểm tra túi đựng hàng</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_3_07256ee3'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_cashier_08" model="ttb.work.template">
+            <field name="name">Hỗ trợ khách hàng đổi xu/thẻ</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_3_07256ee3'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_cashier_09" model="ttb.work.template">
+            <field name="name">Kiểm tra sổ giao ca</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_3_07256ee3'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">480</field>
+        </record>
+        <record id="work_cashier_10" model="ttb.work.template">
+            <field name="name">Nộp tiền về két sắt an toàn</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_3_07256ee3'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+
+        <!-- ======================================================== -->
+        <!-- KHU VỰC: BẢO VỆ (Map -> ttb_area_2_ca300f4a & ttb_area_11_db8066f4) -->
+        <!-- ======================================================== -->
+        <record id="work_security_01" model="ttb.work.template">
+            <field name="name">Tuần tra vòng ngoài cửa hàng</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_2_ca300f4a'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_security_02" model="ttb.work.template">
+            <field name="name">Sắp xếp xe khách hàng</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_2_ca300f4a')), (4, ref('ttb_area_11_db8066f4'))]"/>
+            <field name="duration_minutes">20</field>
+            <field name="frequency_minutes">30</field>
+        </record>
+        <record id="work_security_03" model="ttb.work.template">
+            <field name="name">Kiểm tra thiết bị PCCC</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_2_ca300f4a'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">480</field>
+        </record>
+        <record id="work_security_04" model="ttb.work.template">
+            <field name="name">Kiểm tra camera giám sát</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_2_ca300f4a'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_security_05" model="ttb.work.template">
+            <field name="name">Ghi chép sổ theo dõi khách ra vào</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_2_ca300f4a'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_security_06" model="ttb.work.template">
+            <field name="name">Kiểm tra khóa cửa kho hàng</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_2_ca300f4a'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_security_07" model="ttb.work.template">
+            <field name="name">Điều tiết giao thông trước cửa</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_2_ca300f4a'))]"/>
+            <field name="duration_minutes">20</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_security_08" model="ttb.work.template">
+            <field name="name">Nhắc nhở quy định không hút thuốc</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_2_ca300f4a'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_security_09" model="ttb.work.template">
+            <field name="name">Kiểm tra thẻ nhân viên ra vào</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_2_ca300f4a'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_security_10" model="ttb.work.template">
+            <field name="name">Báo cáo tình hình an ninh ca trực</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_2_ca300f4a'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">480</field>
+        </record>
+
+        <!-- ======================================================== -->
+        <!-- KHU VỰC: VỆ SINH/LAO CÔNG (Map -> ttb_area_10_f28dd004 - Khác) -->
+        <!-- ======================================================== -->
+        <record id="work_clean_01" model="ttb.work.template">
+            <field name="name">Lau sàn sảnh chính</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_10_f28dd004'))]"/>
+            <field name="duration_minutes">20</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_clean_02" model="ttb.work.template">
+            <field name="name">Dọn vệ sinh Toilet Nam</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_10_f28dd004'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_clean_03" model="ttb.work.template">
+            <field name="name">Dọn vệ sinh Toilet Nữ</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_10_f28dd004'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_clean_04" model="ttb.work.template">
+            <field name="name">Thu gom rác toàn khu vực</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_10_f28dd004'))]"/>
+            <field name="duration_minutes">30</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_clean_05" model="ttb.work.template">
+            <field name="name">Lau kính cửa ra vào</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_10_f28dd004'))]"/>
+            <field name="duration_minutes">20</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_clean_06" model="ttb.work.template">
+            <field name="name">Bổ sung giấy vệ sinh và xà phòng</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_10_f28dd004'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_clean_07" model="ttb.work.template">
+            <field name="name">Vệ sinh tay vịn cầu thang</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_10_f28dd004'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_clean_08" model="ttb.work.template">
+            <field name="name">Xử lý sự cố nước đổ/bẩn sàn</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_10_f28dd004'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">0</field> <!-- Việc phát sinh -->
+        </record>
+        <record id="work_clean_09" model="ttb.work.template">
+            <field name="name">Giặt và phơi cây lau nhà</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_10_f28dd004'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_clean_10" model="ttb.work.template">
+            <field name="name">Kiểm tra mùi hương khu vực</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_10_f28dd004'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+
+        <!-- ======================================================== -->
+        <!-- KHU VỰC: BẾP/NHÀ HÀNG (Map -> ttb_area_4_5ab46c7f - Thực phẩm) -->
+        <!-- ======================================================== -->
+        <record id="work_kitchen_01" model="ttb.work.template">
+            <field name="name">Kiểm tra nhiệt độ tủ đông</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_4_5ab46c7f'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_kitchen_02" model="ttb.work.template">
+            <field name="name">Vệ sinh bàn sơ chế</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_4_5ab46c7f'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_kitchen_03" model="ttb.work.template">
+            <field name="name">Rửa dụng cụ nấu nướng</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_4_5ab46c7f'))]"/>
+            <field name="duration_minutes">20</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_kitchen_04" model="ttb.work.template">
+            <field name="name">Kiểm tra hạn sử dụng nguyên liệu</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_4_5ab46c7f'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">480</field>
+        </record>
+        <record id="work_kitchen_05" model="ttb.work.template">
+            <field name="name">Đổ rác khu vực bếp</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_4_5ab46c7f'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_kitchen_06" model="ttb.work.template">
+            <field name="name">Lau dọn bàn ăn khách hàng</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_4_5ab46c7f'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">30</field>
+        </record>
+        <record id="work_kitchen_07" model="ttb.work.template">
+            <field name="name">Sắp xếp lại ghế ngồi</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_4_5ab46c7f'))]"/>
+            <field name="duration_minutes">5</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_kitchen_08" model="ttb.work.template">
+            <field name="name">Kiểm tra lọ gia vị trên bàn</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_4_5ab46c7f'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_kitchen_09" model="ttb.work.template">
+            <field name="name">Chuẩn bị nguyên liệu làm Pizza/Xúc xích</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_4_5ab46c7f'))]"/>
+            <field name="duration_minutes">30</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_kitchen_10" model="ttb.work.template">
+            <field name="name">Tắt các thiết bị điện cuối ngày</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_4_5ab46c7f'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">480</field>
+        </record>
+
+        <!-- ======================================================== -->
+        <!-- KHU VỰC: BÁN LẺ CHUNG (Sách, Đồ chơi, Quà tặng, Kẹo...) -->
+        <!-- Map Retail Misc -> ttb_area_9_493de9c2 (Trưng bày) -->
+        <!-- ======================================================== -->
+        
+        <record id="work_retail_01" model="ttb.work.template">
+            <field name="name">Sắp xếp hàng hóa thẳng hàng</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_9_493de9c2')), (4, ref('ttb_area_8_79a6f2d3')), (4, ref('ttb_area_6_ff534570'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_retail_02" model="ttb.work.template">
+            <field name="name">Lau bụi kệ trưng bày</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_9_493de9c2')), (4, ref('ttb_area_5_e3e0b8ea'))]"/>
+            <field name="duration_minutes">20</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_retail_03" model="ttb.work.template">
+            <field name="name">Kiểm tra tem giá sản phẩm</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_9_493de9c2')), (4, ref('ttb_area_8_79a6f2d3')), (4, ref('ttb_area_7_9dec5477'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_retail_04" model="ttb.work.template">
+            <field name="name">Bổ sung hàng từ kho lên kệ</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_9_493de9c2')), (4, ref('ttb_area_4_5ab46c7f'))]"/>
+            <field name="duration_minutes">30</field>
+            <field name="frequency_minutes">120</field>
+        </record>
+        <record id="work_retail_05" model="ttb.work.template">
+            <field name="name">Kiểm tra hạn sử dụng (Date Check)</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_4_5ab46c7f'))]"/> <!-- Khu thực phẩm -->
+            <field name="duration_minutes">20</field>
+            <field name="frequency_minutes">480</field>
+        </record>
+        <record id="work_retail_06" model="ttb.work.template">
+            <field name="name">Trưng bày hàng khuyến mãi ra mặt tiền</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_9_493de9c2'))]"/>
+            <field name="duration_minutes">15</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_retail_07" model="ttb.work.template">
+            <field name="name">Kiểm kê số lượng tồn thực tế</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_9_493de9c2')), (4, ref('ttb_area_5_e3e0b8ea'))]"/>
+            <field name="duration_minutes">30</field>
+            <field name="frequency_minutes">480</field>
+        </record>
+        <record id="work_retail_08" model="ttb.work.template">
+            <field name="name">Thu dọn bao bì/vỏ hộp rơi vãi</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_9_493de9c2')), (4, ref('ttb_area_8_79a6f2d3'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">60</field>
+        </record>
+        <record id="work_retail_09" model="ttb.work.template">
+            <field name="name">Kiểm tra mẫu thử (Tester) nếu có</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_8_79a6f2d3')), (4, ref('ttb_area_7_9dec5477'))]"/>
+            <field name="duration_minutes">10</field>
+            <field name="frequency_minutes">240</field>
+        </record>
+        <record id="work_retail_10" model="ttb.work.template">
+            <field name="name">Đảo vị trí trưng bày cho bắt mắt</field>
+            <field name="area_ids" eval="[(4, ref('ttb_area_9_493de9c2')), (4, ref('ttb_area_6_ff534570'))]"/>
+            <field name="duration_minutes">20</field>
+            <field name="frequency_minutes">480</field>
+        </record>
+    </data>
+</odoo>

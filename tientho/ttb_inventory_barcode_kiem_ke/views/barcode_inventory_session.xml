@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<!--	<data>-->
+<!--		&lt;!&ndash;	extends inventory session form views&ndash;&gt;-->
+<!--		<record id="inventory_session_form_inherit" model="ir.ui.view">-->
+<!--			<field name="name">inventory_session_form_inherit</field>-->
+<!--			<field name="model">inventory.session</field>-->
+<!--			<field name="inherit_id" ref="ttb_stock.inventory_session_form"/>-->
+<!--			<field name="arch" type="xml">-->
+<!--				<xpath expr="//form" position="attributes">-->
+<!--					<attribute name="js_class">kiem_ke_form</attribute>-->
+<!--				</xpath>-->
+<!--			</field>-->
+<!--		</record>-->
+
+<!--		<record id="inventory_session_list_inherit" model="ir.ui.view">-->
+<!--			<field name="name">inventory_session_list_inherit</field>-->
+<!--			<field name="model">inventory.session</field>-->
+<!--			<field name="inherit_id" ref="ttb_stock.inventory_session_list"/>-->
+<!--		</record>-->
+
+<!--		<record id="inventory_barcode_kiem_ke_action" model="ir.actions.act_window">-->
+<!--			<field name="name">Kiểm Kê</field>-->
+<!--			<field name="res_model">inventory.session</field>-->
+<!--			<field name="view_mode">form,list</field>-->
+<!--			<field name="view_id" ref="ttb_stock.inventory_session_list"/>-->
+<!--			<field name="target">fullscreen</field>-->
+<!--		</record>-->
+
+<!--	</data>-->
+
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+	<t t-name="ttb_inventory_barcode_kiem_ke.ThiNghiemKiemKeForm" t-inherit="web.FormView">
+		<xpath expr="//t[@t-set-slot='layout-buttons']" position="before">
+			<div class="d-flex w-100 m-0 p-5 py-3 align-items-center justify-content-center text-bg-800">
+				<button class="o_stock_mobile_barcode btn pe-0" t-on-click="openManualBarcodeDialog">
+				<i class="fa fa-barcode text-light" role="img"/>
+			</button>
+			</div>
+		</xpath>
+		<xpath expr="//Layout/t[@t-component='props.Renderer']" position="after">
+			<t t-if="productList">
+				<div class="container align-items-center align-self-center">
+				<div>
+					<span>Danh sách sản phẩm</span>
+				</div>
+					<div class="container align-items-center align-self-center">
+					<div class="row" t-foreach="productList" t-as="product" t-key="product.order_number">
+						<div class="col"><span t-out="product.order_number"/></div>
+						<div class="col"><span t-out="product.product_id"/></div>
+						<div class="col"><span t-out="product.product_name"/></div>
+						<div class="col"><span t-out="product.quantity"/></div>
+					</div>
+				</div>
+			</div>
+			</t>
+		</xpath>
+	</t>
+</templates>

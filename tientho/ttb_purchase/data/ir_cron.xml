@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_auto_lock_po" model="ir.cron">
+        <field name="name">Tự động khóa PO</field>
+        <field name="model_id" ref="base.model_res_company"/>
+        <field name="state">code</field>
+        <field name="active" eval="True"/>
+        <field name="priority">1</field>
+        <field name="code">
+date_order = datetime.date.today()
+date_lock = timezone('Asia/Ho_Chi_Minh').localize(datetime.datetime.combine(date_order,datetime.time.min)).astimezone(timezone('UTC')).replace(tzinfo=None)
+for company in env['res.company'].search([]):
+    if company.po_lock_from_date_approve:
+        before_approve = date_lock - datetime.timedelta(days=company.po_lock_from_date_approve)
+        orders = env['purchase.order'].search([('company_id','=',company.id),('state','=','purchase'),('date_approve','&lt;',before_approve),('picking_ids','!=',False),('picking_ids','not any',[('state','=','done')])])
+        if orders:orders.button_done()
+    if company.po_lock_from_date_receipt:
+        before_receipt = date_lock - datetime.timedelta(days=company.po_lock_from_date_receipt)
+        orders = env['purchase.order'].search([('company_id','=',company.id),('state','=','purchase'),('ttb_receipt_date','&lt;=',before_receipt),('picking_ids','!=',False),('picking_ids','any',[('state','=','done')]),('picking_ids','any',[('state','!=','done')])])
+        if orders:orders.button_done()
+        </field>
+        <field name="nextcall" eval="DateTime.now().replace(hour=18, minute=0, second=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">False</field>
+    </record>
+</odoo>

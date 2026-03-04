@@ -1,0 +1,7 @@
+<odoo>
+    <record id="action_purchase_grid" model="ir.actions.client">
+        <field name="name">Dự trù mua bán</field>
+        <field name="tag">purchase_grid_view</field>
+        <field name="context">{'default_product_ids': [], 'default_product_names': [], 'default_product_codes': [], 'default_branch_name': '', 'default_past_cycles': 2, 'default_future_cycles': 3}</field>
+    </record>
+</odoo>

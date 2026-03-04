@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_picking_internal_search" model="ir.ui.view">
+        <field name="name">stock.picking.internal.search</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <field name="origin" position="before">
+                <field name="message_body"/>
+            </field>
+            <!--                <attribute name="filter_domain">['|',('message_ids.body','ilike',self),('origin', 'ilike', self)]</attribute>-->
+        </field>
+    </record>
+
+    <record id="view_picking_form" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='product_id']" position="before">
+                <field name="ttb_product_code"/>
+                <field name="ttb_barcode_k"/>
+                <field name="ttb_barcode_vendor"/>
+                <field name="ttb_default_code"/>
+            </xpath>
+
+            <notebook position="inside">
+                <page name="accounting_info" invisible="picking_type_code != 'incoming'" string="Chứng từ kế toán">
+                    <group>
+                        <field name="ttb_vendor_doc" filename="ttb_vendor_doc_name" widget="pdf_viewer" options="{'accepted_file_extensions': '.pdf'}"/>
+                        <field name="ttb_vendor_doc_name" invisible="1"/>
+                        <field name="ttb_vendor_invoice_name" invisible="1"/>
+                        <field name="ttb_type" invisible="1"/>
+                        <field name="ttb_vendor_delivery" widget="pdf_viewer" options="{'accepted_file_extensions': '.pdf'}" invisible="ttb_type != 'not_sale'"/>
+                        <field name="ttb_acceptance_report" widget="pdf_viewer" options="{'accepted_file_extensions': '.pdf'}" invisible="ttb_type != 'not_sale'"/>
+                    </group>
+                </page>
+            </notebook>
+            <field name="backorder_id" position="before">
+                <field name="ttb_partner_ref" invisible="picking_type_code != 'incoming'"/>
+            </field>
+            <field name="move_ids_without_package" position="attributes">
+                <attribute name="widget">search_section_and_note_one2many</attribute>
+                <attribute name="context" operation="update">
+                    {
+                    "search_by": ["ttb_product_code","ttb_barcode_k","ttb_barcode_vendor","ttb_default_code","product_id"],
+                    }
+                </attribute>
+            </field>
+            <xpath expr="//field[@name='move_ids_without_package']//list" position="attributes">
+                <attribute name="limit">200</attribute>
+            </xpath>
+            <field name="user_id" position="after">
+                <field name="ttb_inspector_id"/>
+            </field>
+<!--            <button name="%(stock.action_report_delivery)d" position="after">-->
+<!--                <button name="action_incoming_template" string="In" type="object" invisible="state != 'done' or picking_type_code !='incoming'"/>-->
+<!--            </button>-->
+            <button name="%(stock.action_report_delivery)d" position="attributes">
+                <attribute name="invisible" operation="text_add">
+                    {old_value} or picking_type_code == 'incoming'
+                </attribute>
+            </button>
+        </field>
+    </record>
+
+    <record id="vpicktree" model="ir.ui.view">
+        <field name="name">stock.picking.list</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="ttb_inspector_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="vpicktree_incoming" model="ir.ui.view">
+        <field name="name">stock.picking.list</field>
+        <field name="model">stock.picking</field>
+        <field name="priority">80</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="string">Mã nhập kho</attribute>
+            </field>
+            <field name="origin" position="attributes">
+                <attribute name="string">Mã đơn hàng</attribute>
+            </field>
+            <field name="partner_id" position="attributes">
+                <attribute name="string">Nhà cung cấp</attribute>
+            </field>
+            <field name="date_done" position="attributes">
+                <attribute name="string">Ngày nhập kho</attribute>
+            </field>
+            <field name="name" position="after">
+                <field name="origin" position="move"/>
+            </field>
+            <field name="name" position="after">
+                <field name="ttb_partner_ref"/>
+            </field>
+            <field name="user_id" position="after">
+                <field name="ttb_branch_id"/>
+            </field>
+            <field name="state" position="after">
+                <field name="date_done" position="move"/>
+            </field>
+            <field name="location_id" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+            <field name="location_dest_id" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+            <field name="scheduled_date" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+            <field name="products_availability" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+            <field name="date_deadline" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+            <field name="picking_type_id" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_stock_picking_kanban_in" model="ir.ui.view">
+        <field name="name">stock.picking.kanban.in</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.stock_picking_kanban"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="default_order">ttb_state_sequence asc</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock.action_picking_tree_incoming" model="ir.actions.act_window">
+        <field name="domain">[('picking_type_code','=','incoming'), ('location_dest_id', 'not ilike', 'HDT')]</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_stock_picking_kanban_in')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('vpicktree_incoming')})]"/>
+    </record>
+
+    <record id="action_picking_tree_incoming_late" model="ir.actions.act_window">
+        <field name="name">Lệnh chuyển hàng chậm trễ</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,kanban,form,calendar</field>
+        <field name="domain">[('picking_type_code','=','incoming')]</field>
+        <field name="view_id" ref="vpicktree_incoming"/>
+        <field name="context">{'contact_display': 'partner_address', 'search_default_late': 1}</field>
+    </record>
+
+    <record id="action_picking_tree_incoming_backorder" model="ir.actions.act_window">
+        <field name="name">Đơn hàng tách kiện</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,kanban,form,calendar</field>
+        <field name="domain">[('picking_type_code','=','incoming')]</field>
+        <field name="view_id" ref="vpicktree_incoming"/>
+        <field name="context">{'contact_display': 'partner_address', 'search_default_backorder': 1}</field>
+    </record>
+
+    <record id="action_picking_tree_incoming_waiting" model="ir.actions.act_window">
+        <field name="name">Chờ lệnh chuyển hàng</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,kanban,form,calendar</field>
+        <field name="domain">[('picking_type_code','=','incoming')]</field>
+        <field name="view_id" ref="vpicktree_incoming"/>
+        <field name="context">{'contact_display': 'partner_address', 'search_default_waiting': 1}</field>
+    </record>
+
+    <record id="action_picking_tree_incoming_ready" model="ir.actions.act_window">
+        <field name="name">Việc cần làm</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,kanban,form,calendar</field>
+        <field name="domain">[('picking_type_code','=','incoming')]</field>
+        <field name="view_id" ref="vpicktree_incoming"/>
+        <field name="context">{'contact_display': 'partner_address', 'search_default_available': 1}</field>
+    </record>
+
+    <record id="stock_picking_action_incoming_picking_type" model="ir.actions.act_window">
+        <field name="name">Tất cả lệnh chuyển hàng</field>
+        <field name="res_model">stock.picking</field>
+        <field name="domain">[('picking_type_code','=','incoming')]</field>
+        <field name="view_id" ref="vpicktree_incoming"/>
+        <field name="context">{'contact_display': 'partner_address'}</field>
+    </record>
+    
+    <!-- View List hỗ trợ sắp xếp theo custom trường ttb_sort_priority -->
+    <record id="ttb_stock_picking_receive_export_list_view" model="ir.ui.view">
+        <field name="name">ttb.stock.picking.custom.list.view</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="default_order">priority_level, create_date desc</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ==== 1. Kho Bán Lẻ ==== -->
+    <record id="action_stock_picking_retail_receive" model="ir.actions.act_window">
+        <field name="name">Kho bán lẻ nhận hàng</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[
+            ('location_dest_id.warehouse_id.name', 'ilike', 'KBL'), ('picking_type_code', '=', 'internal'),
+            ('inventory_origin_id', '!=', False)]
+        </field>
+        <field name="view_id" ref="ttb_stock_picking_receive_export_list_view"/>
+    </record>
+
+    <!-- ==== 2. Kho Vui Chơi ==== -->
+    <record id="action_stock_picking_play_receive" model="ir.actions.act_window">
+        <field name="name">Kho vui chơi nhận hàng</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[
+            ('location_dest_id.warehouse_id.name', 'ilike', 'KVL'), ('picking_type_code', '=', 'internal'),
+            ('inventory_origin_id', '!=', False)]
+        </field>
+        <field name="view_id" ref="ttb_stock_picking_receive_export_list_view"/>
+    </record>
+
+    <!-- ==== 3. Kho Văn Phòng ==== -->
+    <record id="action_stock_picking_office_export" model="ir.actions.act_window">
+        <field name="name">Kho văn phòng xuất hàng</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[
+            ('location_dest_id.warehouse_id.name', 'ilike', 'KVP'), ('picking_type_code', '=', 'incoming'),
+            ('state', '=', 'done')]
+        </field>
+
+        <field name="view_id" ref="ttb_stock_picking_receive_export_list_view"/>
+    </record>
+
+</odoo>

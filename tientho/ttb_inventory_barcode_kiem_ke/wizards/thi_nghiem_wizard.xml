@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<record id="thi_nghiem_popup_form" model="ir.ui.view">
+		<field name="name">Nhập số lượng sản phẩm</field>
+		<field name="model">thi.nghiem.wizard</field>
+		<field name="arch" type="xml">
+			<form string="">
+				<group>
+					<field name="thi_nghiem_kiem_ke_line_id" readonly="1"/>
+					<field name="product_id" readonly="1"/>
+				</group>
+				<field name="order_number" invisible="1"/>
+				<field name="quantity"/>
+				<footer>
+					<button name="action_proceed" string="Tiếp tục" colspan="1"
+							type="object" class="btn-primary"/>
+					<!--					<button name="action_return" string="Quay lại" colspan="1"-->
+					<!--							type="object" class="btn-primary"/>-->
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_thi_nghiem_popup_form" model="ir.actions.act_window">
+		<field name="name">Nhập số lượng sản phẩm</field>
+		<field name="res_model">thi.nghiem.wizard</field>
+		<field name="view_mode">form</field>
+		<field name="target">new</field>
+	</record>
+</odoo>

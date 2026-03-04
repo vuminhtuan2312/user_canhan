@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mssql_config_admin,mssql.config admin,model_ttb_mssql_config,base.group_system,1,1,1,1
+access_ttb_augges_dmnx_admin,ttb.augges.dmnx admin,model_ttb_augges_dmnx,base.group_system,1,1,1,1

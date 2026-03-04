@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="einvoice_request_form_template" name="Yêu cầu xuất hóa đơn điện tử">
+        <t t-call="web.basic_layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 col-lg-6 mt-5">
+                            <h2 class="text-center mb-4">Cung cấp thông tin xuất Hóa đơn</h2>
+
+                            <!-- Vùng hiển thị thông báo -->
+                            <t t-if="message == 'success'">
+                                <div class="alert alert-success" role="alert">
+                                    Cảm ơn bạn! Hóa đơn của bạn sẽ được xuất trong thời gian sớm nhất. Nếu có vấn đề, vui lòng liên hệ bộ phận CSKH.
+                                </div>
+                                <style>
+                                    .ttb-ei-overlay {
+                                        position: fixed;
+                                        inset: 0;
+                                        background: rgba(0, 0, 0, 0.5);
+                                        display: none;
+                                        align-items: center;
+                                        justify-content: center;
+                                        z-index: 2147483000;
+                                        padding: 16px;
+                                    }
+                                    .ttb-ei-modal {
+                                        width: 100%;
+                                        max-width: 640px;
+                                        background: #fff;
+                                        border-radius: 10px;
+                                        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                                        overflow: hidden;
+                                    }
+                                    .ttb-ei-modal__header {
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: space-between;
+                                        padding: 14px 16px;
+                                        border-bottom: 1px solid #e9ecef;
+                                    }
+                                    .ttb-ei-modal__title {
+                                        font-size: 16px;
+                                        font-weight: 600;
+                                        margin: 0;
+                                    }
+                                    .ttb-ei-modal__close {
+                                        border: 0;
+                                        background: transparent;
+                                        font-size: 22px;
+                                        line-height: 1;
+                                        cursor: pointer;
+                                    }
+                                    .ttb-ei-modal__body {
+                                        padding: 16px;
+                                    }
+                                    .ttb-ei-info {
+                                        width: 100%;
+                                        border-collapse: collapse;
+                                        margin: 0;
+                                    }
+                                    .ttb-ei-info th {
+                                        width: 35%;
+                                        text-align: left;
+                                        padding: 8px 10px;
+                                        vertical-align: top;
+                                        color: #495057;
+                                        font-weight: 600;
+                                        border-bottom: 1px solid #f1f3f5;
+                                    }
+                                    .ttb-ei-info td {
+                                        padding: 8px 10px;
+                                        border-bottom: 1px solid #f1f3f5;
+                                        color: #212529;
+                                        word-break: break-word;
+                                    }
+                                    .ttb-ei-modal__footer {
+                                        padding: 12px 16px;
+                                        border-top: 1px solid #e9ecef;
+                                        display: flex;
+                                        justify-content: flex-end;
+                                        gap: 8px;
+                                    }
+                                    .ttb-ei-btn {
+                                        border: 1px solid #ced4da;
+                                        background: #f8f9fa;
+                                        padding: 8px 14px;
+                                        border-radius: 6px;
+                                        cursor: pointer;
+                                    }
+                                    .ttb-ei-btn:hover {
+                                        background: #e9ecef;
+                                    }
+                                    .ttb-ei-hint {
+                                        margin: 0 0 12px 0;
+                                        padding: 10px 12px;
+                                        background: #eef6ff;
+                                        border: 1px solid #cfe2ff;
+                                        border-radius: 8px;
+                                        color: #084298;
+                                    }
+                                </style>
+
+                                <div class="ttb-ei-overlay" id="ttbEiOverlay" role="dialog" aria-modal="true" aria-labelledby="ttbEiTitle">
+                                    <div class="ttb-ei-modal">
+                                        <div class="ttb-ei-modal__header">
+                                            <h3 class="ttb-ei-modal__title" id="ttbEiTitle">Xác nhận thông tin xuất HĐĐT</h3>
+                                            <button type="button" class="ttb-ei-modal__close" id="ttbEiCloseBtn" aria-label="Close">×</button>
+                                        </div>
+
+                                        <div class="ttb-ei-modal__body">
+                                            <div class="ttb-ei-hint">
+                                                Vui lòng kiểm tra lại thông tin bạn đã cung cấp.
+                                            </div>
+
+                                            <table class="ttb-ei-info">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Tên khách hàng</th>
+                                                        <td><t t-esc="order_info.get('customer_name', '')"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Mã số thuế</th>
+                                                        <td><t t-esc="order_info.get('customer_vat', '')"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Mã đơn vị QHNS</th>
+                                                        <td><t t-esc="order_info.get('code_qhns', '')"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Địa chỉ</th>
+                                                        <td><t t-esc="order_info.get('customer_address', '')"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Email</th>
+                                                        <td><t t-esc="order_info.get('customer_email', '')"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Số điện thoại</th>
+                                                        <td><t t-esc="order_info.get('customer_phone', '')"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Mã hóa đơn</th>
+                                                        <td><t t-esc="order_info.get('invoice_number', '')"/></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <div class="ttb-ei-modal__footer">
+                                            <button type="button" class="ttb-ei-btn" id="ttbEiCloseBtn2">Đóng</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <script type="text/javascript">
+                                    (function () {
+                                        function openPopup() {
+                                            var overlay = document.getElementById("ttbEiOverlay");
+                                            if (!overlay) return;
+                                            overlay.style.display = "flex";
+
+                                            // ESC để đóng
+                                            document.addEventListener("keydown", function (e) {
+                                                if (e.key === "Escape") {
+                                                    overlay.style.display = "none";
+                                                }
+                                            });
+                                        }
+
+                                        function bindClose() {
+                                            var overlay = document.getElementById("ttbEiOverlay");
+                                            if (!overlay) return;
+
+                                            var btn1 = document.getElementById("ttbEiCloseBtn");
+                                            var btn2 = document.getElementById("ttbEiCloseBtn2");
+
+                                            function closePopup() { overlay.style.display = "none"; }
+
+                                            if (btn1) btn1.addEventListener("click", closePopup);
+                                            if (btn2) btn2.addEventListener("click", closePopup);
+
+                                            // click nền tối để đóng
+                                            overlay.addEventListener("click", function (e) {
+                                                if (e.target === overlay) closePopup();
+                                            });
+                                        }
+
+                                        if (document.readyState === "loading") {
+                                            document.addEventListener("DOMContentLoaded", function () {
+                                                bindClose();
+                                                openPopup();
+                                            });
+                                        } else {
+                                            bindClose();
+                                            openPopup();
+                                        }
+                                    })();
+                                </script>
+
+                            </t>
+                            <t t-if="message == 'not_found'">
+                                <div class="alert alert-danger" role="alert">
+                                    Rất tiếc! Hệ thống không tìm thấy hóa đơn phù hợp. Vui lòng kiểm tra lại thông tin hoặc liên hệ CSKH để được hỗ trợ.
+                                </div>
+                            </t>
+                            <t t-if="error == 'expired'">
+                                <div class="alert alert-danger" role="alert">
+                                    Rất tiếc! Hóa đơn này đã quá thời hạn xử lý. Vui lòng liên hệ CSKH để được hướng dẫn thêm.
+                                </div>
+                            </t>
+                            <t t-if="error == 'update_failed'">
+                                <div class="alert alert-danger" role="alert">
+                                    Đã có lỗi xảy ra khi cập nhật thông tin. Vui lòng thử lại hoặc liên hệ CSKH.
+                                </div>
+                            </t>
+                            <!-- Form nhập liệu -->
+                            <!-- Ẩn form nếu thành công hoặc lỗi quá hạn -->
+                            <t t-if="message != 'success'">
+                                <form action="/submit-invoice-info" method="POST" class="oe_signup_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    
+                                    <div class="mb-3">
+                                        <label for="invoice_number" class="form-label">Mã hóa đơn <span style="color: red;">*</span></label>
+                                        <input type="text" class="form-control" id="invoice_number" name="invoice_number" required="required" t-att-value="order_info.get('invoice_number', '')"
+                                               placeholder="Ví dụ: 12345678"/>
+                                        <div id="invoiceHelp" class="form-text"><i>Bạn hãy nhập dãy số <b>Mã Hóa Đơn</b> trên <b>HOÁ ĐƠN BÁN LẺ</b></i></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="customer_name" class="form-label">Tên công ty / Tên người mua <span style="color: red;">*</span></label>
+                                        <input type="text" class="form-control" id="customer_name" name="customer_name" required="required" t-att-value="order_info.get('customer_name', '')"/>
+                                    </div>
+
+<!--                                    <div class="mb-3 form-check">-->
+<!--                                        <input type="checkbox" class="form-check-input" id="is_state_agency" name="is_state_agency"-->
+<!--                                               t-att-checked="'checked' if order_info.get('organization_type') in ['co_quan_nha_nuoc'] else None"/>-->
+<!--                                        <label class="form-check-label" for="is_state_agency">Là Công đoàn / Cơ quan nhà nước (không có MST)</label>-->
+<!--                                    </div>-->
+
+                                    <div class="mb-3" id="vat_field_wrapper">
+                                        <label for="customer_vat" class="form-label">Mã số thuế</label>
+                                        <input type="text" class="form-control"
+                                                id="customer_vat"
+                                                name="customer_vat"
+                                                t-att-value="order_info.get('customer_vat', '')"
+                                                pattern="^\S+$"
+                                                title="Mã số thuế không được chứa khoảng trắng"
+                                                oninput="this.value = this.value.replace(/\s/g, '')"/>
+                                    <div class="form-text">Mã số thuế không chứa dấu cách.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="code_qhns" class="form-label">Mã đơn vị Quan hệ ngân sách</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="code_qhns"
+                                               name="code_qhns"
+                                               t-att-value="order_info.get('code_qhns', '')"
+                                               pattern="[0-9]{7}"
+                                               title="Mã đơn vị QHNS phải bao gồm đúng 7 chữ số"/>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="customer_address" class="form-label">Địa chỉ công ty <span style="color: red;">*</span></label>
+                                        <input type="text" class="form-control" id="customer_address" name="customer_address" required="required" t-att-value="order_info.get('customer_address', '')"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="customer_email" class="form-label">Email nhận hóa đơn <span style="color: red;">*</span></label>
+                                        <input type="email" class="form-control" id="customer_email" name="customer_email" required="required" t-att-value="order_info.get('customer_email', '')"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="customer_phone" class="form-label">Số điện thoại <span style="color: red;">*</span></label>
+                                        <input type="tel" class="form-control" id="customer_phone" name="customer_phone" required="required" t-att-value="order_info.get('customer_phone', '')"/>
+                                    </div>
+                                    <div class="form-text text-center mt-3 mb-3">
+                                        <i>Lưu ý: Hóa đơn sẽ được xuất tự động với thông tin khách lẻ không lấy hóa đơn trong vòng 75 phút sau khi hoàn thành thanh toán. Quý khách có nhu cầu xuất hóa đơn tài chính cho công ty vui lòng thực hiện trước thời điểm trên.</i>
+                                    </div>
+
+                                    <div class="mt-4 text-center">
+                                        <button type="submit" class="btn btn-primary">Gửi thông tin</button>
+                                    </div>
+                                </form>
+<!--                                <script>-->
+<!--                                    document.addEventListener('DOMContentLoaded', function() {-->
+<!--                                        const isStateAgencyCheckbox = document.getElementById('is_state_agency');-->
+<!--                                        const vatFieldWrapper = document.getElementById('vat_field_wrapper');-->
+<!--                                        const vatInput = document.getElementById('customer_vat');-->
+
+<!--                                        function toggleVatField() {-->
+<!--                                            if (isStateAgencyCheckbox.checked) {-->
+<!--                                                vatFieldWrapper.style.display = 'none';-->
+<!--                                                vatInput.required = false;-->
+<!--                                            } else {-->
+<!--                                                vatFieldWrapper.style.display = 'block';-->
+<!--                                                vatInput.required = true;-->
+<!--                                            }-->
+<!--                                        }-->
+
+<!--                                        // Initial check on page load-->
+<!--                                        toggleVatField();-->
+
+<!--                                        // Add event listener for changes-->
+<!--                                        isStateAgencyCheckbox.addEventListener('change', toggleVatField);-->
+<!--                                    });-->
+<!--                                </script>-->
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

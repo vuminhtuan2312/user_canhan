@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Lý do tạm hoãn: List + Wizard + Action + Menu -->
+
+    <record id="view_ttb_pause_reason_list" model="ir.ui.view">
+        <field name="name">ttb.pause.reason.list</field>
+        <field name="model">ttb.pause.reason</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="code" width="30%"/>
+                <field name="name" width="70%"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_config_pause_reason" model="ir.actions.act_window">
+        <field name="name">Lý do tạm hoãn</field>
+        <field name="res_model">ttb.pause.reason</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="ttb_menu_config_reason" name="Lý do tạm hoãn" parent="ttb_menu_configuration" action="action_config_pause_reason" sequence="40"/>
+</odoo>

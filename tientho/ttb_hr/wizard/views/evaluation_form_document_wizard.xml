@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="template_evaluation_form_document">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="ttb_hr.ttb_evaluation_form_layout_header"/>
+            <t t-call="web.html_container">
+                <div class="article">
+                    <div class="page" style="font-size: 12px; font-family: 'Helvetica', sans-serif;">
+                        <!-- PHẦN HEADER CỦA PHIẾU -->
+
+
+                        <!-- PHẦN THÔNG TIN CHUNG -->
+                        <table class="table table-sm table-bordered mt-4">
+                            <tr>
+                                <td style="width: 15%;">
+                                    <strong>Họ tên:</strong>
+                                </td>
+                                <td style="width: 35%;">
+                                    <t t-esc="doc['name']"/>
+                                </td>
+                                <td style="width: 15%;">
+                                    <strong>Nguồn ứng viên:</strong>
+                                </td>
+                                <td style="width: 35%;">.........................................................
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Chức danh:</strong>
+                                </td>
+                                <td>
+                                    <t t-esc="doc['job_name']"/>
+                                </td>
+                                <td>
+                                    <strong>Phòng ban:</strong>
+                                </td>
+                                <td>
+                                    <t t-esc="doc['department_name']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Người PV sơ bộ:</strong>
+                                </td>
+                                <td>...........................................................................</td>
+                                <td>
+                                    <strong>Chức vụ:</strong>
+                                </td>
+                                <td>.........................................................</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Người PV vòng 1:</strong>
+                                </td>
+                                <td>...........................................................................</td>
+                                <td>
+                                    <strong>Chức vụ:</strong>
+                                </td>
+                                <td>.........................................................</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Người PV vòng 2:</strong>
+                                </td>
+                                <td>...........................................................................</td>
+                                <td>
+                                    <strong>Chức vụ:</strong>
+                                </td>
+                                <td>.........................................................</td>
+                            </tr>
+                        </table>
+
+                        <!-- PHẦN I: KẾT QUẢ ĐÁNH GIÁ -->
+                        <div class="text-center bg-light p-1 border mt-4">
+                            <strong>I. KẾT QUẢ ĐÁNH GIÁ QUA TRAO ĐỔI TRỰC TIẾP</strong>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead class="text-center">
+                                <tr>
+                                    <th style="width: 50%;">
+                                        <strong>Các tiêu chí</strong>
+                                    </th>
+                                    <th style="width: 15%;">
+                                        <strong>Điểm 1 - 5</strong>
+                                    </th>
+                                    <th style="width: 35%;">
+                                        <strong>Cụ thể</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc['list_criteria']" t-as="line">
+                                    <tr style="height: 30px;">
+                                        <td>
+                                            <strong><t t-esc="line"/>:</strong><t t-esc="doc['lines'][line]"/>
+                                        </td>
+                                        <td/>
+                                        <td/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <div class="border p-1">
+                            <small>
+                                <strong>Note:</strong>
+                                Mức đánh giá điểm 1 = “Kém”; 2 = “Yếu”; 3 = “Trung bình”; 4 = “Tốt”; 5 = “Rất tốt”
+                            </small>
+                        </div>
+                        <div class="border p-2 mt-2" style="height: 120px;">
+                            <strong>Nhân sự nhận xét/đánh giá:</strong>
+                        </div>
+
+                        <!-- PHẦN II: KẾT LUẬN -->
+                        <div class="text-center bg-light p-1 border mt-4">
+                            <strong>II. KẾT LUẬN</strong>
+                        </div>
+                        <div class="border p-2" style="height: 100px;">
+                            <strong>Đơn vị nhận xét/đánh giá:</strong>
+                        </div>
+                        <div class="border p-2 mt-2">
+                            <strong>Khả năng đào tạo phát triển:</strong>
+                            <span style="margin-left: 50px;">☐ Không</span>
+                            <span style="margin-left: 50px;">☐ Có tiềm năng</span>
+                        </div>
+                        <div class="border p-2 mt-2">
+                            <strong>Kết luận:</strong>
+                            <br/>
+                            <p class="mt-2">☐
+                                <strong>Tuyển thử việc</strong>
+                                <span style="margin-left: 30px;">Ngày nhận việc: ................................
+                                </span>
+                                <span style="margin-left: 30px;">Thời gian thử việc:
+                                    ................................
+                                    tháng
+                                </span>
+                            </p>
+                            <p style="margin-left: 150px;">Tổng thu nhập thử việc:
+                                ................................................................................
+                            </p>
+                            <p style="margin-left: 150px;">Tổng thu nhập chính thức (dự kiến):
+                                .....................................................
+                            </p>
+
+                            <p class="mt-3">☐
+                                <strong>Không phù hợp yêu cầu</strong>
+                                <span style="margin-left: 150px;">
+                                    <strong>Ý kiến khác:</strong>
+                                    ............................................................................
+                                </span>
+                            </p>
+                            <p class="mt-2">☐
+                                <strong>Trong định biên</strong>
+                                <span style="margin-left: 205px;">☐
+                                    <strong>Không trong định biên</strong>
+                                </span>
+                            </p>
+                        </div>
+
+                        <!-- PHẦN CHỮ KÝ -->
+                        <table class="table table-bordered mt-4 text-center">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <strong>TRƯỞNG ĐƠN VỊ</strong>
+                                    </th>
+                                    <th>
+                                        <strong>ĐƠN VỊ LIÊN QUAN</strong>
+                                    </th>
+                                    <th>
+                                        <strong>KHỐI TNNNL</strong>
+                                    </th>
+                                    <th>
+                                        <strong>PHÊ DUYỆT</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="height: 80px;">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="text-center mt-4">
+                            <small>Nhà sách Tiến Thọ – HR - Confidential doc – 2023</small>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

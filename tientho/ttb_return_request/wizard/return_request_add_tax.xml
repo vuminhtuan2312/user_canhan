@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="return_request_add_tax_wizard_form" model="ir.ui.view">
+        <field name="name">Chọn Thuế</field>
+        <field name="model">return.request.add.tax.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="company_id" invisible="1"/>
+                        <field name="tax_country_id" invisible="1"/>
+                        <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use', '=', 'purchase'), ('company_id', 'parent_of', company_id), ('country_id', '=', tax_country_id), ('active', '=', True)]"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string='Xác nhận' name="do" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_update_tax" model="ir.actions.act_window">
+        <field name="name">Chọn Thuế</field>
+        <field name="res_model">return.request.add.tax.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

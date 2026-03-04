@@ -1,0 +1,46 @@
+<odoo>
+    <record id="product_normal_form_view" model="ir.ui.view">
+        <field name="name">product.product.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <field name="default_code" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <!-- Thiện chưa rõ comment đoạn code dưới có ảnh hưởng gì không do là thấy trong khai báo trường đã có domain rồi. -->
+            <!-- Nhưng không comment thì báo lỗi ko tìm thấy trường ở view cha nên comment lại trước -->
+<!--            <field name="categ_id_level_1" position="attributes">-->
+<!--                <attribute name="domain">[('parent_id', '=', False),('category_level', '=', 1)]</attribute>-->
+<!--            </field>-->
+<!--            <field name="categ_id_level_2" position="attributes">-->
+<!--                <attribute name="domain">[('parent_id', '=?', categ_id_level_1),('category_level', '=', 2)]</attribute>-->
+<!--            </field>-->
+<!--            <field name="categ_id_level_3" position="attributes">-->
+<!--                <attribute name="domain">[('parent_id', '=?', categ_id_level_2),('category_level', '=', 3)]</attribute>-->
+<!--            </field>-->
+<!--            <field name="categ_id_level_4" position="attributes">-->
+<!--                <attribute name="domain">[('parent_id', '=?', categ_id_level_3),('category_level', '=', 4)]</attribute>-->
+<!--            </field>-->
+<!--            <field name="categ_id_level_5" position="attributes">-->
+<!--                <attribute name="domain">[('parent_id', '=?', categ_id_level_4),('category_level', '=', 5)]</attribute>-->
+<!--            </field>-->
+        </field>
+    </record>
+    <record id="product_product_inherit_list_view" model="ir.ui.view">
+        <field name="name">product.product.inherit.list.view</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="top_supplier_id"/>
+                <field name="top_supplier_price"/>
+                <field name="top_supplier_date_start"/>
+                <field name="top_supplier_date_end"/>
+                <field name="season_type_id"/>
+                <field name="active"/>
+                <field name="sale_ok"/>
+                <field name="purchase_ok"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

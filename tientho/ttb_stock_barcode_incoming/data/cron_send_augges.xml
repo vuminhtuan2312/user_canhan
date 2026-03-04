@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_send_inventory_counting_to_augges" model="ir.cron">
+        <field name="name">Augges: Đồng bộ kiểm kê</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_send_augges_kiem_ke()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="ir_cron_create_or_update_warehouse_component" model="ir.cron">
+        <field name="name">Kho: Tạo hoặc cập nhật địa điểm, hoạt động kiểm kê</field>
+        <field name="model_id" ref="stock.model_stock_warehouse"/>
+        <field name="state">code</field>
+        <field name="code">
+warehouses = env['stock.warehouse'].search(['|', ('ic_type_id', '=', False), ('ic_loc_id', '=', False)])
+for warehouse in warehouses:
+    new_vals = warehouse._create_or_update_sequences_and_picking_types()
+    warehouse.write(new_vals)            
+        </field>
+        <field name="active" eval="False"/>
+    </record>
+    <record id="cron_auto_start_inventory" model="ir.cron">
+        <field name="name">Auto Start Period Inventory</field>
+        <field name="model_id" ref="model_period_inventory"/> <!-- Tham chiếu model period.inventory -->
+        <field name="state">code</field>
+        <field name="code">model.cron_auto_start_inventory()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=7, minute=0, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+    </record>
+
+    <record id="cron_auto_create_inventory_weekly" model="ir.cron">
+        <field name="name">Auto Create Period Inventory Weekly</field>
+        <field name="model_id" ref="model_period_inventory"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_auto_create_inventory_weekly()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=0, minute=0, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+    </record>
+
+    <record id="cron_auto_finish_inventory_weekly" model="ir.cron">
+        <field name="name">Auto Finish Period Inventory Weekly</field>
+        <field name="model_id" ref="model_period_inventory"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_auto_finish_inventory_weekly()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=23, minute=0, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+    </record>
+
+    <record id="cron_auto_generate_inventory_picking_by_zone" model="ir.cron">
+        <field name="name">Auto Generate Inventory Picking By Zone</field>
+        <field name="model_id" ref="model_period_inventory"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_auto_generate_inventory_picking_by_zone()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=6, minute=0, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+    </record>
+
+    <record id="cron_auto_create_missing_branch_reports" model="ir.cron">
+        <field name="name">Auto Create Missing Branch Reports</field>
+        <field name="model_id" ref="model_period_inventory"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_auto_create_missing_branch_reports()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=22, minute=5, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+    </record>
+
+    <record id="cron_auto_create_reports" model="ir.cron">
+        <field name="name">Tự động sinh Báo cáo Tổng hợp</field>
+        <field name="model_id" ref="model_period_inventory"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_auto_create_reports()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <!-- Run daily at 07:00; Python code will check weekday and only execute on Wednesday. -->
+        <field name="nextcall" eval="(DateTime.now().replace(hour=0, minute=0, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+    </record>
+</odoo>

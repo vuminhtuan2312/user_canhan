@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_tax_output_invoice_line,tax.output.invoice.line,model_tax_output_invoice_line,base.group_user,1,1,1,1
+access_tax_branch_mapper,tax_branch_mapper,model_tax_branch_mapper,base.group_user,1,1,1,1
+access_ttb_inout_invoice_mapper,access_ttb_inout_invoice_mapper,model_ttb_inout_invoice_mapper,base.group_user,1,1,1,1
+access_ttb_inout_invoice_mapper_history,access_ttb_inout_invoice_mapper_history,model_ttb_inout_invoice_mapper_history,base.group_user,1,1,1,1
+access_ttb_inout_product_mapper,access_ttb_inout_product_mapper,model_ttb_inout_product_mapper,base.group_user,1,1,1,1
+access_ttb_inout_product_mapper_history,access_ttb_inout_product_mapper_history,model_ttb_inout_product_mapper_history,base.group_user,1,1,1,1
+access_ttb_inproduct_outproduct_mapper,access_ttb_inproduct_outproduct_mapper,model_ttb_inproduct_outproduct_mapper,base.group_user,1,1,1,1
+access_tax_manual_choice,access_tax_manual_choice,model_tax_manual_choice,base.group_user,1,1,1,1

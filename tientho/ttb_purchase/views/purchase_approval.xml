@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="purchase_approval_form" model="ir.ui.view">
+        <field name="name">Tờ trình duyệt giá</field>
+        <field name="model">ttb.purchase.approval</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="sent_ok" invisible="1"/>
+                    <field name="approve_ok" invisible="1"/>
+                    <button name="action_product_select" string="Chọn sản phẩm" invisible="state != 'new'" type="object"/>
+                    <button name="action_sent" string="Gửi duyệt" invisible="not sent_ok or state != 'new'" type="object" class="btn-primary"/>
+                    <button name="action_approve" string="Duyệt" invisible="not approve_ok or state != 'sent'" type="object" class="btn-primary"/>
+                    <button name="action_reject" string="Từ chối" invisible="not approve_ok or state != 'sent'" type="object"/>
+<!--                    <button name="action_created_po" string="Tạo PO" invisible="state != 'approved'" type="object"/>-->
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_to_po"
+                                class="oe_stat_button"
+                                icon="fa-credit-card" invisible="po_count == 0">
+                            <field name="po_count" widget="statinfo" string="Đơn mua hàng"/>
+                            <field name='po_ids' widget="many2many_tags" invisible="1"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date" readonly="state !='new'"/>
+                            <field name="user_id" readonly="state !='new'"/>
+                            <field name="pr_domain" invisible="1"/>
+                            <field name="pr_id" readonly="state !='new'" domain="pr_domain"/>
+                            <field name="branch_id"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="vendor_type"/>
+                            <field name="vendor_name" invisible="vendor_type == 'old'" readonly="vendor_type == 'old'" required="vendor_type == 'new'"/>
+                            <field name="partner_id" invisible="vendor_type == 'new'" readonly="vendor_type == 'new'" required="vendor_type == 'old'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Danh sách sản phẩm" name="detail">
+                            <field name="tax_country_id" invisible="1"/>
+                            <field name="line_ids" readonly="state != 'new'">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="company_id" column_invisible="True"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="product_code" readonly="product_id"/>
+                                    <field
+                                            name="product_id"
+                                            context="{'partner_id':parent.partner_id, 'quantity':quantity, 'company_id': parent.company_id}"
+                                            force_save="1" domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', 'parent_of', parent.company_id)]"/>
+                                    <field name="product_name" readonly="product_id" optional="show"/>
+                                    <field name="categ_id" domain="[('child_id','=',False)]" readonly="product_id" optional="show"/>
+                                    <field name="uom_id" readonly="product_id" optional="show" options="{'no_open': True}" force_save="1"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit"/>
+                                    <field name="discount" width="50px" optional="show"/>
+                                    <field name="tax_ids" widget="many2many_tags" domain="[('type_tax_use', '=', 'purchase'), ('company_id', 'parent_of', parent.company_id), ('country_id', '=', parent.tax_country_id), ('active', '=', True)]" context="{'default_type_tax_use': 'purchase', 'search_view_ref': 'account.account_tax_view_search'}" options="{'no_create': True}" optional="show"/>
+                                    <field name="price_subtotal"/>
+                                </list>
+                                <form>
+                                    <field name="company_id" invisible="1"/>
+                                    <group>
+                                        <group>
+                                            <field name="product_id"
+                                                   context="{'partner_id': parent.partner_id}"
+                                                   widget="many2one_barcode"
+                                                   domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                                            />
+                                            <label for="quantity"/>
+                                            <div class="o_row">
+                                                <field name="quantity"/>
+                                                <field name="uom_id"/>
+                                            </div>
+                                            <field name="price_unit"/>
+                                            <field name="discount"/>
+                                            <field name="tax_ids" widget="many2many_tags" domain="[('type_tax_use', '=', 'purchase'), ('company_id', 'parent_of', parent.company_id), ('country_id', '=', parent.tax_country_id)]" options="{'no_create': True}"/>
+                                        </group>
+                                        <group>
+
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                            <group>
+                                <group colspan="8">
+                                </group>
+                                <group class="oe_subtotal_footer" colspan="4">
+                                    <field name="tax_totals" widget="account-tax-totals-field" nolabel="1" readonly="1"/>
+                                </group>
+                            </group>
+                            <div class="clearfix"/>
+                        </page>
+                        <page string="Thông tin phê duyệt" name="approval_info">
+                            <group>
+                                <group>
+                                    <field name="current_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="next_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="notif_user_ids" readonly="1" widget="many2many_tags"/>
+                                </group>
+                                <group groups="base.group_no_one">
+                                    <field name="process_id" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_sent" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_approved" readonly="1" groups="base.group_no_one"/>
+                                </group>
+                            </group>
+                            <field name="rule_line_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_approval_list" model="ir.ui.view">
+        <field name="name">Tờ trình duyệt giá</field>
+        <field name="model">ttb.purchase.approval</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="date"/>
+                <field name="pr_id"/>
+                <field name="branch_id"/>
+                <field name="partner_id" invisible="vendor_type != 'old'"/>
+                <field name="state"/>
+                <field name="vendor_type" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_approval_search" model="ir.ui.view">
+        <field name="name">Tờ trình duyệt giá</field>
+        <field name="model">ttb.purchase.approval</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="product_id" filter_domain="['|', ('line_ids.product_id', 'ilike', self), ('line_ids.product_name', 'ilike', self)]"/>
+                <filter string="Tờ trình của tôi" name="my_request" domain="[('user_id', '=', uid)]"/>
+                <filter string="Tờ trình cần duyệt" name="my_approve" domain="[('state','=','sent'),('current_approve_user_ids', '=', uid)]"/>
+                <separator/>
+                <filter string="Đang duyệt" name="state_sent" domain="[('state','=','sent')]"/>
+                <filter string="Đã duyệt" name="state_approved" domain="[('state','=','approved')]"/>
+
+                <group expand="1" string="Group By">
+                    <filter string="Người đề nghị" name="groupby_user_id" context="{'group_by':'user_id'}"/>
+                    <filter string="Nhà cung cấp" name="groupby_partner_id" context="{'group_by':'partner_id'}"/>
+                    <filter string="Ngày đề nghị" name="groupby_date" context="{'group_by': 'date:month'}"/>
+                    <filter string="Cơ sở" name="groupby_branch_id" context="{'group_by':'branch_id'}"/>
+                    <filter string="Trạng thái" name="groupby_state" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="purchase_approval_action" model="ir.actions.act_window">
+        <field name="name">Tờ trình duyệt giá</field>
+        <field name="res_model">ttb.purchase.approval</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

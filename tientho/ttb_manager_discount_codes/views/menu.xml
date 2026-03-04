@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="menu_discount_root" name="Quản lý mã ưu đãi" web_icon="ttb_manager_discount_codes,static/description/ma-uu-dai.png"/>
+
+    <menuitem id="ttb_voucher_type_kanban_menu"
+              parent="menu_discount_root"
+              name="Tạo mã"
+              action="action_voucher_type_kanban" sequence="11"/>
+
+    <menuitem id="config_voucher_menu"
+              parent="menu_discount_root"
+              name="Cấu hình"
+              groups="base.group_system,ttb_kpi.group_ttb_kpi_warehouse_director" sequence="12"/>
+
+    <menuitem id="voucher_type_menu"
+              parent="config_voucher_menu"
+              name="Loại ưu đãi"
+              action="action_voucher_type"
+              groups="base.group_system,ttb_kpi.group_ttb_kpi_warehouse_director"
+    />
+
+    <menuitem id="voucher_menu"
+              parent="config_voucher_menu"
+              name="Danh sách ưu đãi"
+              action="action_voucher"/>
+</odoo>

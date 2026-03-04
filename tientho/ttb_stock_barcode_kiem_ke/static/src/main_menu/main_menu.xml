@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ttb_stock_barcode_kiem_ke.MainMenu" t-inherit="stock_barcode.MainMenu" t-inherit-mode="extension">
+        <xpath expr="//footer/button[hasclass('o_button_inventory')]" position="after">
+            <button class="o_button_inventory btn btn-block btn-info mb-3 p-3 w-100"
+                    t-on-click="() => this.actionService.doAction('ttb_stock_barcode_kiem_ke.stock_barcode_kiem_ke_client_action')">
+                Kiểm kê
+                <span t-if="this.quantCount" class="ms-2 p-1 px-2 bg-light rounded-circle text-primary" t-out="this.quantCount"/>
+            </button>
+            <button class="o_button_inventory btn btn-block btn-info mb-3 p-3 w-100"
+                    t-on-click="() => this.actionService.doAction('ttb_stock_barcode_kiem_ke.inventory_result_action_kanban')">
+                Hậu kiểm
+            </button>
+        </xpath>
+    </t>
+</templates>

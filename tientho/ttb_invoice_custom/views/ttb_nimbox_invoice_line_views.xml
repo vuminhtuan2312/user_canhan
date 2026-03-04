@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_nimbox_invoice_line_tree_custom" model="ir.ui.view">
+        <field name="name">ttb.nimbox.invoice.line.tree.custom</field>
+        <field name="model">ttb.nimbox.invoice.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="category_id_level_1" optional="show"/>
+                <field name="category_id_level_2" optional="hide"/>
+                <field name="category_id_level_3" optional="hide"/>
+                <field name="category_id_level_4" optional="hide"/>
+                <field name="category_id_level_5" optional="hide"/>
+                <field name="tchat" optional="show"/>
+                <field name="tensp"/>
+                <field name="soluong" optional="show"/>
+                <field name="soluong_remain" optional="show"/>
+                <field name="donvi" optional="hide"/>
+                <field name="donvi_rate" optional="show"/>
+                <field name="dongia" optional="hide"/>
+                <field name="price_unit" optional="show"/>
+                <field name="ti_le_chiet_khau" optional="show"/>
+                <field name="thanhtien" sum="Tổng thanhtien"/>
+                <field name="soluong_used" optional="show"/>
+                <field name="ttb_branch_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="ttb_nimbox_invoice_line_form_custom" model="ir.ui.view">
+        <field name="name">ttb_nimbox_invoice_line.form.custom</field>
+        <field name="model">ttb.nimbox.invoice.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="tchat"/>
+                        <field name="tensp"/>
+                        <field name="soluong"/>
+                        <field name="donvi"/>
+                        <field name="dongia"/>
+                        <field name="buy_product_id"/>
+                        <field name="count_out_product"/>
+                    </group>
+                    <group>
+                        <field name="ti_le_chiet_khau" readonly="0"/>
+                        <field name="so_tien_chiet_khau" readonly="0"/>
+                        <field name="thuesuat" readonly="0"/>
+                        <field name="thanhtien" readonly="0"/>
+                        <field name="thanhtien_exclude_tax" readonly="0"/>
+                        <field name="dongia_excluded_tax" readonly="0"/>
+                        <field name="phanbo_thanh_tien_exclude_tax" readonly="0"/>
+                        <field name="soluong_used" />
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Dòng đầu vào phân bổ dòng đầu ra">
+                        <field name="out_line_ids">
+                            <list>
+                                <field name="in_line_id" optional="hide"/>
+                                <field name="in_product_id" optional="show"/>
+                                <field name="in_line_price" optional="hide"/>
+                                <field name="in_product_price" optional="hide"/>
+                                
+                                <field name="out_line_id" optional="hide"/>
+                                <field name="out_product_id" optional="hide"/>
+                                <field name="out_line_price" optional="hide"/>
+                                
+                                <field name="quantity" sum="Total"/>
+                                <field name="diff_rate"/>
+                                <field name="in_quantity"/>
+                                <field name="out_quantity"/>
+                                <field name="active"/>
+                                <field name="version" optional="hide"/>
+                                <field name="version_time" optional="hide"/>
+                            </list>
+                        </field>
+                    </page>
+
+                    <page string="Dòng đầu vào phân bổ SP đầu ra">
+                        <field name="out_product_ids">
+                            <list>
+                                <field name="nimbox_invoice_id" optional="hide"/>
+                                <field name="out_product_id" optional="hide"/>
+                                <field name="quantity" optional="show"/>
+                                <field name="thanhtien_exclude_tax" optional="hide"/>
+                                <field name="column_g" optional="hide"/>
+                                <field name="tien_thue" sum="Total"/>
+                                <field name="thuesuat"/>
+
+                                <field name="version" optional="hide"/>
+                                <field name="version_time" optional="hide"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_nimbox_invoice_line_view_graph" model="ir.ui.view">
+        <field name="name">ttb.nimbox.invoice.line.graph</field>
+        <field name="model">ttb.nimbox.invoice.line</field>
+        <field name="arch" type="xml">
+            <graph string="Biểu đồ Thành tiền theo Ngày" type="line">
+                <field name="invoice_date" type="row" interval="day"/> 
+                
+                <field name="soluong_goc" type="measure"/>
+                <field name="soluong_used" type="measure"/>
+                <field name="thanhtien_exclude_tax" type="measure"/> 
+                <field name="thanhtien" type="measure"/> 
+            </graph>
+        </field>
+    </record>
+</odoo>

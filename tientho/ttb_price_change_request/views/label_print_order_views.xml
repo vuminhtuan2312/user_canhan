@@ -1,0 +1,177 @@
+<odoo>
+    <record id="view_ttb_label_print_order_tree" model="ir.ui.view">
+        <field name="name">ttb.label.print.order.tree</field>
+        <field name="model">ttb.label.print.order</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="request_id"/>
+                <field name="branch_id"/>
+                <field name="responsible_user_id"/>
+                <field name="execute_date"/>
+                <field name="print_state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ttb_label_print_order_form" model="ir.ui.view">
+        <field name="name">ttb.label.print.order.form</field>
+        <field name="model">ttb.label.print.order</field>
+        <field name="arch" type="xml">
+            <form string="Lệnh in nhãn">
+                <header>
+<!--                    <button name="action_to_audit" type="object" string="Xác nhận" class="btn-primary"-->
+<!--                            invisible="state != 'printing'"/>-->
+<!--                    <button name="action_done" type="object" string="Hoàn thành" class="btn-primary"-->
+<!--                            invisible="state != 'audit'"/>-->
+<!--                    <button name="action_cancel" type="object" string="Hủy" class="btn-secondary"-->
+<!--                            invisible="state == 'done'"/>-->
+<!--                    <field name="state" widget="statusbar" statusbar_visible="printing,audit,done"/>-->
+                    <!-- Đã dán -->
+                    <button
+                        name="action_mark_labeled"
+                        type="object"
+                        string="Đã dán"
+                        class="btn-primary"
+                        invisible="print_state != 'exported'"
+                    />
+
+                    <!-- Đã hậu kiểm -->
+                    <button
+                        name="action_mark_checked"
+                        type="object"
+                        string="Đã hậu kiểm"
+                        class="btn-secondary"
+                        invisible="print_state != 'labeled'"
+                    />
+
+                    <!-- Statusbar -->
+                    <field
+                        name="print_state"
+                        widget="statusbar"
+                        print_state="draft,exported,labeled,checked"
+                    />
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="branch_id" readonly="1"/>
+                            <field name="note" placeholder="Ghi chú..." readonly="print_state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="responsible_user_id" readonly="1" widget="many2one_avatar_user"/>
+                            <field name="executor_user_ids" widget="many2many_tags" readonly="print_state in ['labeled', 'checked']"/>
+                            <field name="execute_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Tem kệ khu bán lẻ" invisible="not line_a_ids">
+                            <group>
+<!--                                <button name="action_export_price_tag_group_a_xlsx" type="object" string="Xuất file"-->
+<!--                                        class="btn-secondary" invisible="print_state != 'draft'"/>-->
+                                <button name="action_print_and_update_state"
+                                        type="object"
+                                        string="In tem nhãn"
+                                        class="btn-primary"
+                                        icon="fa-print"/>
+                            </group>
+                            <field name="line_a_ids" nolabel="1" mode="list" readonly="print_state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="mch1_id"/>
+                                    <field name="barcode"/>
+                                    <field name="default_code"/>
+                                    <field name="product_name"/>
+                                    <field name="old_price"/>
+                                    <field name="new_price"/>
+                                    <field name="qty"/>
+<!--                                    <field name="old_kvc_price"/>-->
+<!--                                    <field name="new_kvc_price"/>-->
+<!--                                    <field name="qty_kvc"/>-->
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Tem kệ khu vui chơi" invisible="not line_b_ids">
+                            <group>
+                                <button name="action_export_price_tag_group_b_xlsx" type="object" string="Xuất file"
+                                        class="btn-secondary"/>
+                                <button name="action_update_qty_from_augges" type="object" string="Cập nhật tồn" class="btn-secondary"
+                                        invisible="print_state != 'draft'"/>
+                            </group>
+                            <field name="line_b_ids" nolabel="1" mode="list" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="mch1_id"/>
+                                    <field name="barcode"/>
+                                    <field name="default_code"/>
+                                    <field name="product_name"/>
+                                    <field name="old_price"/>
+                                    <field name="new_price"/>
+                                    <field name="qty"/>
+<!--                                    <field name="old_kvc_price"/>-->
+<!--                                    <field name="new_kvc_price"/>-->
+<!--                                    <field name="qty_kvc"/>-->
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Tem dán sản phẩm" invisible="not line_c_ids">
+                            <group>
+                                <button name="action_print_and_update_state"
+                                        type="object"
+                                        string="In tem nhãn"
+                                        class="btn-primary"
+                                        icon="fa-print"/>
+                            </group>
+                            <field name="line_c_ids" nolabel="1" mode="list" readonly="print_state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="mch1_id"/>
+                                    <field name="barcode"/>
+                                    <field name="default_code"/>
+                                    <field name="product_name"/>
+                                    <field name="old_price"/>
+                                    <field name="new_price"/>
+                                    <field name="qty"/>
+                                </list>
+                            </field>
+                        </page>
+
+<!--                        <page string="Chi tiết (tất cả)">-->
+<!--                            <field name="line_ids" nolabel="1" mode="list" readonly="state != 'printing'">-->
+<!--                                <list editable="bottom">-->
+<!--                                    <field name="group_code"/>-->
+<!--                                    <field name="mch1_id"/>-->
+<!--                                    <field name="barcode"/>-->
+<!--                                    <field name="default_code"/>-->
+<!--                                    <field name="product_name"/>-->
+<!--                                    <field name="old_price"/>-->
+<!--                                    <field name="new_price"/>-->
+<!--                                    <field name="qty"/>-->
+<!--                                    <field name="old_kvc_price"/>-->
+<!--                                    <field name="new_kvc_price"/>-->
+<!--                                    <field name="qty_kvc"/>-->
+<!--                                </list>-->
+<!--                            </field>-->
+<!--                        </page>-->
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ttb_label_print_order" model="ir.actions.act_window">
+        <field name="name">Lệnh in nhãn</field>
+        <field name="res_model">ttb.label.print.order</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_ttb_label_print_order" name="Lệnh in nhãn"
+              parent="menu_ttb_price_change_root" action="action_ttb_label_print_order" sequence="10"/>
+</odoo>

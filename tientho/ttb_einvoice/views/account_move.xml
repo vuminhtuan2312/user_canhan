@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="name">account.move.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="action_ttb_set_serial_from_branch"
+                        type="object"
+                        string="Lấy ký hiệu theo cơ sở"
+                        class="btn-secondary"
+                        />
+                <button name="action_ttb_create_einvoice"
+                        type="object"
+                        string="Tạo hoá đơn"
+                        class="btn-primary"
+                        confirm="Bạn có chắc chắn muốn tạo Hóa đơn điện tử cho hóa đơn này không?"
+                        />
+                <button name="action_ttb_publish_einvoice"
+                        type="object"
+                        string="Phát hành hoá đơn"
+                        class="btn-primary"
+                        confirm="Bạn có chắc chắn muốn Phát hành Hóa đơn điện tử cho hóa đơn này không?"
+                        />
+            </header>
+            <notebook position="inside">
+                <page name="ttb_einvoice" string="Hóa đơn điện tử" invisible="move_type not in ['out_invoice', 'out_refund']">
+                    <group>
+                        <group>
+                            <field name="ttb_serial_id"/>
+                            <field name="ttb_service_id"/>
+                            <field name="ttb_pattern"/>
+                            <field name="ttb_type"/>
+                        </group>
+                        <group>
+                            <field name="l10n_vn_e_invoice_number"/>
+                            <field name="ttb_invoice_id" domain="[('id','child_of',ttb_company_partner_id),('type','=','invoice')]"
+                                   options="{'no_quick_create': True}"
+                                   context="{'default_type':'invoice', 'show_address': False, 'show_vat': False, 'default_parent_id': partner_id}"/>
+                            <field name="ttb_einvoice_state"/>
+                            <field name="ttb_company_partner_id" invisible="1"/>
+                        </group>
+                    </group>
+                </page>
+                <page name="API Logs" groups="base.group_system">
+                    <field name="call_log_ids"/>
+                </page>
+            </notebook>
+            <sheet position="before">
+                <div class="alert alert-warning text-center o_form_header alert-dismissible" role="status" invisible="not call_error">
+                    <button name="ttb_call_api_einvoice" type="object" class="btn-link pr-1" aria-label="Retry">
+                        <b>Đồng bộ Hóa đơn điện tử</b> gặp lỗi :
+                    </button>
+                    <field name="call_error" class="mb-0"/>
+                </div>
+            </sheet>
+        </field>
+    </record>
+    <record id="view_account_invoice_filter" model="ir.ui.view">
+        <field name="name">account.invoice.select</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <filter name="groupy_by_journal" position="after">
+                <filter string="Trạng thái HĐĐT" name="groupby_ttb_einvoice_state" domain="[]" context="{'group_by': 'ttb_einvoice_state'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="l10n_vn.view_invoice_form_inherit_l10n_vn" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="account_move_action" model="ir.actions.act_window">
+        <field name="name">Hóa đơn</field>
+        <field name="path">einvoice-customer-invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,kanban,form,activity</field>
+        <field name="view_id" ref="account.view_out_invoice_tree"/>
+        <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        <field name="domain">[('pos_order_ids','!=',[]),('move_type', 'in', ['out_invoice', 'out_refund'])]</field>
+        <field name="context">{'search_default_out_invoice': 1, 'default_move_type': 'out_invoice'}</field>
+    </record>
+</odoo>

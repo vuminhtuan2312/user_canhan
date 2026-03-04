@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ttb_price_change_request_user,ttb.price.change.request.user,model_ttb_price_change_request,base.group_user,1,1,1,1
+access_ttb_price_change_request_manager,ttb.price.change.request.manager,model_ttb_price_change_request,base.group_user,1,1,1,1
+access_ttb_price_change_request_line_user,ttb.price.change.request.line.user,model_ttb_price_change_request_line,base.group_user,1,1,1,1
+access_ttb_price_change_request_line_manager,ttb.price.change.request.line.manager,model_ttb_price_change_request_line,base.group_user,1,1,1,1
+access_ttb_label_print_order,access_ttb_label_print_order,model_ttb_label_print_order,base.group_user,1,1,1,1
+access_ttb_label_print_order_line,access_ttb_label_print_order_line,model_ttb_label_print_order_line,base.group_user,1,1,1,1
+access_ttb_pcr_update_history,access_ttb_pcr_update_history,model_ttb_pcr_update_history,base.group_user,1,1,1,1
+

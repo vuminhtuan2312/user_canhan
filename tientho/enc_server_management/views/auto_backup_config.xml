@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="auto_backup_config_list">
+            <field name="name">auto_backup_config list</field>
+            <field name="model">auto.backup.config</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name" />
+                    <field name="server" />
+                    <field name="db_name" />
+                    <field name="nextcall"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="auto_backup_config_form">
+            <field name="name">auto_backup_config form</field>
+            <field name="model">auto.backup.config</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="generator_sh_backup_template" string="Tạo script backup" class="btn-primary" type="object" />
+                        <button name="generator_sh_backup_file" string="Tạo file script backup" class="btn-primary" type="object" />
+                        <button name="generator_backup_folder"
+                                string="Tạo thư mục lưu backup NextCloud"
+                                class="btn-primary"
+                                type="object"
+                                invisible="upload_type != 'nextcloud'"/>
+                        <button name="action_backup" string="Run backup" class="btn-primary" type="object" />
+                    </header>
+                    <sheet>
+                        <field name="binding_model_id" invisible="1"/>
+                        <field name="model_name" invisible="1"/>
+                        <field name="state" invisible="1"/>
+                        <field name="type" invisible="1"/>
+                        <field name="crud_model_id" options="{'no_create': True}" invisible="1"/>
+                        <field name="crud_model_name" invisible="1"/>
+                        <field name="link_field_id" domain="[('model_id', '=', model_id), ('relation', '=', crud_model_name),                                     ('ttype', 'in', ['many2one', 'one2many', 'many2many'])]" invisible="1" context="{'default_model_id': model_id, 'default_relation': crud_model_name}"/>                        <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name" placeholder="e.g. Backup server ADC"/></h1>
+                        </div>
+                        <group>
+                            <group string="Cấu hình backup">
+                                <field name="server" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}"/>
+
+                                <field name="db_name" />
+                                <field name="db_user" />
+                                <field name="pg_pass" password="True" />
+                                <field name="data_dir" />
+                                <field name="working_path" />
+                                <field name="upload_type"/>
+                                <field name="ftp_host"
+                                       options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                                       invisible="upload_type != 'ftp'"
+                                       required="upload_type == 'ftp'"/>
+                                <field name="remote_path"
+                                       invisible="upload_type != 'ftp'"
+                                       required="upload_type == 'ftp'"/>
+                                <field name="nextcloud_host"
+                                       options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                                       invisible="upload_type != 'nextcloud'"
+                                       required="upload_type == 'nextcloud'"/>
+
+                                <field name="nextcloud_path"
+                                       invisible="upload_type != 'nextcloud'"
+                                       required="upload_type == 'nextcloud'"/>
+
+                            </group>
+                            <group string="Thời gian backup">
+                                <field name="model_id" options="{'no_create': True}"/>
+                                <field name="user_id"/>
+                                <label for="interval_number" string="Execute Every"/>
+                                <div>
+                                    <field name="interval_number" class="oe_inline"/>
+                                    <field name="interval_type" class="oe_inline"/>
+                                </div>
+                                <field name="active" widget="boolean_toggle"/>
+                                <field name="nextcall"/>
+<!--                                <field name="numbercall"/>-->
+                                <field name="priority"/>
+<!--                                <field name="doall"/>-->
+                            </group>
+
+                        </group>
+                        <notebook>
+                            <page name="backup_history" string="History" autofocus="autofocus" >
+                                <field name="history_ids" nolabel="1" readonly="1">
+                                    <list>
+<!--                                        <field name="config_id" invisible="1"/>-->
+                                        <field name="create_date" />
+                                        <field name="create_uid" />
+                                        <field name="state" />
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="File sh">
+                                <field name="template_data"/>
+                            </page>
+                            <page string="Python Code" name="code"
+                                  invisible="state != 'code'">
+                                <field name="code" widget="ace" options="{'mode': 'python'}" placeholder="Enter Python code here. Help about Python expression is available in the help tab of this document."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="auto_backup_config_action_window">
+            <field name="name">Cấu hình backup</field>
+            <field name="res_model">auto.backup.config</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+    </data>
+</odoo>

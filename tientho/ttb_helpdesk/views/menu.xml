@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="menu_helpdesk_crm_root" name="CRM"
+        sequence="90"
+        web_icon="helpdesk,static/description/icon.png">
+
+<!--        <menuitem id="menu_helpdesk_crm_call_transaction"-->
+<!--            name="Happy call &amp; Tương tác"-->
+<!--            sequence="10">-->
+
+        <menuitem id="ttb_happy_call_menu"
+            name="Happy call"
+            sequence="5"
+            groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager,ttb_kpi.group_ttb_kpi_nv_cskh"
+        >
+            <menuitem id="ttb_happy_call_today_menu"
+                name="Happy call hôm nay"
+                action="ttb_happy_call_action"
+                sequence="10"/>
+            <menuitem id="ttb_happy_call_history_menu"
+                name="Lịch sử happy call"
+                action="ttb_happy_call_history_action"
+                sequence="20"/>
+            <menuitem id="ttb_happy_call_to_recall_menu"
+                name="Happy call cần gọi lại"
+                action="ttb_happy_call_to_recall_action"
+                sequence="30"/>
+
+        </menuitem>
+        <menuitem id="ttb_transaction_menu"
+            name="Dữ liệu tương tác"
+            action="ttb_transaction_action"
+            sequence="10"
+        />
+
+<!--        </menuitem>-->
+        <menuitem
+                id="helpdesk_ticket_crm_menu_ticket"
+                name="Ticket"
+                sequence="20">
+            <menuitem
+                    id="helpdesk_ticket_crm_menu_all"
+                    name="Danh sách ticket"
+                    action="helpdesk.helpdesk_ticket_action_main_tree"
+                    sequence="10"/>
+        </menuitem>
+        <menuitem
+                id="ttb_res_partner_crm_menu"
+                name="Khách hàng"
+                action="ttb_helpdesk.ttb_res_partner_crm_action"
+                sequence="30"
+                groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager,ttb_kpi.group_ttb_kpi_nv_cskh"
+        />
+        <menuitem
+                id="helpdesk_ticket_crm_menu_report"
+                name="Báo cáo"
+                action="helpdesk_crm_report_kanban_action"
+                sequence="40"/>
+
+    </menuitem>
+
+    <menuitem id="ttb_happy_call_rule_menu"
+        name="Danh sách điều kiện Happycall"
+        action="ttb_happy_call_rule_action"
+        parent="helpdesk.helpdesk_menu_config"
+        sequence="30"/>
+
+    <menuitem id="ttb_related_content_menu"
+        name="Ticket"
+        action="ttb_related_content_action"
+        parent="helpdesk.helpdesk_menu_config"
+        sequence="40"/>
+
+    <menuitem id="ttb_related_content_menu"
+        name="Nội dung liên quan"
+        action="ttb_related_content_action"
+        parent="helpdesk.helpdesk_menu_config"
+        groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager"
+        sequence="40"/>
+    <menuitem id="ttb_region_menu"
+        name="Vùng"
+        action="ttb_region_action"
+        parent="helpdesk.helpdesk_menu_config"
+        sequence="50"/>
+    <menuitem id="ttb_branch_menu"
+        name="Cơ sở"
+        action="ttb_branch_action"
+        parent="helpdesk.helpdesk_menu_config"
+        sequence="60"/>
+    <menuitem id="ttb_helpdesk_report_config_menu"
+        name="Cấu hình báo cáo"
+        action="ttb_report_config_action"
+        parent="helpdesk.helpdesk_menu_config"
+        groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager"
+        sequence="70"/>
+    <menuitem id="menu_error_ticket_import"
+        name="Phiếu lỗi HRW"
+        action="action_error_ticket"
+        parent="helpdesk.helpdesk_menu_config"
+        groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager"
+        sequence="80"/>
+</odoo>

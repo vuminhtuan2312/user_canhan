@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates>
+    <t t-name="PsSearchOptionTemplate" t-inherit="web.X2ManyField"
+       t-inherit-mode="primary" owl="1">
+        <t t-if="displayControlPanelButtons" position="replace">
+            <div>
+                <div>
+                    <input type="text" class="o_section_search_value searchInput pl-2"
+                           placeholder="Search...."
+                           t-ref="search_keywords"
+                           style="margin-bottom:11px;height:32px;"
+                           t-on-keyup="onInputKeyUp"/>
+                </div>
+            </div>
+        </t>
+    </t>
+</templates>

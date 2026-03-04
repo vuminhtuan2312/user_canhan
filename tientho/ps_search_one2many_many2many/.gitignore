@@ -1,0 +1,5 @@
+*.pyc
+.*
+!.gitignore
+!.mailmap
+__pycache__/

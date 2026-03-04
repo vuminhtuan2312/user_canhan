@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem action="branch_action" id="branch_menu" parent="purchase.menu_purchase_config" sequence="1"/>
+    <menuitem action="config_invoice_action" id="config_invoice_menu" parent="purchase.menu_purchase_config" sequence="10"/>
+
+    <menuitem
+        id="inventory_session_root"
+        name="Phiên kiểm kê"
+        web_icon="ttb_stock,static/description/icon2.png"
+        sequence="30">
+
+        <menuitem id="inventory_session_menu" name="Phiên kiểm kê" sequence="1" action="ttb_stock.inventory_session_action"/>
+        <menuitem id="inventory_result_menu" name="Kết quả kiểm kê" sequence="5" action="ttb_stock.inventory_result_action"/>
+    </menuitem>
+    <menuitem id="menu_stock_consume_root" name="Xuất dùng" parent="stock.menu_stock_root" sequence="99"/>
+    <menuitem id="stock_consume_request_menu" action="action_stock_consume_request" name="Phiếu đề nghị xuất dùng" parent="ttb_stock.menu_stock_consume_root" sequence="11"/>
+    <menuitem id="menu_stock_consume_picking" action="action_stock_consume_picking" name="Phiếu điều chuyển xuất dùng" parent="ttb_stock.menu_stock_consume_root" sequence="12"/>
+    <menuitem id="stock_transfer_request_menu_root" parent="stock.menu_stock_root" name="Phiếu đề nghị chuyển hàng" sequence="99">
+        <menuitem id="stock_transfer_request_stock_picking_menu" name="Chuyển lên quầy">
+            <menuitem id="menu_stock_picking_retail_receive" 
+                      name="Kho bán lẻ nhận hàng" 
+                      action="action_stock_picking_retail_receive" 
+                      sequence="10"/>
+
+            <menuitem id="menu_stock_picking_play_receive" 
+                      name="Kho vui chơi nhận hàng" 
+                      action="action_stock_picking_play_receive" 
+                      sequence="20"/>
+
+            <menuitem id="menu_stock_picking_office_export" 
+                      name="Kho văn phòng xuất hàng" 
+                      action="action_stock_picking_office_export" 
+                      sequence="30"/>
+        </menuitem>
+        <menuitem id="stock_transfer_request_menu_child" name="Điều chuyển cơ sở khác">
+            <menuitem id="stock_transfer_request_menu" name="Phiếu điều chuyển hàng giữa các cơ sở"
+                      action="stock_transfer_request_action"/>
+        </menuitem>
+    </menuitem>
+
+    <menuitem id="menu_barcode_change_root" name="Chuyển mã" parent="stock.menu_stock_root" sequence="99"/>
+    <menuitem id="menu_barcode_change_reason" name="Lý do chuyển mã" parent="ttb_stock.menu_barcode_change_root" action="action_barcode_change_reason" sequence="11"/>
+    <menuitem id="menu_barcode_change_request" name="Yêu cầu chuyển mã" parent="ttb_stock.menu_barcode_change_root" action="action_barcode_change_request" sequence="12"/>
+
+</odoo>

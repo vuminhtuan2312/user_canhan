@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_purchase_grid_wizard_form" model="ir.ui.view">
+        <field name="name">purchase.grid.wizard.form</field>
+        <field name="model">purchase.grid.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Thiết lập dự trù mua bán">
+                <group>
+                    <field name="product_ids" widget="many2many_tags"/>
+                    <field name="branch_id"/>
+                    <field name="mch_id" widget="many2many_tags"/>
+<!--                    <field name="mch_id_2"/>-->
+<!--                    <field name="mch_id_3"/>-->
+<!--                    <field name="mch_id_4"/>-->
+<!--                    <field name="mch_id_5"/>-->
+                </group>
+                <group>
+                    <field name="past_cycles"/>
+                    <field name="future_cycles"/>
+                </group>
+                <footer>
+                    <button string="Tạo bảng" type="object" name="action_create_grid" class="btn-primary"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_imported_goods_shipping_stock_setting_action" model="ir.actions.act_window">
+        <field name="name">Công ty</field>
+        <field name="res_model">res.company</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="base.view_company_tree"/>
+    </record>
+</odoo>

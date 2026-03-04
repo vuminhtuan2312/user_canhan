@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_popup_filtered_camera_view_form" model="ir.ui.view">
+        <field name="name">ttb.popup.filtered.camera.form</field>
+        <field name="model">ttb.popup.filtered.camera</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="branch_ids" widget="many2many_tags"/>
+                            <field name="date_filter" string="Ngày xử lý"/>
+                        </group>
+                        <group>
+                            <field name="date_from" invisible="date_filter != 'custom'"/>
+                            <field name="date_to" invisible="date_filter != 'custom'"/>
+                            <field name="report_camera_deduction_coefficient"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Lọc" class="btn-primary" type="object" name="btn_apply_filters" data-hotkey="enter"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                    <button string="Tham số mặc định" class="btn-secondary ms-auto" type="object" name="btn_reset"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_popup_filtered_camera_action" model="ir.actions.act_window">
+        <field name="name">Lọc báo cáo CRM than phiền</field>
+        <field name="res_model">ttb.popup.filtered.camera</field>
+        <field name="view_mode">form</field>
+    </record>
+
+</odoo>

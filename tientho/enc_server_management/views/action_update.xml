@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="action_update_list">
+            <field name="name">action_update list</field>
+            <field name="model">action.update</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="server"/>
+                    <field name="note" />
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="action_update_form">
+            <field name="name">action_update form</field>
+            <field name="model">action.update</field>
+            <field name="arch" type="xml">
+                <form class="terminal-view">
+                    <header style="text-align: center; display: block; font-size: 20px; font-weight: 700;">
+                        <field name="name_display"/>
+                    </header>
+                    <header>
+                        <button name="test_connection" string="Test Connection" class="btn-primary" type="object" />
+                        <button name="action_update" string="Update" class="btn-primary" type="wssh" />
+                        <button string="" style="border: none;"/>
+                        <button name="action_stop" string="Stop" class="btn-primary" type="wssh" />
+                        <button name="action_restart" string="Restart" class="btn-primary" type="wssh"/>
+                        <button string="" style="border: none;"/>
+                        <button name="button_view_log_file" string="Xem log" class="btn-primary" type="wssh"/>
+                        <button name="button_view_one_log_file" string="Xem log 1 lần" class="btn-primary" type="wssh"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="note" />
+                            <field name="server"
+                                   options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                                   readonly="id != False"
+                                   force_save="1"/>
+                            <field name="admin_server" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}" groups="enc_server_management.server_admin"/>
+                        </group>
+                        <group>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <notebook>
+                            <page name="run_command_update" string="Commands Update">
+                                <group>
+                                    <field name="update_command" />
+                                    <field name="stop_command" />
+                                    <field name="restart_command" />
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="log_file"/>
+                                        <field name="number_line_log_file"/>
+                                    </group>
+                                </group>
+<!--                                <button name="button_view_log_file" string="Xem log" class="btn-primary" type="wssh" style="margin: 10px 10px 10px 0;"/>-->
+
+<!--                                <button name="button_view_one_log_file" string="Xem log 1 lần" class="btn-primary" type="wssh" style="margin: 10px 0;"/>-->
+<!--                                <div id="webssh-container"/>-->
+<!--                                <iframe id="webssh" src="/webssh" frameborder="0" scrolling="yes" seamless="seamless" style="display:block; width:100%; height:100vh;pointer-events: none;"/>-->
+                            </page>
+                            <page name="server_history" string="History">
+                                <field name="history_ids" nolabel="1" readonly="1">
+                                    <list>
+<!--                                        <field name="server_id" />-->
+                                        <field name="create_date" />
+                                        <field name="create_uid" />
+<!--                                        <field name="state" />-->
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_update_action_window">
+            <field name="name">Update Action</field>
+            <field name="res_model">action.update</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+    </data>
+</odoo>

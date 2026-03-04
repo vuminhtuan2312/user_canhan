@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_condition_to_send_zns_form" model="ir.ui.view">
+        <field name="name">condition.to.send.zns.form</field>
+        <field name="model">condition.to.send.zns</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="zalo_shop_config_id"/>
+                            <field name="ttb_branch_id"/>
+                            <field name="limit_count"/>
+                            <field name="count_sent"/>
+                            <field name="template_id"/>
+                        </group>
+                        <group>
+                            <field name="time_from" widget="float_time"/>
+                            <field name="time_to" widget="float_time"/>
+                            <field name="date_in_week"/>
+<!--                            <field name="create_by"/>-->
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_condition_to_send_zns_list" model="ir.ui.view">
+        <field name="name">condition.to.send.zns.list</field>
+        <field name="model">condition.to.send.zns</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="ttb_branch_id"/>
+                <field name="limit_count"/>
+                <field name="time_from" widget="float_time"/>
+                <field name="time_to" widget="float_time"/>
+                <field name="date_in_week"/>
+<!--                <field name="create_by"/>-->
+            </list>
+        </field>
+    </record>
+
+
+    <record id="action_condition_to_send_zns" model="ir.actions.act_window">
+        <field name="name">Điều kiện đặc biệt cho gửi ZNS</field>
+        <field name="res_model">condition.to.send.zns</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

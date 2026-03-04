@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu gốc + menu cha (Quản lý, Báo cáo, Cấu hình) -->
+    <menuitem id="ttb_menu_root" name="Khu vui chơi" web_icon="ttb_khuvuichoi,static/description/icon.png"/>
+    <menuitem id="ttb_menu_management" name="Quản lý" parent="ttb_menu_root" sequence="20"/>
+    <menuitem id="ttb_menu_reporting" name="Báo cáo" parent="ttb_menu_root" sequence="30"/>
+    <menuitem id="ttb_menu_configuration" name="Cấu hình" parent="ttb_menu_root" sequence="40"/>
+</odoo>

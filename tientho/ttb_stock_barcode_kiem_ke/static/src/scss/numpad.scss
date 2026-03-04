@@ -1,0 +1,14 @@
+.numpad-btn {
+    width: 60px;
+    height: 40px;
+}
+
+.numpad-container {
+    column-gap: 4px !important;
+}
+
+@include media-breakpoint-down(sm) {
+    .numpad-container {
+        padding: 0
+    }
+}

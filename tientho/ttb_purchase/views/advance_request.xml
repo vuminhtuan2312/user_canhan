@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="purchase_advance_form" model="ir.ui.view">
+        <field name="name">purchase_advance_form</field>
+        <field name="model">advance.request</field>
+        <field name="arch" type="xml">
+            <form string="Tạm ứng">
+                <header>
+                    <!-- Trạng thái Mới -->
+                    <button name="action_send_approve" string="Gửi duyệt" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_cancel" string="Hủy" type="object" invisible="state != 'draft'"/>
+
+                    <!-- Trạng thái Đang duyệt -->
+                    <button name="action_approve" string="Duyệt" type="object" class="btn-primary" invisible="not approve_ok or state != 'to_approve'"/>
+                    <button name="action_reject" string="Không duyệt" type="object" invisible="not approve_ok or state != 'to_approve'"/>
+
+                    <!-- Trạng thái Đã duyệt -->
+                    <button name="action_done" string="Đã tạm ứng" type="object" class="btn-primary" invisible="state != 'approved'"/>
+                    <button name="action_reject" string="Không duyệt" type="object" invisible="not approve_ok or state != 'approved'"/>
+                    <button name="action_start_refund" string="Bắt đầu hoàn ứng" type="object" class="btn-primary" invisible="state != 'done'"/>
+                    <button name="action_refund_done" string="Đã hoàn ứng" type="object" class="btn-primary" invisible="state != 'refunding'"/>
+                    <button name="action_print_advance_request_docx" string="In tạm ứng (DOCX)"
+                        type="object" class="btn-primary"/>
+                    <button name="action_print_return_request_docx" string="In hoàn ứng (DOCX)"
+                        type="object" class="btn-primary" invisible="state not in ('refunding', 'refunded')"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,approved,done,refunding,refunded,cancel"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Thông tin chung">
+                            <field name="name" readonly="1"/>
+                            <field name="request_user_id" readonly="1"/>
+                            <field name="department_id"/>
+                            <field name="date" readonly="1"/>
+                            <field name="date_approved"/>
+                            <field name="content"/>
+                        </group>
+                        <group string="Thông tin thanh toán">
+                            <field name="party"/>
+                            <field name="amount_total" readonly="1" force_save="1"/>
+                            <field name="advance_amount"/>
+                            <field name="actual_amount" invisible="state not in ('refunding', 'refunded')"/>
+                            <field name="refund_amount" invisible="state not in ('refunding', 'refunded')"/>
+                            <field name="missing_goods_amount" invisible="state not in ('refunding', 'refunded')"/>
+                            <field name="payment_date"/>
+                            <field name="refund_date" invisible="state not in ('refunding', 'refunded')"/>
+                            <field name="payment_type"/>
+                            <field name="account_number" invisible="payment_type != 'bank'"/>
+                            <field name="account_holder" invisible="payment_type != 'bank'"/>
+                            <field name="bank_id" invisible="payment_type != 'bank'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Chi tiết tạm ứng">
+                            <field name="request_lines">
+                                <list editable="bottom">
+                                    <field name="stt" readonly="1" force_save="1"/>
+                                    <field name="branch_id" readonly="1" force_save="1"/>
+                                    <field name="po_id"/>
+                                    <field name="partner_id" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                    <field name="description"/>
+                                    <field name="product_category_id" readonly="1" force_save="1"/>
+                                    <field name="currency_rate" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                    <field name="amount" readonly="1" force_save="1"
+                                           column_invisible="parent.state in ('refunding', 'refunded')"/>
+                                    <field name="amount" readonly="1" force_save="1"
+                                           column_invisible="parent.state not in ('refunding', 'refunded')" optional="hide"/>
+                                    <field name="amount_total" readonly="1" force_save="1"
+                                           column_invisible="parent.state in ('refunding', 'refunded')"/>
+                                    <field name="amount_total" readonly="1" force_save="1"
+                                           column_invisible="parent.state not in ('refunding', 'refunded')" optional="hide"/>
+                                    <field name="po_qty" readonly="1" force_save="1" optional="hide"/>
+                                    <field name="po_value" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                    <field name="po_value_vnd" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                    <field name="actual_qty" readonly="1" force_save="1" optional="hide"/>
+                                    <field name="actual_value" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                    <field name="actual_value_vnd" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                    <field name="tax_amount" readonly="1" force_save="1" column_invisible="parent.state not in ('done', 'refunding', 'refunded')" optional="show"/>
+                                    <field name="partner_discount" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                    <field name="actual_amount" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                    <field name="pvc_intl" readonly="1" force_save="1" optional="hide"/>
+                                    <field name="pvc_tq" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')" optional="hide"/>
+                                    <field name="total_shipping_cost" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')" optional="show"/>
+                                    <field name="vat_amount" readonly="1" force_save="1" optional="hide"/>
+                                    <field name="inspection_fee" readonly="1" force_save="1" optional="hide"/>
+                                    <field name="fumigration_fee" readonly="1" force_save="1" optional="hide"/>
+                                    <field name="customs_inspection_fee" readonly="1" force_save="1" optional="hide"/>
+                                    <field name="outside_customs_fee" readonly="1" force_save="1" optional="hide"/>
+                                    <field name="lifting_fee" readonly="1" force_save="1" optional="hide"/>
+                                    <field name="other_fee" readonly="1" force_save="1" optional="hide"/>
+                                    <field name="total_other_fee" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                    <field name="total_actual_amount" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Thông tin phê duyệt" name="approval_info">
+                            <group>
+                                <group>
+                                    <field name="current_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="next_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="notif_user_ids" readonly="1" widget="many2many_tags"/>
+                                </group>
+                                <group groups="base.group_no_one">
+                                    <field name="process_id" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_sent" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_approved" readonly="1" groups="base.group_no_one"/>
+                                </group>
+                            </group>
+                            <field name="rule_line_ids"/>
+                        </page>
+                        <page string="Chứng từ kế toán" name="accounting_info">
+                            <group>
+                                <field name="attachment_ids" widget="pdf_viewer"/>
+                                <field name="attachment_back_ids" widget="pdf_viewer" invisible="state not in ('refunding', 'refunded')"/>
+                            </group>
+                        </page>
+                        <page string="Chứng từ kế toán liên quan" name="attachment_documents">
+                            <group>
+                                <group string="Bill thanh toán NCC">
+                                    <field name="supplier_payment_bill_ids"
+                                           widget="multi_file_viewer"
+                                           nolabel="1"
+                                           context="{'default_attachment_type': 'supplier_payment_bill'}">
+                                        <list>
+                                            <field name="attachment_type" column_invisible="1"/>
+                                            <field name="name"/>
+                                            <field name="file_data" invisible="1"/>
+                                            <field name="mimetype" invisible="1"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Bill vận chuyển NCC">
+                                    <field name="supplier_shipping_bill_ids"
+                                           widget="multi_file_viewer"
+                                           nolabel="1"
+                                           context="{'default_attachment_type': 'supplier_shipping_bill'}">
+                                        <list>
+                                            <field name="attachment_type" column_invisible="1"/>
+                                            <field name="name"/>
+                                            <field name="file_data" invisible="1"/>
+                                            <field name="mimetype" invisible="1"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Điện chuyển tiền">
+                                    <field name="wire_transfer_ids"
+                                           widget="multi_file_viewer"
+                                           nolabel="1"
+                                           context="{'default_attachment_type': 'wire_transfer'}">
+                                        <list>
+                                            <field name="attachment_type" column_invisible="1"/>
+                                            <field name="name"/>
+                                            <field name="file_data" invisible="1"/>
+                                            <field name="mimetype" invisible="1"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Phiếu kiểm hàng">
+                                    <field name="goods_inspection_ids"
+                                           widget="multi_file_viewer"
+                                           nolabel="1"
+                                           context="{'default_attachment_type': 'goods_inspection'}">
+                                        <list>
+                                            <field name="attachment_type" column_invisible="1"/>
+                                            <field name="name"/>
+                                            <field name="file_data" invisible="1"/>
+                                            <field name="mimetype" invisible="1"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Phiếu nhập hàng">
+                                    <field name="goods_receipt_ids"
+                                           widget="multi_file_viewer"
+                                           nolabel="1"
+                                           context="{'default_attachment_type': 'goods_receipt'}">
+                                        <list>
+                                            <field name="attachment_type" column_invisible="1"/>
+                                            <field name="name"/>
+                                            <field name="file_data" invisible="1"/>
+                                            <field name="mimetype" invisible="1"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Chứng từ khác">
+                                    <field name="other_attachment_ids"
+                                           widget="multi_file_viewer"
+                                           nolabel="1"
+                                           context="{'default_attachment_type': 'other'}">
+                                        <list>
+                                            <field name="attachment_type" column_invisible="1"/>
+                                            <field name="name"/>
+                                            <field name="file_data" invisible="1"/>
+                                            <field name="mimetype" invisible="1"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_advance_list" model="ir.ui.view">
+        <field name="name">Tạm ứng</field>
+        <field name="model">advance.request</field>
+        <field name="arch" type="xml">
+            <list string="Tạm ứng">
+                <field name="name" optional="show"/>
+                <field name="department_id" optional="show"/>
+                <field name="request_user_id" optional="show"/>
+                <field name="content" optional="show"/>
+                <field name="amount_total" optional="show"/>
+                <field name="state" optional="show"/>
+                <field name="product_category_ids" optional="show" widget="many2many_tags"/>
+                <field name="count_po" optional="show"/>
+                <field name="date_approved" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_advance_action" model="ir.actions.act_window">
+        <field name="name">Tạm ứng</field>
+        <field name="res_model">advance.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="purchase_advance_list"/>
+    </record>
+</odoo>

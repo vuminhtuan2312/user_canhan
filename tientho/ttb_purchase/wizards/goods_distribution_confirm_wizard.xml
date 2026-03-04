@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_goods_distribution_confirm_wizard" model="ir.ui.view">
+        <field name="name">goods.distribution.confirm.wizard.form</field>
+        <field name="model">goods.distribution.confirm.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Xác nhận phiếu chia hàng">
+                <group>
+                    <field name="ticket_id" invisible="1"/>
+                    <field name="message" nolabel="1" colspan="2"/>
+                </group>
+                <footer>
+                    <button string="Xác nhận"
+                            name="action_confirm"
+                            type="object"
+                            class="btn-primary"
+                            data-hotkey="v"/>
+                    <button string="Đóng"
+                            name="action_cancel"
+                            type="object"
+                            class="btn-secondary"
+                            data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

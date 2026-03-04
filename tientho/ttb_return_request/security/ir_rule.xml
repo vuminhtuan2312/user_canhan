@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record rule: Phân quyền Đề xuất trả hàng cho Giám đốc cơ sở và Quản lý cơ sở -->
+    <record id="ir_rule_return_request_branch_director" model="ir.rule">
+        <field name="name">Đề xuất trả hàng: Chỉ xem theo cơ sở được gán (Giám đốc)</field>
+        <field name="model_id" ref="model_ttb_return_request"/>
+        <field name="domain_force">[('branch_id', 'in', user.ttb_branch_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('ttb_return_request.group_branch_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="ir_rule_return_request_branch_manager" model="ir.rule">
+        <field name="name">Đề xuất trả hàng: Chỉ xem theo cơ sở được gán (Quản lý cơ sở)</field>
+        <field name="model_id" ref="model_ttb_return_request"/>
+        <field name="domain_force">[('branch_id', 'in', user.ttb_branch_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('ttb_return_request.group_branch_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Record rule: Phân quyền Phiếu nhặt hàng cho Nhân viên cơ sở -->
+    <record id="ir_rule_picking_branch_staff" model="ir.rule">
+        <field name="name">Phiếu nhặt hàng: Chỉ xem phiếu được gán (Nhân viên cơ sở)</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="domain_force">[
+            ('pickup_status', '=', 'picking'),
+            '|',
+            ('user_id', '=', user.id),
+            ('support_user_ids', 'in', [user.id])
+        ]</field>
+        <field name="groups" eval="[(4, ref('ttb_return_request.group_branch_staff'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

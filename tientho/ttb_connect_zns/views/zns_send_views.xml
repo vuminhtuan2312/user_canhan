@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_zns_send_form" model="ir.ui.view">
+        <field name="name">zns.send.form</field>
+        <field name="model">zns.send</field>
+        <field name="arch" type="xml">
+            <form string="Tin gửi Zalo ZNS" create="false" delete="false" edit="false">
+                <sheet>
+
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="store_code"/>
+                            <field name="is_upload_bizfly"/>
+                            <field name="status" widget="statusbar"
+                                   statusbar_visible="pending,sent,failed"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Thông tin liên kết">
+                            <group>
+                                <field name="order_id"/>
+                                <field name="order_code"/>
+                                <field name="partner_id"/>
+                                <field name="phone"/>
+                                <field name="purchase_datetime"/>
+                                <field name="template_id"/>
+                                <field name="msg_id"/>
+                            </group>
+                        </page>
+
+                        <page string="Dữ liệu gửi">
+                            <group>
+                                <field name="template_data" widget="text"/>
+                            </group>
+                        </page>
+
+                        <page string="Phản hồi Zalo">
+                            <group>
+                                <field name="sent_at"/>
+                                <field name="response_message" widget="text"/>
+                                <field name="note"/>
+                                <field name="rate"/>
+                                <field name="purchase_datetime"/>
+                                <field name="zalo_request_datetime"/>
+                                <field name="zalo_sent_datetime"/>
+                                <field name="device_received_datetime"/>
+                                <field name="completed_datetime"/>
+                                <field name="first_click_datetime"/>
+                            </group>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="zns_send_view_tree" model="ir.ui.view">
+        <field name="name">zns.send.tree</field>
+        <field name="model">zns.send</field>
+        <field name="arch" type="xml">
+            <list create="false" delete="false" edit="false">
+                <field name="ttb_branch_id"/>
+                <field name="time_range_text"/>
+                <field name="day_in_week"/>
+                <field name="template_id"/>
+                <field name="partner_id"/>
+                <field name="phone"/>
+                <field name="order_id"/>
+                <field name="order_code"/>
+                <field name="purchase_datetime"/>
+                <field name="zalo_request_datetime"/>
+                <field name="zalo_sent_datetime"/>
+                <field name="completed_datetime"/>
+                <field name="status"/>
+                <field name="response_message"/>
+                <field name="response_json"/>
+                <field name="note"/>
+                <field name="rate"/>
+                <field name="is_upload_bizfly"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_zns_send" model="ir.actions.act_window">
+        <field name="name">Tin nhắn ZNS</field>
+        <field name="res_model">zns.send</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

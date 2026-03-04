@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <record id="ttb_hr_action_evaluation_form" model="ir.actions.report">
+        <field name="name">In phiếu đánh giá</field>
+        <field name="model">hr.applicant</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">ttb_hr.template_evaluation_form_document</field>
+        <field name="binding_model_id" ref="model_hr_applicant"/>
+        <field name="binding_type">report</field>
+        <field name="multi">True</field>
+<!--        <field name="paperformat_id" ref="ttb_hr_paperformat_evaluation_form"/>-->
+     </record>
+</odoo>

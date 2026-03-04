@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="gen_bao_cao_cong_no_khong_co_hoa_don_view" model="ir.ui.view">
+        <field name="name">cong.no.khong.hoa.don.list</field>
+        <field name="model">cong.no.khong.hoa.don</field>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list class="o_cong_no_co_hoa_don_list_view">
+                <field name="partner_name"/>
+                <field name="vat" optional="hide"/>
+                <field name="po_name"/>
+                <field name="sp_name"/>
+                <field name="amount_total"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>

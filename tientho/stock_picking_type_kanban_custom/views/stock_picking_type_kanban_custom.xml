@@ -1,0 +1,63 @@
+<odoo>
+    <record id="stock_picking_type_kanban_custom" model="ir.ui.view">
+        <field name="name">stock.picking.type.kanban.custom</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock_barcode.stock_picking_type_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//templates/t[@t-name='card']" position="replace">
+                <t t-name="card" class="o_barcode_picking_type">
+                    <div class="custom-kanban-card" style="padding: 8px; min-height: 200px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%;">
+                        <div>
+                            <div style="font-weight: bold; font-size: 18px; color: #007272;">
+                                <field name="name"/>
+                            </div>
+                            <div style="color: #888; font-size: 13px;">
+                                <field name="warehouse_id"/>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <button class="btn btn-primary" name="get_action_picking_tree_ready_kanban" type="object">
+                                    <span t-if="record.count_picking_ready.raw_value > 0">
+                                        Tìm phiếu nhập kho
+                                        (<field name="count_picking_ready"/>)
+                                    </span>
+                                    <span t-else="">Tìm phiếu nhập kho</span>
+                                </button>
+                                <button class="btn btn-secondary" name="get_action_picking_tree_done_kanban" type="object" style="margin-top: 6px; width: 100%;">
+                                    Tìm phiếu trả hàng
+                                </button>
+                            </div>
+                        </div>
+                        <div style="flex: 1 1 auto;"></div>
+                        <div t-if="record.count_picking_ready.raw_value > 0"
+                             t-att-title="'Số lượng: ' + record.count_picking_ready.raw_value"
+                             style="width: 80px; height: calc(4px * {{ record.count_picking_ready.raw_value }} + 10px); background: #e06674; border-radius: 4px; margin-top: 16px; align-self: flex-start;">
+                        </div>
+                    </div>
+                </t>
+            </xpath>
+        </field>
+    </record>
+    <record id="stock_picking_type_kanban_custom_amount_total" model="ir.ui.view">
+        <field name="name">stock.picking.type.kanban.amount_total.custom</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.stock_picking_type_kanban"/>
+        <field name="arch" type="xml">
+            <!-- Thêm trường vào kanban để Odoo load dữ liệu -->
+            <xpath expr="//kanban" position="inside">
+                <field name="amount_total_all"/>
+                <field name="currency_id"/>
+            </xpath>
+            <!-- Hiển thị tổng tiền sau warehouse_id -->
+            <xpath expr="//field[@name='warehouse_id']" position="after">
+                <div style="color: #333; font-size: 14px; margin-top: 4px;">
+                    Tổng tiền phiếu: <t t-esc="(record.amount_total_all.value || 0).toLocaleString()"/>
+                </div>
+                <div t-if="record.count_picking_backorders.raw_value > 0" class="row" name="picking_type_backorder_count">
+                    <a name="get_action_picking_tree_backorder_kaban" type="object">
+                      Đơn hàng châm trễ của
+                    </a>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

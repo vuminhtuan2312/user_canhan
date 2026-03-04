@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="ttb_purchase.AllocationGridRenderer" t-inherit="web_grid.Renderer">
+        <xpath expr="//t[@t-call='web_grid.Row']" position="attributes">
+            <attribute name="t-call">ttb_purchase.AllocationRow</attribute>
+        </xpath>
+    </t>
+
+     <t t-name="ttb_purchase.AllocationRow" t-inherit="web_grid.Row">
+        <xpath expr="//div[hasclass('o_grid_row_total')]" position="inside">
+            <t t-set="grandMax" t-value="row.getGrandMax()" />
+            /<span t-out="formatValue(grandMax)"/>
+        </xpath>
+    </t>
+</templates>

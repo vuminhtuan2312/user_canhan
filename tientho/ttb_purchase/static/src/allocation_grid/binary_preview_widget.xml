@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ttb_purchase.BinaryPreviewWidget" owl="1">
+        <div class="o_field_binary_preview mb-2">
+            <t t-if="previewSrc and fileType === 'pdf'">
+                <iframe
+                    t-att-src="previewSrc"
+                    class="o_binary_preview_pdf"
+                    style="width: 100%; height: 600px; border: 1px solid #ddd;"/>
+            </t>
+            <t t-elif="previewSrc and fileType === 'image'">
+                <img
+                    t-att-src="previewSrc"
+                    class="o_binary_preview_image"
+                    style="max-width: 100%; max-height: 600px; border: 1px solid #ddd;"/>
+            </t>
+            <t t-elif="previewSrc">
+                <div class="alert alert-warning">
+                    Không thể xác định loại file này. <a t-att-href="previewSrc" target="_blank">Tải xuống</a>
+                </div>
+            </t>
+            <t t-elif="props.record.data[props.name]">
+                <div class="text-muted">Đang tải preview…</div>
+            </t>
+        </div>
+
+        <!-- phần upload/download giữ nguyên như BinaryField -->
+        <t t-if="!props.readonly">
+            <t t-if="props.record.data[props.name]">
+                <div class="w-100 d-inline-flex gap-1">
+                    <FileUploader
+                        acceptedFileExtensions="props.acceptedFileExtensions"
+                        onUploaded.bind="update">
+                        <t name="download" t-if="props.record.resId and !props.record.dirty">
+                            <button
+                                class="btn btn-link btn-sm lh-1 fa fa-download o_download_file_button"
+                                data-tooltip="Download"
+                                aria-label="Download"
+                                t-on-click="onFileDownload"/>
+                        </t>
+                        <t t-set-slot="toggler">
+                            <input type="text" class="o_input" t-att-value="fileName" readonly="readonly"/>
+                            <button
+                                class="btn btn-link btn-sm lh-1 fa fa-pencil o_select_file_button"
+                                data-tooltip="Edit"
+                                aria-label="Edit"/>
+                        </t>
+                        <button
+                            class="btn btn-link btn-sm lh-1 fa fa-trash o_clear_file_button"
+                            data-tooltip="Clear"
+                            aria-label="Clear"
+                            t-on-click="() => this.update({})"/>
+                    </FileUploader>
+                </div>
+            </t>
+            <t t-else="">
+                <label class="o_select_file_button btn btn-primary">
+                    <FileUploader
+                        acceptedFileExtensions="props.acceptedFileExtensions"
+                        onUploaded.bind="update">
+                        <t t-set-slot="toggler">Upload your file</t>
+                    </FileUploader>
+                </label>
+            </t>
+        </t>
+        <t t-elif="props.record.resId and props.record.data[props.name]">
+            <a class="o_form_uri" href="#" t-on-click.prevent="onFileDownload">
+                <span class="fa fa-download me-2"/>
+                <t t-if="fileName" t-esc="fileName"/>
+            </a>
+        </t>
+    </t>
+</templates>

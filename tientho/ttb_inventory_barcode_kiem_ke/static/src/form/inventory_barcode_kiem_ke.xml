@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+	<t t-name="ttb_inventory_barcode_kiem_ke.InventorySessionForm" t-inherit="web.FormView">
+		<xpath expr="//t[@t-set-slot='layout-buttons']" position="before">
+			<div class="d-flex w-100 m-0 p-5 py-3 align-items-center justify-content-center text-bg-800">
+				<button class="o_stock_mobile_barcode btn pe-0" t-on-click="openManualBarcodeDialog">
+				<i class="fa fa-barcode text-light" role="img"/>
+			</button>
+			</div>
+		</xpath>
+	</t>
+</templates>

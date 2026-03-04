@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cancel_reason_tree" model="ir.ui.view">
+        <field name="name">cancel.reason.tree</field>
+        <field name="model">cancel.reason</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="description"/>
+                <field name="impact_level"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cancel_reason_form" model="ir.ui.view">
+        <field name="name">cancel.reason.form</field>
+        <field name="model">cancel.reason</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="type"/>
+                        </group>
+                        <group>
+                            <field name="impact_level"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Mô tả chi tiết..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cancel_request_tree" model="ir.ui.view">
+        <field name="name">cancel.request.tree</field>
+        <field name="model">cancel.request</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'new'" decoration-muted="state == 'cancel'">
+                <field name="name"/>
+                <field name="date_request"/>
+                <field name="date_approve"/>
+                <field name="user_id"/>
+                <field name="branch_id"/>
+                <field name="reason_id"/>
+                <field name="total_amount"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state in ('wait_pick', 'wait_transfer', 'wait_approve')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cancel_request_form" model="ir.ui.view">
+        <field name="name">cancel.request.form</field>
+        <field name="model">cancel.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send_pick" string="Đợi nhặt hàng" type="object" class="oe_highlight" invisible="state != 'new'"/>
+                    <button name="action_approve" string="Duyệt" type="object" class="oe_highlight" invisible="state != 'wait_approve'"/>
+                    <button name="action_cancel" string="Hủy" type="object" invisible="state in ('done', 'cancel')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,wait_pick,wait_transfer,wait_approve,wait_cancel,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_request"/>
+                            <field name="date_approve"/>
+                            <field name="user_id"/>
+                            <field name="branch_id"/>
+                        </group>
+                        <group>
+                            <field name="warehouse_id"/>
+                            <field name="reason_id"/>
+                            <field name="total_amount"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Chi tiết sản phẩm">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="barcode"/>
+                                    <field name="qty_picked"/>
+                                    <field name="qty_office_received"/>
+                                    <field name="qty_cancelled"/>
+                                    <field name="uom_id"/>
+                                    <field name="price_unit" readonly="1"/>
+                                    <field name="subtotal" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Phiếu kho liên quan">
+                            <field name="picking_ids" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_picking_form_inherit_cancel" model="ir.ui.view">
+        <field name="name">stock.picking.form.cancel</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='extra']" position="after">
+                <page string="Chứng từ hủy hàng" invisible="not cancel_request_id">
+                    <group>
+                        <field name="cancel_minutes" widget="binary"/>
+                        <field name="cancel_photo" widget="image"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

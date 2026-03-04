@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_stock_barcode_incoming_percent_diff" model="ir.config_parameter">
+        <field name="key">ttb_stock_barcode_incoming.percent_diff</field>
+        <field name="value">10</field>
+    </record>
+</odoo>

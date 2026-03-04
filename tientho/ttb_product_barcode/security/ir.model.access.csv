@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_scan_barcode_log,access_scan_barcode_log,model_scan_barcode_log,,1,1,1,1
+access_xuatnhap_baocao,access_xuatnhap_baocao,model_xuatnhap_baocao,,1,1,1,1
+access_xuatnhap_detail,access_xuatnhap_detail,model_xuatnhap_detail,,1,1,1,1

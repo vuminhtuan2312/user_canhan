@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_ttb_augges_dmnx_form" model="ir.ui.view">
+        <field name="name">ttb.augges.dmnx.form</field>
+        <field name="model">ttb.augges.dmnx</field>
+        <field name="arch" type="xml">
+            <form string="AUGGES DMNX">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="id_augges"/>
+                            <field name="ma_ct"/>
+                            <field name="ma_nx"/>
+                            <field name="ten_nx"/>
+                        </group>
+
+                        <group>
+                            <field name="no_tk"/>
+                            <field name="co_tk"/>
+                        </group>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_ttb_augges_dmnx_tree" model="ir.ui.view">
+        <field name="name">ttb.augges.dmnx.tree</field>
+        <field name="model">ttb.augges.dmnx</field>
+        <field name="arch" type="xml">
+            <list string="AUGGES DMNX">
+                <field name="id_augges"/>
+                <field name="ma_ct"/>
+                <field name="ma_nx"/>
+                <field name="ten_nx"/>
+                <field name="no_tk"/>
+                <field name="co_tk"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_ttb_augges_dmnx" model="ir.actions.act_window">
+        <field name="name">AUGGES DMNX</field>
+        <field name="res_model">ttb.augges.dmnx</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_ttb_augges_dmnx_root" name="AUGGES DMNX" sequence="10"/>
+    <menuitem id="menu_ttb_augges_dmnx" name="AUGGES DMNX Records" parent="menu_ttb_augges_dmnx_root" action="action_ttb_augges_dmnx" sequence="10"/>
+</odoo>

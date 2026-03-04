@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_generate_qr_code_view_form" model="ir.ui.view">
+        <field name="name">ttb.generate.qr.code.view.list</field>
+        <field name="model">generate.qr.code</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" string="Giá trị"/>
+                        <button string="Tạo mã" class="btn-primary" type="object" name="text_to_qrcode"/>
+                        <field name="qr_code" widget="image" options="{'zoom': true, 'size': [200, 200]}" readonly="1" nolabel="1" force_save="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_generate_qr_code_action" model="ir.actions.act_window">
+        <field name="name">In tem</field>
+        <field name="res_model">generate.qr.code</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <menuitem
+        id="ttb_generate_qr_code_menu"
+        name="Tạo QR code"
+        web_icon="ttb_base,static/description/icon.png"
+        action="ttb_generate_qr_code_action"
+        sequence="30"/>
+
+</odoo>

@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record model="ir.module.category" id="module_ttb_kpi">
+            <field name="name">KPI</field>
+            <field name="sequence">35</field>
+        </record>
+
+<!--        Nhóm có tính kế thừa-->
+        <record id="group_ttb_kpi_warehouse_user" model="res.groups">
+            <field name="name">Nhân viên cơ sở</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_ttb_kpi_warehouse_manager" model="res.groups">
+            <field name="name">Quản lý cơ sở</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_user'))]"/>
+        </record>
+
+        <record id="group_ttb_kpi_warehouse_director" model="res.groups">
+            <field name="name">Giám đốc cơ sở</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_manager'))]"/>
+        </record>
+
+        <record id="group_ttb_kpi_asm" model="res.groups">
+            <field name="name">Giám đốc vùng phụ trách</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('ttb_kpi.group_ttb_kpi_warehouse_director'))]"/>
+        </record>
+
+<!--        Nhóm độc lập-->
+        <record id="group_ttb_kpi_vhkd_director" model="res.groups">
+            <field name="name">Ban giám đốc khối VHKD</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_cv_vhkd" model="res.groups">
+            <field name="name">Chuyên viên VHKD</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_ttb_kpi_tnkh_manager" model="res.groups">
+            <field name="name">Trưởng phòng TNKH</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_ttb_kpi_cb_manager" model="res.groups">
+            <field name="name">Trưởng phòng C&amp;B</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_ttb_kpi_brand_director" model="res.groups">
+            <field name="name">Ban giám đốc khối Ngành hàng</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_ttb_kpi_admin_it" model="res.groups">
+            <field name="name">Admin/IT</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_ttb_kpi_nv_cskh" model="res.groups">
+            <field name="name">Nhân viên CSKH</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_ttb_kpi_tn_cskh" model="res.groups">
+            <field name="name">Trưởng nhóm TNKH</field>
+            <field name="category_id" ref="ttb_kpi.module_ttb_kpi"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+    </data>
+</odoo>

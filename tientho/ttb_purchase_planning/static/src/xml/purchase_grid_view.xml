@@ -1,0 +1,291 @@
+<t t-name="ttb_purchase_planning.PurchaseGridView" owl="1">
+    <div class="o_purchase_grid_view">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">Dự trù mua bán</h4>
+            <div class="btn-group">
+                <button class="btn btn-primary" t-on-click="onAddProduct">
+                    <i class="fa fa-plus me-1"></i>Thêm sản phẩm
+                </button>
+                <button class="btn btn-success" t-on-click="onCreatePurchaseOrder" t-att-disabled="!state.products.length">
+                    <i class="fa fa-shopping-cart me-1"></i>Tạo đơn mua hàng
+                </button>
+            </div>
+        </div>
+        
+        <t t-if="state.products.length and state.periods.length">
+            <div class="mb-3">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Cơ sở:</strong> <span t-esc="state.branch_name"/>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <small class="text-muted">Tổng: <t t-esc="state.products.length"/> sản phẩm, <t t-esc="state.periods.length"/> kỳ</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Container với scroll responsive -->
+            <div class="table-responsive" style="max-height: 70vh; overflow: auto;">
+                <table class="table table-bordered table-sm mb-0" style="min-width: 600px;">
+                    <thead class="table-light sticky-top">
+                        <tr>
+                            <th class="sticky-left" style="min-width: 200px; z-index: 10; background: white;">
+                                <div class="text-center fw-bold">Sản phẩm</div>
+                            </th>
+                            <t t-foreach="state.periods" t-as="period" t-key="period">
+                                <th class="text-center" style="min-width: 120px;">
+                                    <div class="text-center fw-bold">Dự báo của cơ sở</div>
+                                </th>
+                            </t>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="state.products" t-as="product" t-key="product.id">
+                            <!-- Dòng thông tin sản phẩm -->
+                            <tr class="table-primary">
+                                <td class="sticky-left fw-bold" style="background: #e3f2fd !important;">
+                                    <t t-esc="product.name"/>
+                                </td>
+                                <t t-foreach="state.periods" t-as="period" t-key="period">
+                                    <td class="text-center fw-bold" style="background: #e3f2fd !important;">
+                                        <small><t t-esc="period"/></small>
+                                    </td>
+                                </t>
+                            </tr>
+                            
+                            <!-- Dòng Đầu kỳ -->
+                            <tr>
+                                <td class="sticky-left" style="background: #f8f9fa !important; border-left: 3px solid #28a745;">
+                                    <small class="text-muted">Đầu kỳ</small>
+                                </td>
+                                <t t-foreach="state.periods" t-as="period" t-key="period">
+                                    <td class="text-center">
+                                        <t t-esc="state.data[product.id] and state.data[product.id][period] and state.data[product.id][period].opening or 0"/>
+                                    </td>
+                                </t>
+                            </tr>
+                            
+                            <!-- Dòng Nhập -->
+                            <tr>
+                                <td class="sticky-left" style="background: #fff3cd !important; border-left: 3px solid #ffc107;">
+                                    <small class="text-muted">Nhập</small>
+                                </td>
+                                <t t-foreach="state.periods" t-as="period" t-key="period">
+                                    <td class="text-center" style="background: #fff3cd !important;">
+                                        <t t-if="period == state.current_period">
+                                            <input type="number" class="form-control form-control-sm text-center"
+                                                   t-att-value="state.data[product.id] and state.data[product.id][period] and state.data[product.id][period].in or 0"
+                                                   t-on-input="(ev) => this.onInput(ev, product.id, period, 'in')"
+                                                   style="background: #ffff99; border: 1px solid #ffc107; min-width: 80px;"
+                                                   placeholder="0"/>
+                                        </t>
+                                        <t t-else="">
+                                            <input type="number" class="form-control form-control-sm text-center"
+                                                   t-att-value="state.data[product.id] and state.data[product.id][period] and state.data[product.id][period].in or 0"
+                                                   disabled="disabled"
+                                                   style="background: #e9ecef; border: 1px solid #6c757d; min-width: 80px; color: #6c757d;"
+                                                   placeholder="0"/>
+                                        </t>
+                                    </td>
+                                </t>
+                            </tr>
+                            
+                            <!-- Dòng Bán và Xuất -->
+                            <tr>
+                                <td class="sticky-left" style="background: #d1ecf1 !important; border-left: 3px solid #17a2b8;">
+                                    <small class="text-muted">Bán và Xuất</small>
+                                </td>
+                                <t t-foreach="state.periods" t-as="period" t-key="period">
+                                    <td class="text-center" style="background: #d1ecf1 !important;">
+                                        <t t-if="period == state.current_period">
+                                            <input type="number" class="form-control form-control-sm text-center"
+                                                   t-att-value="state.data[product.id] and state.data[product.id][period] and state.data[product.id][period].out or 0"
+                                                   t-on-input="(ev) => this.onInput(ev, product.id, period, 'out')"
+                                                   style="background: #ccffcc; border: 1px solid #17a2b8; min-width: 80px;"
+                                                   placeholder="0"/>
+                                        </t>
+                                        <t t-else="">
+                                            <input type="number" class="form-control form-control-sm text-center"
+                                                   t-att-value="state.data[product.id] and state.data[product.id][period] and state.data[product.id][period].out or 0"
+                                                   disabled="disabled"
+                                                   style="background: #e9ecef; border: 1px solid #6c757d; min-width: 80px; color: #6c757d;"
+                                                   placeholder="0"/>
+                                        </t>
+                                    </td>
+                                </t>
+                            </tr>
+                            
+                            <!-- Dòng Cuối kỳ -->
+                            <tr>
+                                <td class="sticky-left" style="background: #f8f9fa !important; border-left: 3px solid #28a745;">
+                                    <small class="text-muted">Cuối kỳ</small>
+                                </td>
+                                <t t-foreach="state.periods" t-as="period" t-key="period">
+                                    <td class="text-center">
+                                        <t t-esc="state.data[product.id] and state.data[product.id][period] and state.data[product.id][period].closing or 0"/>
+                                    </td>
+                                </t>
+                            </tr>
+                            
+                            <!-- Dòng trống để phân cách -->
+                            <tr style="height: 10px;">
+                                <td colspan="100%" style="background: #f8f9fa; border: none;"></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Thông tin tổng hợp và nút lưu/xóa -->
+            <div class="mt-3">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert alert-info mb-0">
+                            <small>
+                                <i class="fa fa-info-circle me-1"></i>
+                                Cuối kỳ = Đầu kỳ + Nhập - Bán và Xuất
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-success" t-on-click="saveDataToStorage">
+                                <i class="fa fa-save me-1"></i>Lưu dữ liệu
+                            </button>
+                            <button class="btn btn-outline-danger" t-on-click="clearSavedData">
+                                <i class="fa fa-trash me-1"></i>Xóa dữ liệu đã lưu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+        
+        <t t-else="">
+            <div class="text-center py-5">
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle fa-2x mb-3"></i>
+                    <h5>Chưa có dữ liệu dự trù mua hàng</h5>
+                    <p class="mb-3">Vui lòng chọn sản phẩm để tạo bảng dự trù mua bán.</p>
+                    <button class="btn btn-primary" t-on-click="onAddProduct">
+                        <i class="fa fa-plus me-1"></i>Thêm sản phẩm đầu tiên
+                    </button>
+                </div>
+            </div>
+        </t>
+    </div>
+
+    <!-- Popup chọn nhà cung cấp -->
+    <div t-if="state.showSupplierPopup" class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1050;">
+        <div class="modal-dialog modal-lg" style="margin: 50px auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-truck me-2"></i>Chọn nhà cung cấp cho từng sản phẩm
+                    </h5>
+                    <button type="button" class="btn-close" t-on-click="onCloseSupplierPopup"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle me-1"></i>
+                        Vui lòng chọn nhà cung cấp cho từng sản phẩm. Số lượng sẽ được lấy từ dự trù mua hàng.
+                    </div>
+                    
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-bordered table-sm">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th style="width: 40%;">Sản phẩm</th>
+                                    <th style="width: 20%;">Số lượng</th>
+                                    <th style="width: 40%;">Nhà cung cấp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.products" t-as="product" t-key="product.id">
+                                    <tr>
+                                        <td>
+                                            <div class="fw-bold"><t t-esc="product.name"/></div>
+                                            <small class="text-muted"><t t-esc="product.code"/></small>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-primary fs-6">
+                                                <t t-esc="state.purchaseQuantities[product.id] or 0"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <select class="form-select form-select-sm" 
+                                                    t-on-change="(ev) => this.onSupplierChange(product.id, ev.target.value)">
+                                                <option value="">-- Chọn nhà cung cấp --</option>
+                                                <t t-foreach="state.suppliers" t-as="supplier" t-key="supplier.id">
+                                                    <option t-att-value="supplier.id" 
+                                                            t-att-selected="state.selectedSuppliers[product.id] == supplier.id">
+                                                        <t t-esc="supplier.name"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" t-on-click="onCloseSupplierPopup">
+                        <i class="fa fa-times me-1"></i>Hủy
+                    </button>
+                    <button type="button" class="btn btn-success" t-on-click="onConfirmCreatePurchaseOrder" 
+                            t-att-disabled="!this.hasAllSuppliersSelected()">
+                        <i class="fa fa-check me-1"></i>Xác nhận tạo đơn mua hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .o_purchase_grid_view .table-responsive {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+        }
+        
+        .o_purchase_grid_view .sticky-left {
+            position: sticky;
+            left: 0;
+            z-index: 5;
+        }
+        
+        .o_purchase_grid_view .sticky-top {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .o_purchase_grid_view .table th,
+        .o_purchase_grid_view .table td {
+            vertical-align: middle;
+            padding: 0.5rem;
+        }
+        
+        .o_purchase_grid_view .form-control-sm {
+            height: 32px;
+            font-size: 0.875rem;
+        }
+        
+        .o_purchase_grid_view .badge {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .o_purchase_grid_view .table-responsive {
+                font-size: 0.875rem;
+            }
+            
+            .o_purchase_grid_view .form-control-sm {
+                height: 28px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</t>

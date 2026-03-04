@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ttb_sync_augges,access_ttb_sync_augges,model_ttb_sync_augges,,1,1,1,1
+access_log_qr_transaction,access_log_qr_transaction,model_log_qr_transaction,,1,1,1,1

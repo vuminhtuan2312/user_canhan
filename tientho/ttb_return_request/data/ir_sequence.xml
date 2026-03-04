@@ -1,0 +1,19 @@
+<odoo>
+    <data noupdate="1">
+        <record id="seq_ttb_return_request" model="ir.sequence">
+            <field name="name">Mã đề nghị trả hàng</field>
+            <field name="code">ttb.return.request</field>
+            <field name="prefix">TL</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_plan_return_request" model="ir.sequence">
+            <field name="name">Mã dự trù trả hàng</field>
+            <field name="code">plan.return.request</field>
+            <field name="prefix">RP</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

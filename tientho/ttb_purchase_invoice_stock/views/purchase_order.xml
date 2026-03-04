@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="is_button_confirm_invoice" invisible="1"/>
+                <button name="button_confirm_purchase_invoice" type="object" string="Xác nhận có HĐ" class="btn-primary" invisible="is_button_confirm_invoice == False"
+                confirm="Bạn có chắc chắn đã có hóa đơn?"/>
+            </xpath>
+            <xpath expr="//field[@name='ttb_vendor_invoice_name']" position="after">
+                <field name="compare_invoice"/>
+                <field name="ly_do_khong_co_hoa_don" invisible="compare_invoice != 'none'" readonly="1"/>
+                <field name="invoice_nibot_ids" widget="many2many_tags" options="{'no_create': True}"
+                       invisible="no_invoice == True"/>
+                <field name="ttb_vendor_invoice_date"/>
+                <field name="notice"/>
+                <field name="nimbox_pdf_files" widget="many2many_binary" options="{'no_create': True}" string="File PDF hóa đơn đỏ"
+                       invisible="no_invoice == True"/>
+                <div/>
+                <field name="nibot_ids" string="Danh sách hoá đơn đỏ"
+                       invisible="no_invoice == True" context="{'res_id': id}">
+                    <list limit="80" create="0">
+                        <field name="ttb_vendor_invoice_no"/>
+                        <field name="ttb_vendor_invoice_code"/>
+                        <field name="ttb_price_unit" string="Số tiền"/>
+                        <field name="ttb_vendor_vat"/>
+                        <field name="ttb_vendor_invoice_date"/>
+                        <button name="action_view_pdf" type="object" string="Xem trước"/>
+                        <button name="button_apply_nimbox_purchase" type="object" string="Áp dụng"
+                                class="btn btn-primary"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_accounting_account_list_inherit" model="ir.ui.view">
+        <field name="name">Kế toán</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="ttb_purchase.purchase_order_accounting_account_list"/>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ttb_vendor_invoice']" position="after">
+                <field name="nimbox_pdf_files" widget="many2many_pdf_preview" options="{'show_preview': True}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

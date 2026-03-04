@@ -1,0 +1,324 @@
+<odoo noupdate="1">
+    <record id="ir_cron_achieve" model="ir.cron">
+        <field name="name">Tự động tính thực đạt</field>
+        <field name="model_id" ref="model_ttb_kpi_target_line"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_compute_achieve()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_kpi_result" model="ir.cron">
+        <field name="name">Tự động sinh bản ghi Kết quả KPI</field>
+        <field name="model_id" ref="model_ttb_kpi_result"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_create_data()</field>
+        <field name="nextcall" eval="(DateTime.now().replace(day=1, hour=18, minute=0) + relativedelta(months=1, days=-1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_kpi_result_branch" model="ir.cron">
+        <field name="name">Tạo kết quả KPI cơ sở tự động</field>
+        <field name="model_id" ref="model_ttb_kpi_result_branch"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_generate_kpi_results()</field>
+        <field name="nextcall" eval="(DateTime.now().replace(day=1, hour=18, minute=0) + relativedelta(months=1, days=-1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_kpi_result_manager" model="ir.cron">
+        <field name="name">Tạo kết quả KPI quản lý tự động</field>
+        <field name="model_id" ref="model_ttb_kpi_result_manager"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_generate_kpi_manager_result()</field>
+        <field name="nextcall" eval="(DateTime.now().replace(day=1, hour=18, minute=0) + relativedelta(months=1, days=-1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_check_gsc_sla" model="ir.cron">
+        <field name="name">Cảnh báo hiển thị quá hạn phiếu chấm</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_check_gsc_sla()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_kpi_result_kvc" model="ir.cron">
+        <field name="name">Tạo kết quả KPI khu vui chơi tự động</field>
+        <field name="model_id" ref="model_ttb_kpi_result_kvc"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_generate_kvc_result(target_date='')</field>
+        <field name="nextcall" eval="(DateTime.now().replace(day=1, hour=18, minute=0) + relativedelta(months=1, days=-1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">True</field>
+    </record>
+    <record id="ir_cron_compute_kpi_result_manager" model="ir.cron">
+        <field name="name">Tính lại các trường report_ids, score, user_job_id của Kết quả KPI quản lý</field>
+        <field name="model_id" ref="model_ttb_kpi_result_manager"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_compute_kpi_result_manager()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_compute_kpi_result_branch" model="ir.cron">
+        <field name="name">Tính lại các trường report_ids, score của Kết quả KPI cơ sở</field>
+        <field name="model_id" ref="model_ttb_kpi_result_branch"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_compute_kpi_result_branch()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_compute_all" model="ir.cron">
+        <field name="name">Tính lại các trường line_ids, report_kpi_ids, target_line_ids của Kết quả KPI</field>
+        <field name="model_id" ref="model_ttb_kpi_result"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_compute_all()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+
+<!--    Theo tuần-->
+    <record id="ir_cron_create_task_report_vs_fixed_days" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá theo lịch cố định - vệ sinh</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_vs(branch_ids=[], target_date='')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=20, minute=0, second=0) + timedelta(days=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_cskh_additional" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá bổ sung chạy lúc 23h - chăm sóc khách hàng</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_cskh_additional(target_date='')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=16, minute=0, second=0, microsecond=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_vm_fixed_days" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá theo lịch cố định - trưng bày hàng hoá</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_vm(branch_ids=[], target_date='')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=20, minute=0, second=0) + timedelta(days=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_cskh_fixed_days" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá theo lịch cố định - chăm sóc khách hàng</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_cskh(exclude_branch_ids=[], target_date='')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=20, minute=0, second=0) + timedelta(days=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_gsc" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá cho nhóm trải nghiệm khách hàng</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_gsc(exclude_branch_ids=[], target_date='')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=20, minute=0, second=0) + timedelta(days=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+<!--Theo tháng-->
+    <record id="ir_cron_create_task_report_month_vs" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá theo tháng - vệ sinh</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_month_vs(branch_ids=[], count=1)</field>
+        <field name="nextcall" eval="(DateTime.now().replace(day=1, hour=19, minute=0, second=0) + relativedelta(months=1, days=-1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_month_vm" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá theo tháng - trưng bày hàng hoá</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_month_vm(branch_ids=[], count=1)</field>
+        <field name="nextcall" eval="(DateTime.now().replace(day=1, hour=19, minute=0, second=0) + relativedelta(months=1, days=-1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_month_kvc" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá theo tháng cho giám đốc vùng - khu vui chơi</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_month_kvc(branch_ids=[], count=1)</field>
+        <field name="nextcall" eval="(DateTime.now().replace(day=1, hour=19, minute=0, second=0) + relativedelta(months=1, days=-1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_anat_fri_afternoon" model="ir.cron">
+        <field name="name">KPI: ANAT - Friday 15h30</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_anat(branch_ids=[], target_date='', run_type='fri_afternoon')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=8, minute=30, second=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_anat_sta_afternoon" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá ANAT cho Giám đốc nhà sách chạy vào thứ bảy</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_gdns_anat(branch_ids=[], target_date='', run_type='sta_afternoon')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=8, minute=30, second=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_anat_mon_afternoon" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá ANAT cho Giám đốc nhà sách chạy vào thú hai</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_gdns_anat(branch_ids=[], target_date='', run_type='mon_morning')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=3, minute=30, second=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_anat_sun_morning" model="ir.cron">
+        <field name="name">KPI: ANAT - Sunday 10h30</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_anat(branch_ids=[], target_date='', run_type='sun_morning')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=3, minute=30, second=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_pccc" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá PCCC</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_pccc(branch_ids=[], target_date='')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=3, minute=0, second=0) + timedelta(days=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_gdns_pccc" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá PCCC cho Giám đốc nhà sách</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_gdns_pccc(branch_ids=[], target_date='')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=3, minute=0, second=0) + timedelta(days=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_create_task_report_kvc" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá chất lượng KVC</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_kvc_new(branch_ids=[])</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=20, minute=0, second=0) + timedelta(days=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+    <record id="ir_cron_create_task_report_branch_manager_kvc" model="ir.cron">
+        <field name="name">KPI: Tạo phiếu đánh giá chất lượng KVC cho giám đốc nhà sách</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_task_report_branch_manager_kvc(branch_ids=[], target_date='')</field>
+        <field name="nextcall" eval="(DateTime.utcnow().replace(hour=20, minute=0, second=0) + timedelta(days=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+    <!--    Huỷ phiếu-->
+    <record id="ir_cron_task_cancel" model="ir.cron">
+        <field name="name">KPI: Hủy phiếu quá hạn</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_task_cancel()</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=18, minute=0, second=0)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+        <!--Gửi thông báo-->
+    <record id="ir_cron_task_information" model="ir.cron">
+        <field name="name">KPI: Gửi thông báo phiếu chưa đánh giá</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_task_information()</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=8, minute=30, second=0) + relativedelta(weekday=3)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="active">True</field>
+    </record>
+
+    <!-- Tự cập nhật dữ liệu    -->
+    <record id="ir_cron_migrate_data" model="ir.cron">
+        <field name="name">Cập nhật dữ liệu Many2one sang Many2many</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_migrate_data()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_send_deadline_reminder" model="ir.cron">
+        <field name="name">KPI: Gửi thông báo nhiệm vụ sắp hết hạn</field>
+        <field name="model_id" ref="model_ttb_task_report_line"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_send_deadline_reminder()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_archive_hr_employee" model="ir.cron">
+        <field name="name">Cập nhật bỏ/mở lưu trữ nghỉ tạm thời</field>
+        <field name="model_id" ref="model_hr_employee"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_archive_employees()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

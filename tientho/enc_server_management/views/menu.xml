@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem name="Action Update" id="action_update_menu_root" web_icon="enc_server_management,static/description/update.png" groups="base.group_user"/>
+            <menuitem name="Action Update" id="action_update_menu" parent="action_update_menu_root" action="action_update_action_window"/>
+
+        <menuitem name="Tự động Backup" id="auto_backup_menu_root" web_icon="enc_server_management,static/description/backup.png" groups="enc_server_management.server_admin"/>
+
+            <menuitem name="Cấu hình backup" id="auto_backup_config_menu" parent="auto_backup_menu_root" action="auto_backup_config_action_window"/>
+
+        <menuitem name="Cấu hình server" id="server_config" web_icon="enc_server_management,static/description/server.png" groups="enc_server_management.server_admin"/>
+
+            <menuitem name="Server" id="server_menu" parent="server_config" action="server_data_action_window" />
+            <menuitem name="FTP Server" id="ftp_server_menu" parent="server_config" action="ftp_host_action_window" />
+            <menuitem name="NextCloud Server" id="next_cloud_menu" parent="server_config" action="next_cloud_action_window" />
+
+
+    </data>
+</odoo>

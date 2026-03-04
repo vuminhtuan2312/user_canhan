@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_resource_calendar_attendance_tree_ttb_audit" model="ir.ui.view">
+        <field name="name">resource.calendar.attendance.tree.ttb.audit</field>
+        <field name="model">resource.calendar.attendance</field>
+        <field name="inherit_id" ref="resource.view_resource_calendar_attendance_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='week_type']" position="after">
+                <field name="ttb_audit_hour" widget="float_time" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_resource_calendar_attendance_form_ttb_audit" model="ir.ui.view">
+        <field name="name">resource.calendar.attendance.form.ttb.audit</field>
+        <field name="model">resource.calendar.attendance</field>
+        <field name="inherit_id" ref="resource.view_resource_calendar_attendance_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='day_period']" position="after">
+                <field name="ttb_audit_hour" widget="float_time"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

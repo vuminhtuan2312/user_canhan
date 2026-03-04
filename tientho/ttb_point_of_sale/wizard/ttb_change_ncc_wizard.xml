@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ttb_change_ncc_wizard_form_view" model="ir.ui.view">
+        <field name="name">ttb.change.ncc.wizard.form</field>
+        <field name="model">ttb.change.ncc.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Chọn Nhà Cung Cấp">
+                <!-- Thêm một câu hướng dẫn cho người dùng -->
+                <p>
+                    Vui lòng chọn một nhà cung cấp mới cho sản phẩm dưới đây.
+                </p>
+
+                <!--
+                    Thẻ <group> sẽ tự động tạo ra một bố cục dạng lưới 2 cột.
+                    Mỗi <field> sẽ chiếm một hàng, với label và input.
+                -->
+                <group>
+                    <!-- Trường sản phẩm, chỉ đọc -->
+                    <field name="product_id" readonly="1" force_save="1"/>
+
+                    <!--
+                        Trường lựa chọn Nhà cung cấp.
+                        Domain sẽ được áp dụng tự động từ file Python.
+                    -->
+                    <field name="selected_supplier_id" required="1"
+                           domain="[('id', 'in', supplier_partner_ids)]"
+                           options="{'no_create': True, 'no_create_edit': True}"/>
+
+                    <!--
+                        Trường giá, có thể đặt là chỉ đọc nếu giá tự động điền theo NCC.
+                        Hoặc cho phép sửa nếu cần.
+                    -->
+                    <field name="price"/>
+                </group>
+
+                <!--
+                    Các trường ẩn nên được đặt bên ngoài <group> chính
+                    để không ảnh hưởng đến bố cục.
+                -->
+                <field name="supplier_partner_ids" invisible="1"/>
+
+                <footer>
+                    <button name="action_confirm" string="Xác nhận" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

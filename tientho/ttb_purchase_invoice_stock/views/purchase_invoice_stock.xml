@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_purchase_invoice_stock_line_view_list" model="ir.ui.view">
+        <field name="name">ttb.purchase.invoice.stock.line.list</field>
+        <field name="model">ttb.purchase.invoice.stock.line</field>
+        <field name="arch" type="xml">
+            <list default_order="id desc" edit="0" create="0" delete="0">
+                <field name="ttb_branch_id"/>
+                <field name="product_id"/>
+                <field name="qty"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_purchase_invoice_stock_line_action" model="ir.actions.act_window">
+        <field name="name">Hàng nhập có hóa đơn</field>
+        <field name="res_model">ttb.purchase.invoice.stock.line</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="ttb_purchase_invoice_stock_view_list" model="ir.ui.view">
+        <field name="name">ttb.purchase.invoice.stock.list</field>
+        <field name="model">ttb.purchase.invoice.stock</field>
+        <field name="arch" type="xml">
+            <list default_order="ttb_branch_id" edit="0" create="0" delete="0">
+                <field name="ttb_branch_id"/>
+                <field name="product_id"/>
+                <field name="qty"/>
+                <field name="qty_invoice"/>
+                <field name="qty_invoiced"/>
+                <field name="qty_to_invoiced"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_purchase_invoice_stock_view_search" model="ir.ui.view">
+        <field name="name">ttb.purchase.invoice.stock.search</field>
+        <field name="model">ttb.purchase.invoice.stock</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="ttb_branch_id"/>
+                <field name="product_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ttb_purchase_invoice_stock_action" model="ir.actions.act_window">
+        <field name="name">Dữ liệu bán dùng xuất hóa đơn điện tử</field>
+        <field name="res_model">ttb.purchase.invoice.stock</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem
+        id="ttb_purchase_invoice_stock_line_menu"
+        name="Hàng nhập có hóa đơn"
+        parent="purchase.purchase_report_main"
+        action="ttb_purchase_invoice_stock_line_action"
+        sequence="190"
+        groups="base.group_system"
+    />
+    <menuitem
+        id="ttb_purchase_invoice_stock_menu"
+        name="Dữ liệu bán dùng xuất hóa đơn điện tử"
+        parent="purchase.purchase_report_main"
+        action="ttb_purchase_invoice_stock_action"
+        sequence="200"
+    />
+
+</odoo>

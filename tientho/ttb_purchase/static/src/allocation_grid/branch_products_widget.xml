@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="ttb_purchase.GoodsDistributionWidget" owl="1">
+        <div class="o_goods_distribution_widget">
+            <!-- Kiểm tra nếu có dữ liệu -->
+            <t t-if="branches.length > 0 and poLines.length > 0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <!-- THÊM 2 CỘT: Hình ảnh và Mã -->
+                                <th class="text-center sticky-col-1">Sản phẩm</th>
+                                <th class="text-center sticky-col-2">Mã</th>
+                                <th class="text-center sticky-col-3">Hình ảnh</th>
+                                <t t-foreach="branches" t-as="branch" t-key="branch.branch[0]">
+                                    <th class="text-center">
+                                        <t t-esc="getBranchCode(branch)"/>
+                                    </th>
+                                </t>
+                                <th class="text-center fw-bold total-column">TỔNG</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="poLines" t-as="poLine" t-key="poLine.poLineId[0]">
+                                <tr>
+                                    <td class="fw-bold sticky-col-1">
+                                        <t t-esc="getPoLineName(poLine)"/>
+                                    </td>
+                                    <td class="text-center sticky-col-2">
+                                        <t t-esc="getPoLineDefaultCode(poLine)"/>
+                                    </td>
+                                    <td class="text-center sticky-col-3">
+                                        <t t-set="imgSrc" t-value="getPoLineImage(poLine)"/>
+                                        <t t-if="imgSrc">
+                                            <!-- [unverified] Nếu `prd_image` là URL: dùng trực tiếp; nếu là binary, bạn cần chuyển sang URL `/web/image/...` trên server -->
+                                            <img t-att-src="imgSrc"
+                                                 style="max-width: 80px; max-height: 80px; object-fit: contain;"/>
+                                        </t>
+                                    </td>
+                                    <t t-foreach="branches" t-as="branch" t-key="branch.branch[0]">
+                                        <td class="text-center">
+                                            <input type="number"
+                                                   class="form-control form-control-sm text-center"
+                                                   t-att-value="getPoLineQuantity(branch.branch, poLine)"
+                                                   t-on-input="(ev) => this.updateQuantity(branch.branch, poLine.poLineId, ev.target.value)"
+                                                   t-on-change="(ev) => this.updateQuantity(branch.branch, poLine.poLineId, ev.target.value)"
+                                                   t-att-readonly="props.readonly"
+                                                   min="0"
+                                                   step="1"
+                                                   placeholder="0"/>
+                                        </td>
+                                    </t>
+                                    <td class="text-center fw-bold total-column">
+                                        <t t-esc="poLineTotals.get(poLine.poLineId[0])"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+            <!-- Hiển thị thông báo khi không có dữ liệu -->
+            <t t-else="">
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle"/> Chưa có dữ liệu phân phối hàng hóa.
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

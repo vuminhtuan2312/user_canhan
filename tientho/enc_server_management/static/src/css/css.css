@@ -1,0 +1,29 @@
+pre.command-data {
+    font-size: 1em;
+    background: #797979;
+    font-family: 'Roboto', Arial, Verdana, sans-serif;
+}
+
+pre.command-data code {
+  font-family: MyFancyCustomFont, monospace;
+  font-size: inherit;
+  display: block;
+  background: none;
+  white-space: pre;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: scroll;
+  max-width: 100%;
+  min-width: 100px;
+  padding: 0;
+}
+.o_content .o_form_view.terminal-view .o_form_sheet{
+    max-width: 1400px;
+}
+.o_form_view.terminal-view .o_form_statusbar {
+    position: sticky;
+    top: 0px;
+    z-index: 999;
+}
+.o_content .o_form_view.terminal-view.o_form_readonly .o_form_sheet{
+    display: none;
+}

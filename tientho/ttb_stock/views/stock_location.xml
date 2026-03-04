@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<record id="stock_location_form_inherit" model="ir.ui.view">
+		<field name="name">stock.location.form.inherit</field>
+		<field name="model">stock.location</field>
+		<field name="inherit_id" ref="stock.view_location_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//sheet" position="before">
+				<header>
+					<button type="object" name="button_print" class="btn btn-secondary" string="In tem"
+							invisible="show_button_print==False 	"/>
+					<button type="object" name="button_discharge" class="btn btn-primary" string="Xả tem"/>
+					<field name="show_button_print" invisble="1"/>
+				</header>
+			</xpath>
+			<xpath expr="//sheet/group" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+			<xpath expr="//form/sheet/field[@name='comment']" position="before">
+				<notebook>
+					<page string="Thông tin bổ sung">
+						<group>
+							<group>
+								<field name="usage"/>
+								<field name="storage_category_id"/>
+								<field name="scrap_location"/>
+								<field name="replenish_location"/>
+							</group>
+							<group>
+								<field name="barcode" string="Mã địa điểm"/>
+								<field name="qr_image" widget="image"/>
+							</group>
+						</group>
+					</page>
+					<page string="Điểm theo chu kỳ">
+						<group>
+							<field name="last_inventory_date"/>
+							<field name="next_inventory_date"/>
+							<field name="cyclic_inventory_frequency"/>
+						</group>
+					</page>
+					<page string="Danh sách sản phẩm">
+						<field name="stock_location_detail_line_ids">
+							<list editable="bottom" delete="0">
+								<field name="select"/>
+								<field name="order_number"/>
+								<field name="code"/>
+								<field name="product_id"/>
+								<field name="quantity"/>
+								<field name="destination_location_id"/>
+							</list>
+						</field>
+					</page>
+				</notebook>
+			</xpath>
+		</field>
+	</record>
+
+</odoo>

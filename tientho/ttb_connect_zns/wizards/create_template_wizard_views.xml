@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="create_zalo_template_wizard_view" model="ir.ui.view">
+        <field name="name">create.template.wizard.form</field>
+        <field name="model">create.template.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Tạo mới Zalo Template">
+                <sheet>
+                    <group>
+                        <field name="template_id"/>
+                        <field name="template_type"/>
+                        <field name="oa_id"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Tạo mới template" type="object" name="action_create_template" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="server_data_list">
+            <field name="name">server_data list</field>
+            <field name="model">server.data</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name" />
+                    <field name="server" />
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="server_data_form">
+            <field name="name">server_data form</field>
+            <field name="model">server.data</field>
+            <field name="arch" type="xml">
+                <form class="terminal-view">
+                    <header>
+                        <button name="test_connection" string="Test Connection" class="btn-primary" type="object" />
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="server" />
+                            <field name="port" />
+                            <field name="user" />
+                            <field name="password" password="True" />
+                            <field name="key_file" filename="file_name"/>
+                            <field name="file_name" readonly="1" force_save="1"/>
+                        </group>
+<!--                        <notebook>-->
+<!--                            <page name="server_commands" string="Commands">-->
+<!--                                <group>-->
+<!--                                    <field name="command"/>-->
+<!--                                </group>-->
+<!--                                <button name="action_run_command" string="Run command" class="btn-primary" type="object" style="margin: 10px 0;"/>-->
+
+<!--                                    <pre class="command-data">-->
+<!--                                        <code class="code">-->
+<!--                        command data here-->
+<!--                                        </code>-->
+<!--                                    </pre>-->
+<!--                            </page>-->
+<!--                        </notebook>-->
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="server_data_action_window">
+            <field name="name">Server</field>
+            <field name="res_model">server.data</field>
+            <field name="view_mode">list,form</field>
+        </record>
+    </data>
+</odoo>

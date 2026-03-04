@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_zns_api_code_error_tree" model="ir.ui.view">
+        <field name="name">zns.api.code.error.tree</field>
+        <field name="model">zns.api.code.error</field>
+        <field name="arch" type="xml">
+            <list string="Mã lỗi Zalo API" editable="bottom">
+                <field name="code"/>
+                <field name="message"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_zns_api_code_error_form" model="ir.ui.view">
+        <field name="name">zns.api.code.error.form</field>
+        <field name="model">zns.api.code.error</field>
+        <field name="arch" type="xml">
+            <form string="Mã lỗi Zalo API">
+                <sheet>
+                    <group>
+                        <field name="code"/>
+                        <field name="message"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_zns_api_code_error" model="ir.actions.act_window">
+        <field name="name">Mã lỗi Zalo API</field>
+        <field name="res_model">zns.api.code.error</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- 
+            Scheduled Action: Tự động sinh phiếu phân công 
+            Trigger: 00:00 hàng ngày
+        -->
+        <record id="ir_cron_generate_daily_assignments" model="ir.cron">
+            <field name="name">Khu vui chơi: Tự động sinh phiếu phân công hàng ngày</field>
+            <field name="model_id" ref="model_ttb_shift_assignment"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_generate_daily_assignments()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=0, minute=0, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="active">True</field>
+        </record>
+
+
+        <!-- 
+            Scheduled Action: Tự động kích hoạt công việc đến giờ
+            Trigger: 5 phút lặp lại
+        -->
+        <record id="ir_cron_activate_tasks_at_time" model="ir.cron">
+            <field name="name">Khu vui chơi: Kích hoạt công việc đến giờ</field>
+            <field name="model_id" ref="model_ttb_operational_task"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_activate_tasks()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- 
+            Scheduled Action: Tự động kiểm tra công việc trễ hạn
+            Trigger: 5 phút lặp lại
+        -->
+        <record id="ir_cron_check_late_tasks_at_time" model="ir.cron">
+            <field name="name">Khu vui chơi: Kiểm tra công việc trễ hạn</field>
+            <field name="model_id" ref="model_ttb_operational_task"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_late_tasks()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+        </record>
+
+        <!--
+            Scheduled Action: Gửi thông báo công việc đến giờ (Công việc của tôi)
+            Chạy 5 phút/lần. Quét công việc state=Sẵn sàng, chưa gửi thông báo, gửi cho nhân viên có bật thông báo.
+        -->
+        <record id="ir_cron_send_ready_task_notifications" model="ir.cron">
+            <field name="name">Khu vui chơi: Gửi thông báo công việc đến giờ</field>
+            <field name="model_id" ref="model_ttb_operational_task"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_ready_task_notifications()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+        </record>
+
+        <!--
+            Scheduled Action: Tự động tiếp tục công việc đang hoãn khi đến planned_date_end
+            Trigger: mỗi phút
+        -->
+        <record id="ir_cron_auto_resume_delayed_tasks_at_time" model="ir.cron">
+            <field name="name">Khu vui chơi: Tự động tiếp tục công việc hoãn đến giờ</field>
+            <field name="model_id" ref="model_ttb_operational_task"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_auto_resume_delayed_tasks()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(minutes=1)).replace(second=0, microsecond=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="active">True</field>
+        </record>
+
+        <!--
+            Scheduled Action: Tự động sinh phiếu hậu kiểm theo giờ cấu hình của ca
+            Chạy 5 phút/lần. Giờ sinh lấy từ ttb_audit_hour của Ca làm việc trong lịch.
+            Chỉ sinh cho phiếu Đã phân công, chưa bật Phiếu hậu kiểm, ngày = hôm nay; chỉ khu vực đã phân công nhân viên.
+        -->
+        <record id="ir_cron_generate_post_audits" model="ir.cron">
+            <field name="name">Khu vui chơi: Tự động sinh phiếu hậu kiểm theo giờ ca</field>
+            <field name="model_id" ref="model_ttb_post_audit"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_generate_post_audits()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

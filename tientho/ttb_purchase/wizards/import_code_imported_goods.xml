@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_import_code_imported_goods_wizard_form" model="ir.ui.view">
+        <field name="name">import.code.imported.goods.form</field>
+        <field name="model">import.code.imported.goods</field>
+        <field name="arch" type="xml">
+            <form string="Import Code for Imported Goods">
+                <group>
+                    <field name="name"/>
+                    <notebook>
+                        <page string="Instructions">
+                            <button string="Nhập file" type="object" name="action_import_code" class="btn-primary"/>
+                            <button string="Xác nhận" type="object" name="action_confirm_imported_code" class="btn-success"/>
+                            <field name="line_ids" no_lable="1">
+                                <list editable="bottom">
+                                    <field name="description"/>
+                                    <field name="code"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo>

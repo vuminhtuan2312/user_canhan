@@ -1,0 +1,33 @@
+.image-viewer-container {
+    z-index: 19;
+    overflow: auto;
+    top: 0px;
+    left: 0px;
+    position: fixed;
+    width: auto;
+    height: auto;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.image-viewer {
+    display: flex;
+    position: fixed;
+    flex-flow: column;
+    min-height: 100%;
+    inset: 0px;
+    overflow: scroll;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.image-viewer img {
+    top: 70px;
+    position: relative;
+    display: block;
+    justify-self: center;
+    transform: scale(2);
+    transform-origin: top left 0px;
+    transition: transform 0.5s;
+    object-fit: contain;
+    overflow-clip-margin: content-box;
+    overflow: auto;
+}

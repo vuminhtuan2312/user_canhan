@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="ttb_evaluation_form_layout_header">
+        <div t-attf-class="header o_company_#{o.company_id.id}_layout">
+<!--            <div class="page" style="font-size: 12px; color: black;">-->
+
+                <!-- ====================================================== -->
+                <!-- PHẦN HEADER CỦA PHIẾU - ĐÚNG FORMAT DẠNG BẢNG          -->
+                <!-- ====================================================== -->
+                <table class="table table-bordered" style="border-color: black;">
+                    <tbody>
+                        <tr>
+                            <!-- CỘT 1 (BÊN TRÁI): Logo và Tiêu đề chính -->
+                            <td class="text-center" style="width: 15%; vertical-align: middle; border-color: black;">
+                                <!-- Logo và tên thương hiệu -->
+                                <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 40px;float:left;" alt="Logo"/>
+                                <!-- Tiêu đề chính của phiếu -->
+                            </td>
+                            <td class="text-center" style="vertical-align: middle; border-color: black;">
+                                <h3 class="mt-2">
+                                    <strong>PHIẾU ĐÁNH GIÁ ỨNG VIÊN</strong>
+                                </h3>
+                            </td>
+
+                            <!-- CỘT 2 (BÊN PHẢI): Bảng thông tin ban hành -->
+                            <td style="width: 35%; vertical-align: middle; border-color: black; padding: 0 !important;">
+                                <!-- Bảng con (nested table) nằm gọn bên trong -->
+                                <table class="table table-sm table-bordered mb-0" style="border: none;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width: 50%; border-color: black;">
+                                                <strong>Ký hiệu</strong>
+                                            </td>
+                                            <td style="width: 50%; border-color: black;">NSTT/NT01/HCNS</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border-color: black;">
+                                                <strong>Lần ban hành</strong>
+                                            </td>
+                                            <td style="border-color: black;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border-color: black;">
+                                                <strong>Ngày ban hành</strong>
+                                            </td>
+                                            <td style="border-color: black;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border-color: black;">
+                                                <strong>Số trang</strong>
+                                            </td>
+                                            <td style="border-color: black;"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!--
+                    Phần thông tin chung và các phần còn lại của báo cáo
+                    sẽ được đặt tiếp theo ở đây, ngay sau thẻ </table> trên.
+                -->
+                <table class="table table-sm table-bordered mt-4" style="border-color: black;">
+                    <!-- ... nội dung bảng thông tin chung ... -->
+                </table>
+
+<!--            </div>-->
+        </div>
+    </template>
+</odoo>

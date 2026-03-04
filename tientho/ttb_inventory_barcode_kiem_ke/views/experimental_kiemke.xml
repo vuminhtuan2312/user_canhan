@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<record id="experimental_kiemke_list" model="ir.ui.view">
+		<field name="name">experimental_kiemke_list</field>
+		<field name="model">experimental.kiemke</field>
+		<field name="arch" type="xml">
+			<list>
+				<field name="name"/>
+				<!--                <field name="user_created_id" optional="hide"/>-->
+				<!--                <field name="state" optional="hide"/>-->
+			</list>
+		</field>
+	</record>
+
+	<record id="experimental_kiemke_form" model="ir.ui.view">
+		<field name="name">experimental_kiemke_form</field>
+		<field name="model">experimental.kiemke</field>
+		<field name="arch" type="xml">
+			<form js_class="kiem_ke_thi_nghiem_form">
+				<field name="name"/>
+				<group>
+					<field name="line_ids" nolabel="1">
+						<list editable="bottom">
+							<field name="product_id"/>
+							<field name="order_number"/>
+						</list>
+					</field>
+				</group>
+			</form>
+		</field>
+	</record>
+
+
+	<record id="experimental_kiemke_action" model="ir.actions.act_window">
+		<field name="name">Thi nghiem kiểm kê</field>
+		<field name="res_model">experimental.kiemke</field>
+		<field name="view_mode">list,form</field>
+	</record>
+
+</odoo>

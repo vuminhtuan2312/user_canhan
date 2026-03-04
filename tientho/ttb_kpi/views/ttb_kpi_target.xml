@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_kpi_target_view_tree" model="ir.ui.view">
+        <field name="name">ttb.kpi.target.view.list</field>
+        <field name="model">ttb.kpi.target</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="amount_total"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_kpi_target_view_form" model="ir.ui.view">
+        <field name="name">ttb.kpi.target.view.form</field>
+        <field name="model">ttb.kpi.target</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type"/>
+                            <field name="so_domain" widget="domain" options="{'model': 'sale.order'}"/>
+                            <field name="pos_domain" widget="domain" options="{'model': 'pos.order'}"/>
+                        </group>
+                        <group>
+                            <field name="date_from" string="Thời gian áp dụng" widget="daterange" options="{'end_date_field': 'date_to'}"/>
+                            <field name="date_to" invisible="1"/>
+                            <field name="amount_total" options="{'currency_field': 'currency_id'}"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="ttb_kpi_target_line_warehouse" string="Cơ sở">
+                            <field name="warehouse_ids" nolabel="1" context="{'default_type': 'shop'}">
+                                <list editable="bottom" default_order="achieve desc">
+                                    <field name="type" column_invisible="1"/>
+                                    <field name="ttb_branch_id" required="1"/>
+                                    <field name="target" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="achieve" readonly="target_type == 'revenue' " options="{'currency_field': 'currency_id'}"/>
+                                    <field name="bonus" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="target_type" column_invisible="1"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="current_rate" widget="percentage"/>
+                                    <field name="expected_rate" widget="percentage"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="ttb_kpi_target_line_shelf" string="Quầy">
+                            <field name="shelf_ids" nolabel="1" context="{'default_type': 'shelf'}">
+                                <list editable="bottom" default_order="achieve desc">
+                                    <field name="type" column_invisible="1"/>
+                                    <field name="ttb_branch_id" required="1"/>
+                                    <field name="categ_id" required="1"/>
+                                    <field name="target" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="achieve" readonly="target_type == 'revenue' " options="{'currency_field': 'currency_id'}"/>
+                                    <field name="bonus" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="current_rate" widget="percentage"/>
+                                    <field name="expected_rate" widget="percentage"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+     <record id="ttb_kpi_target_action" model="ir.actions.act_window">
+        <field name="name">Chỉ tiêu</field>
+        <field name="res_model">ttb.kpi.target</field>
+        <field name="view_mode">list,form</field>
+     </record>
+
+</odoo>

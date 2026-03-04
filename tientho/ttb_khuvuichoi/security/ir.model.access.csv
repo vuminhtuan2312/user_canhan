@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ttb_work_template,ttb.work.template,model_ttb_work_template,base.group_user,1,1,1,1
+access_ttb_pause_reason,ttb.pause.reason,model_ttb_pause_reason,base.group_user,1,1,1,1
+access_ttb_shift_assignment,ttb.shift.assignment,model_ttb_shift_assignment,base.group_user,1,1,1,1
+access_ttb_shift_assignment_line,ttb.shift.assignment.line,model_ttb_shift_assignment_line,base.group_user,1,1,1,1
+access_ttb_operational_task,ttb.operational.task,model_ttb_operational_task,base.group_user,1,1,1,1
+access_ttb_task_proof_image,ttb.task.proof.image,model_ttb_task_proof_image,base.group_user,1,1,1,1
+access_ttb_task_delay_wizard,ttb.task.delay.wizard,model_ttb_task_delay_wizard,base.group_user,1,1,1,1
+access_ttb_task_delay_report_wizard,ttb.task.delay.report.wizard,model_ttb_task_delay_report_wizard,base.group_user,1,1,1,1
+access_ttb_task_delay_confirm_wizard,ttb.task.delay.confirm.wizard,model_ttb_task_delay_confirm_wizard,base.group_user,1,1,1,1
+access_ttb_audit_fail_wizard,ttb.audit.fail.wizard,model_ttb_audit_fail_wizard,base.group_user,1,1,1,1
+access_ttb_post_audit,ttb.post.audit,model_ttb_post_audit,base.group_user,1,1,1,1
+access_ttb_post_audit_line,ttb.post.audit.line,model_ttb_post_audit_line,base.group_user,1,1,1,1
+
+access_hr_employee_all,hr.employee.all,model_hr_employee,base.group_user,1,1,1,1
+
+access_image_capture,access_image_capture,model_image_capture,base.group_user,1,1,1,1

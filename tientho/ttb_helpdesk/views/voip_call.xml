@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="ttb_voip_call_tree_view" model="ir.ui.view">
+        <field name="name">ttb_voip_call_tree_view</field>
+        <field name="model">voip.call</field>
+        <field name="inherit_id" ref="voip.voip_call_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="ttb_happy_call_id" options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                <field name="recording_link" widget="audio_link"  invisible="not recording_link"/>
+                <button name="get_recording_link" type="object" string="Lấy file ghi âm" invisible="recording_link"/>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="extension"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

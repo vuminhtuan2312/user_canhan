@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_applicant_change_stage_wizard_form" model="ir.ui.view">
+        <field name="name">applicant.change.stage.wizard.form</field>
+        <field name="model">applicant.change.stage.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Change Applicant Stage">
+                <group>
+                    <field name="applicant_ids" widget="many2many_tags" readonly="1" force_save="1" invisible="1"/>
+                    <field name="stage_id" invisible="1"/>
+                    <field name="send_option" widget="radio"/>
+                    <field name="time_option" widget="radio" invisible="send_option != 'schedule'"/>
+                    <field name="schedule_time" invisible="time_option != 'period'" required="time_option == 'period'"/>
+                    <field name="schedule_date" readonly="time_option == 'period'" force_save="1"
+                           required="send_option == 'schedule'" invisible="send_option != 'schedule'"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

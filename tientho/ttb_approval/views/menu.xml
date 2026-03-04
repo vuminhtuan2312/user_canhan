@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem
+            name="Quy trình duyệt"
+            id="approval_main_menu"
+            groups="base.group_erp_manager"
+            sequence="70"
+    >
+        <menuitem
+                name="Quy trình duyệt"
+                id="approval_process_menu"
+                action="approval_process_action"
+                groups="base.group_erp_manager"
+                sequence="1"
+        />
+        <!--        <menuitem-->
+        <!--                name="Thông tin duyệt"-->
+        <!--                id="approval_line_menu"-->
+        <!--                action="approval_line_action"-->
+        <!--                sequence="1"-->
+        <!--        />-->
+    </menuitem>
+</odoo>

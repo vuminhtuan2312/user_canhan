@@ -1,0 +1,45 @@
+<odoo>
+    <record id="auto_hang_ton_kho_list" model="ir.ui.view">
+        <field name="name">Tồn kho</field>
+        <field name="model">hang.ton.kho</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="id_kho" optional="hide"/>
+                <field name="id_hang" optional="hide"/>
+                <field name="ma_hang"/>
+                <field name="ma_tong" optional="hide"/>
+                <field name="sl_ton"/>
+                <field name="so_luong" optional="hide"/>
+                <field name="nam" optional="hide"/>
+                <field name="mm" optional="hide"/>
+                <field name="sngay" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="product_allocation_search" model="ir.ui.view">
+        <field name="name">Chi tiết tồn kho</field>
+        <field name="model">hang.ton.kho</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="ma_hang"/>
+                <field name="ma_tong"/>
+                <field name="id_kho"/>
+                <separator/>
+                
+                <filter string="Tồn âm" name="has_qty_auto" domain="[('sl_ton', '&lt;', 0)]"/>
+                <filter string="Tồn dương" name="has_qty_final" domain="[('sl_ton', '>', 0)]"/>
+
+                <group expand="1" string="Group By">
+                    <filter string="Kho" name="groupby_warehouse_id" context="{'group_by': 'id_kho'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="auto_hang_ton_kho_action" model="ir.actions.act_window">
+        <field name="name">Tồn kho Augges</field>
+        <field name="res_model">hang.ton.kho</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

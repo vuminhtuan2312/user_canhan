@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ir_cron_sync_new_product_augges" model="ir.cron">
+        <field name="name">Đồng bộ sản phẩm mới từ Odoo xuống Augges</field>
+        <field name="model_id" ref="model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_products_to_mssql_create()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_sync_updated_product_augges" model="ir.cron">
+        <field name="name">Đồng bộ sản phẩm cập nhật từ Odoo xuống Augges</field>
+        <field name="model_id" ref="model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_products_to_mssql_update()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <!-- Cron: Đồng bộ ghép sản phẩm SGK từ bảng Augges -->
+    <record id="ir_cron_sync_sgk_parent_child" model="ir.cron">
+        <field name="name">Đồng bộ ghép sản phẩm</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_sgk_parent_child()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">False</field>
+    </record>
+</odoo>

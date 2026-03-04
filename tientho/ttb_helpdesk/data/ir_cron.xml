@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_auto_cron_mark_overdue_ticket" model="ir.cron">
+        <field name="name">TTB: Chuyển trạng thái ticket Trễ hạn</field>
+        <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_mark_overdue_tickets()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+    <record id="ir_cron_auto_cron_noti_before_overdue_tickets" model="ir.cron">
+        <field name="name">TTB: Thông báo truớc khi ticket Trễ hạn</field>
+        <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_noti_before_overdue_tickets()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">2</field>
+        <field name="interval_type">minutes</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+    <record id="ir_cron_auto_cron_noti_overdue_tickets" model="ir.cron">
+        <field name="name">TTB: Thông báo ticket Trễ hạn</field>
+        <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_noti_overdue_tickets()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">2</field>
+        <field name="interval_type">minutes</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+</odoo>

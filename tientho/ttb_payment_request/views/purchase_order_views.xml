@@ -1,0 +1,31 @@
+<odoo>
+    <record id="purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <!-- <field name="priority">10</field> -->
+        <field name="arch" type="xml">
+            <header position="inside">
+                <!-- Đơn mua hàng kinh doanh -->
+            <!--     <button name="action_remain_payment" type="object" string="Đề xuất thanh toán" class="btn btn-primary" 
+                    invisible="not (state == 'done' and ttb_type == 'sale')"
+                /> -->
+
+                <!-- Đơn mua hàng không kinh doanh -->
+                <!-- <button name="action_partial_payment" type="object" string="Đề xuất thanh toán" class="btn btn-primary" 
+                    invisible="not (state == 'purchase' and ttb_type == 'not_sale')"
+                /> -->
+                <button name="action_select_payment" type="object" string="Đề xuất thanh toán" class="btn btn-primary" 
+                    invisible="not (state in ('done', 'purchase'))"
+                />
+            </header>
+
+            <div class="oe_button_box" name="button_box" position="inside">
+                <!-- note: action_view_invoice -->
+                <button type="object" name="action_view_payment_request" class="oe_stat_button" icon="fa-pencil-square-o" invisible="payment_request_count == 0">
+                    <field name="payment_request_count" widget="statinfo" string="Phiếu đề xuất thanh toán"/>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

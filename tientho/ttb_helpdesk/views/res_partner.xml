@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_view_partner_form" model="ir.ui.view">
+        <field name="name">ttb_view_partner_form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Lịch sử đơn hàng" name="ticket_tab">
+                    <field name="order_ids" readonly="1" nolabel="1"/>
+                </page>
+                <page string="Lịch sử ticket" name="ticket_tab">
+                    <field name="ticket_ids" readonly="1" nolabel="1"/>
+                </page>
+                <page string="Lịch sử happycall" name="hpc_tab">
+                    <field name="ttb_hpc_ids" readonly="1" nolabel="1" context="{'tree_view_ref': 'ttb_happy_call_info_view_tree'}"/>
+                </page>
+                <page string="Dữ liệu tương tác" name="transaction_tab">
+                    <field name="ttb_transaction_ids" readonly="1" nolabel="1"/>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="total_accumulated_points"/>
+                <field name="redeemed_accumulated_points"/>
+                <field name="remaining_accumulated_points"/>
+                <field name="pos_order_count"/>
+                <field name="pos_order_amount_total"/>
+                <field name="pos_order_amount_total_year"/>
+                <field name="pos_order_last_date"/>
+            </xpath>
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="hpc_done_last_date"/>
+                <field name="hpc_last_date"/>
+            </xpath>
+            <xpath expr="//field[@name='phone']" position="replace">
+                <field name="phone" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager"/>
+
+                <field name="phone" groups="ttb_kpi.group_ttb_kpi_nv_cskh" invisible="create_date != False"/>
+            </xpath>
+
+            <xpath expr="//field[@name='phone']" position="after">
+                <field name="phone_masked" groups="ttb_kpi.group_ttb_kpi_nv_cskh" invisible="create_date == False"/>
+            </xpath>
+            <xpath expr="//field[@name='function']" position="attributes">
+                <attribute name="groups">!ttb_kpi.group_ttb_kpi_warehouse_director,!ttb_kpi.group_ttb_kpi_warehouse_manager,!ttb_kpi.group_ttb_kpi_warehouse_user</attribute>
+            </xpath>
+            <xpath expr="//field[@name='mobile']" position="attributes">
+                <attribute name="groups">!ttb_kpi.group_ttb_kpi_warehouse_director,!ttb_kpi.group_ttb_kpi_warehouse_manager,!ttb_kpi.group_ttb_kpi_warehouse_user</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_partner_tree_inherit" model="ir.ui.view">
+        <field name="name">res.partner.tree.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='phone']" position="replace">
+                <field name="phone" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tnkh_manager"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="ttb_res_partner_crm_action" model="ir.actions.act_window">
+        <field name="name">Khách hàng</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form,activity</field>
+        <field name="search_view_id" ref="base.view_res_partner_filter"/>
+    </record>
+
+
+</odoo>

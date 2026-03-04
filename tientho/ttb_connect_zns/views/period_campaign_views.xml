@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <record id="view_period_campaign_form" model="ir.ui.view">
+        <field name="name">period.campaign.form</field>
+        <field name="model">period.campaign</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="approve_ok" invisible="1"/>
+                    <field name="state" widget="statusbar" statusbar_visible="0"/>
+                    <button name="action_submit_for_approval" class="oe_highlight" string="Gửi duyệt" type="object" invisible="state != 'draft'"/>
+                    <button name="action_approve_campaign" class="oe_highlight" string="Duyệt" type="object" invisible="not approve_ok or state != 'wait_approve'"/>
+                    <button name="action_cancel_campaign" class="oe_highlight" string="Hủy" type="object"/>
+                    <button string="Từ chối" type="object" class="oe_highlight" name="action_refuse_campaign" invisible="not approve_ok or state != 'wait_approve'"/>
+                    <button string="Bắt đầu chạy" type="object" class="oe_highlight" name="action_start_campaign" invisible="state not in  ['approved', 'pause']"/>
+                    <button string="Tạm dừng" type="object" class="oe_highlight" name="action_pause_campaign" invisible="state != 'running'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="time_send"/>
+                        </group>
+                        <group>
+                            <field name="manager_campaign"/>
+                            <field name="users_follow_campaign" widget="many2many_tags"/>
+                            <field name="template_id"/>
+                            <field name="model_id"/>
+                            <field name="model"/>
+                            <field name="domain" widget="domain" options="{'model': 'model', 'in_dialog': True}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="product_ids" widget="many2many_tags"/>
+                    </group>
+                    <notebook>
+                        <page string="Danh sách cơ sở">
+                            <group>
+                                <field name="condition_run_campaign" nolabel="1" widget="one2many">
+                                    <list editable="bottom">
+                                        <field name="ttb_branch_id"/>
+                                        <field name="limit_count"/>
+                                        <field name="time_from" widget="float_time"/>
+                                        <field name="time_to" widget="float_time"/>
+                                        <field name="date_in_week"/>
+<!--                                        <field name="create_by"/>-->
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Danh sách tin ZNS">
+                            <field name="zns_send_ids">
+                                <list create="false" delete="false">
+                                    <field name="ttb_branch_id"/>
+                                    <field name="time_range_text"/>
+                                    <field name="day_in_week"/>
+                                    <field name="template_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="phone"/>
+                                    <field name="order_id"/>
+                                    <field name="order_code"/>
+                                    <field name="purchase_datetime"/>
+                                    <field name="zalo_request_datetime"/>
+                                    <field name="zalo_sent_datetime"/>
+                                    <field name="completed_datetime"/>
+                                    <field name="status"/>
+                                    <field name="response_message"/>
+                                    <field name="response_json"/>
+                                    <field name="note"/>
+                                    <field name="rate"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Thông tin phê duyệt" name="approval_info">
+                            <group>
+                                <group>
+                                    <field name="current_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="next_approve_user_ids" readonly="1" widget="many2many_tags"/>
+                                    <field name="notif_user_ids" readonly="1" widget="many2many_tags"/>
+                                </group>
+                                <group groups="base.group_no_one">
+                                    <field name="process_id" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_sent" readonly="1" groups="base.group_no_one"/>
+                                    <field name="date_approved" readonly="1" groups="base.group_no_one"/>
+                                </group>
+                            </group>
+                            <field name="rule_line_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_period_campaign_list" model="ir.ui.view">
+        <field name="name">period.campaign.list</field>
+        <field name="model">period.campaign</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="manager_campaign"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="template_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_period_campaign" model="ir.actions.act_window">
+        <field name="name">Chiến dịch theo kỳ</field>
+        <field name="res_model">period.campaign</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

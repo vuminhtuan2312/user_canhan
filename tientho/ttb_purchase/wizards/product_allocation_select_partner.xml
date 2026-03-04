@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="product_allocation_select_partner_form" model="ir.ui.view">
+        <field name="name">Chọn Nhà cung cấp</field>
+        <field name="model">ttb.purchase.allocation.select.partner.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'supplier', 'show_vat': True}"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string='Xác nhận' name="do" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="product_allocation_select_partner_action" model="ir.actions.act_window">
+        <field name="name">Chọn Nhà cung cấp</field>
+        <field name="res_model">ttb.purchase.allocation.select.partner.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

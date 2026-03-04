@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu root -->
+    <menuitem
+        id="product_in_out_menu_root"
+        name="Khớp đầu vào - đầu ra"
+        parent="ttb_product.menu_product_matching_root"
+        sequence="99"/>
+
+    <!-- Đầu vào -->
+    <menuitem
+        id="product_in_out_menu_root_in"
+        name="Đầu vào"
+        parent="product_in_out_menu_root"
+        sequence="10"/>
+    <menuitem
+        id="ttb_nimbox_invoice_action_menu_misa"
+        name="Hoá đơn đầu vào"
+        parent="product_in_out_menu_root_in"
+        action="ttb_purchase_invoice_stock.ttb_nimbox_invoice_action"
+        sequence="9"/>
+
+    <record id="action_product_sale_item_in" model="ir.actions.act_window">
+        <field name="name">Sản phẩm đầu vào</field>
+        <field name="res_model">product.sale.item</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="domain">[('batch_name', '=', 'dau_vao')]</field>
+    </record>
+    <menuitem
+        id="menu_product_sale_item_in"
+        name="Sản phẩm đầu vào"
+        parent="product_in_out_menu_root_in"
+        action="action_product_sale_item_in"
+        sequence="5"/>
+
+    <record id="ttb_nimbox_invoice_line_action" model="ir.actions.act_window">
+        <field name="name">Dòng hoá đơn đầu vào</field>
+        <field name="res_model">ttb.nimbox.invoice.line</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+    </record>
+    <record id="ttb_nimbox_invoice_line_action_tree" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="ttb_nimbox_invoice_line_tree_custom"/>
+        <field name="act_window_id" ref="ttb_nimbox_invoice_line_action"/>
+    </record>
+    <record id="ttb_nimbox_invoice_line_action_form" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="ttb_nimbox_invoice_line_form_custom"/>
+        <field name="act_window_id" ref="ttb_nimbox_invoice_line_action"/>
+    </record>
+    <menuitem
+        id="ttb_nimbox_invoice_line_menu"
+        name="Dòng hoá đơn đầu vào"
+        parent="product_in_out_menu_root_in"
+        action="ttb_nimbox_invoice_line_action"
+        sequence="10"/>
+
+    <!-- Đầu ra -->
+    <menuitem
+        id="product_in_out_menu_root_out"
+        name="Đầu ra"
+        parent="product_in_out_menu_root"
+        sequence="20"/>
+    
+    <record id="action_product_sale_item_out" model="ir.actions.act_window">
+        <field name="name">Sản phẩm đầu ra</field>
+        <field name="res_model">product.sale.item</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="domain">[('batch_name', '=', 'dau_ra')]</field>
+    </record>
+    <menuitem
+        id="menu_product_sale_item_out"
+        name="Sản phẩm đầu ra"
+        parent="product_in_out_menu_root_out"
+        action="action_product_sale_item_out"
+        sequence="5"/>
+
+    <record id="product_tax_out_line_action" model="ir.actions.act_window">
+        <field name="name">Dòng hoá đơn đầu ra</field>
+        <field name="res_model">tax.output.invoice.line</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+    </record>
+    <menuitem
+        id="product_tax_out_line_menu"
+        name="Dòng hoá đơn đầu ra"
+        parent="product_in_out_menu_root_out"
+        action="product_tax_out_line_action"
+        sequence="10"/>
+
+    <!-- Kết quả ghép -->
+    <menuitem
+        id="product_in_out_menu_root_map"
+        name="Kết quả ghép"
+        parent="product_in_out_menu_root"
+        sequence="30"/>
+    <record id="ttb_inout_invoice_mapper_action" model="ir.actions.act_window">
+        <field name="name">Dòng đầu vào - phân bổ - dòng đầu ra</field>
+        <field name="res_model">ttb.inout.invoice.mapper</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem
+        id="ttb_inout_invoice_mapper_menu"
+        name="Dòng đầu vào - phân bổ - dòng đầu ra"
+        parent="product_in_out_menu_root_map"
+        action="ttb_inout_invoice_mapper_action"
+        sequence="20"/>
+
+    <record id="ttb_inout_product_mapper_action" model="ir.actions.act_window">
+        <field name="name">Dòng đầu vào - phân bổ - sản phẩm đầu ra (UP MISA)</field>
+        <field name="res_model">ttb.inout.product.mapper</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem
+        id="ttb_inout_product_mapper_menu"
+        name="Dòng đầu vào - phân bổ - sản phẩm đầu ra (UP MISA)"
+        parent="product_in_out_menu_root_map"
+        action="ttb_inout_product_mapper_action"
+        sequence="21"/>
+
+    <!-- Menu cấu hình -->
+    <record id="product_tax_invoice_branch_action" model="ir.actions.act_window">
+        <field name="name">Cấu hình: Phân kho cho hoá đơn</field>
+        <field name="res_model">tax.branch.mapper</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem
+        id="product_tax_invoice_branch_menu"
+        name="Cấu hình: Phân kho cho hoá đơn"
+        parent="product_in_out_menu_root"
+        action="ttb_invoice_custom.product_tax_invoice_branch_action"
+        sequence="99"/>
+
+    <!-- Kết quả ghép lưu trữ -->
+    <menuitem
+        id="product_in_out_menu_root_map_inactive"
+        name="Kết quả ghép lưu trữ"
+        parent="product_in_out_menu_root"
+        sequence="30"/>
+    <record id="ttb_inout_invoice_mapper_history_action" model="ir.actions.act_window">
+        <field name="name">Dòng đầu vào phân bổ dòng đầu ra (history)</field>
+        <field name="res_model">ttb.inout.invoice.mapper.history</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem
+        id="ttb_inout_invoice_mapper_history_menu"
+        name="Dòng đầu vào phân bổ dòng đầu ra (history)"
+        parent="product_in_out_menu_root_map_inactive"
+        action="ttb_inout_invoice_mapper_history_action"
+        sequence="20"/>
+    <record id="ttb_inout_product_mapper_action_history" model="ir.actions.act_window">
+        <field name="name">Dòng đầu vào chia theo sản phẩm history</field>
+        <field name="res_model">ttb.inout.product.mapper.history</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem
+        id="ttb_inout_product_mapper_menu_misa"
+        name="Dòng đầu vào chia theo sản phẩm (history)"
+        parent="product_in_out_menu_root_map_inactive"
+        action="ttb_inout_product_mapper_action_history"
+        sequence="30"/>
+</odoo>

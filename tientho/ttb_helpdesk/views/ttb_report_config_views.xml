@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ttb_report_config_view_form" model="ir.ui.view">
+        <field name="name">ttb.report.config.view.form</field>
+        <field name="model">ttb.report.config</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="true">
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <h2>Cấu hình báo cáo</h2>
+                    <group>
+                        <group string="Tỷ trọng điểm CEI">
+                            <field name="report_camera_weight" widget="percentage"/>
+                            <field name="report_csat_weight" widget="percentage"/>
+                            <field name="report_nps_weight" widget="percentage"/>
+                            <field name="report_complain_weight" widget="percentage"/>
+                        </group>
+                        <group string="Hệ số điểm than phiền">
+                            <field name="report_camera_deduction_coefficient"/>
+                            <field name="report_in_control_complaint_coefficient"/>
+                            <field name="report_out_of_control_complaint_multiplier"/>
+                            <field name="report_in_control_complaint_multiplier"/>
+                            <field name="report_heavy_complaint_coefficient"/>
+                            <field name="report_light_complaint_coefficient"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Tỷ trọng điểm than phiền">
+                            <field name="report_in_control_weight" widget="percentage"/>
+                            <field name="report_out_of_control_weight" widget="percentage"/>
+                        </group>
+                        <group string="Thời gian áp dụng">
+                            <field name="report_date_from"/>
+                            <field name="report_date_to"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_report_config_view_list" model="ir.ui.view">
+        <field name="name">ttb.report.config.view.list</field>
+        <field name="model">ttb.report.config</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="report_camera_weight" widget="percentage"/>
+                <field name="report_csat_weight" widget="percentage"/>
+                <field name="report_nps_weight" widget="percentage"/>
+                <field name="report_complain_weight" widget="percentage"/>
+
+                <field name="report_camera_deduction_coefficient"/>
+                <field name="report_in_control_complaint_coefficient"/>
+                <field name="report_out_of_control_complaint_multiplier"/>
+                <field name="report_in_control_complaint_multiplier"/>
+                <field name="report_heavy_complaint_coefficient"/>
+                <field name="report_light_complaint_coefficient"/>
+
+                <field name="report_in_control_weight" widget="percentage"/>
+                <field name="report_out_of_control_weight" widget="percentage"/>
+
+                <field name="report_date_from"/>
+                <field name="report_date_to"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_report_config_action" model="ir.actions.act_window">
+        <field name="name">Cấu hình báo cáo Helpdesk</field>
+        <field name="res_model">ttb.report.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

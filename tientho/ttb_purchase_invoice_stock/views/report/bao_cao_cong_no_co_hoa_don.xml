@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="bao_cao_cong_no_co_hoa_don_view" model="ir.ui.view">
+        <field name="name">invoice.report.view.form</field>
+        <field name="model">invoice.report.view</field>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <form class="o_invoice_report_view_form" create="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id" widget="many2one"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="start_date"/>
+                            </group>
+                            <group>
+                                <field name="end_date"/>
+                            </group>
+                        </group>
+                    </group>
+                    <button name="generate_report" type="object" string="Tạo báo cáo" class="btn-primary"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bao_cao_cong_no_co_hoa_don_action" model="ir.actions.act_window">
+        <field name="name">Báo cáo công nợ có hóa đơn</field>
+        <field name="res_model">invoice.report.view</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="bao_cao_cong_no_co_hoa_don_view"/>
+    </record>
+</odoo>

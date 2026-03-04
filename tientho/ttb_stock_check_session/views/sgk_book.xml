@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_check_session_book_form" model="ir.ui.view">
+        <field name="name">sgk.book.list.form</field>
+        <field name="model">sgk.book</field>
+        <field name="arch" type="xml">
+              <form string="Danh sách ảnh SGK" create="0">
+                  <header>
+                    <field name="state" widget="statusbar"/>
+                 </header>
+                  <group>
+                      <field name="name" readonly="1"/>
+                      <field name="ttb_branch_id" readonly="1"/>
+                      <field name="user_id" readonly="1" />
+                      <field name="name_sgk" />
+                      <field name="stock_value" readonly="state == 'done'"/>
+                      <field name="image_ids" widget="many2many_binary_camera"/>
+                      <button name="action_mark_done" type="object" string="Hoàn thành" class="oe_highlight" invisible="state == 'done'"/>
+                      <button name="open_add_stock_wizard" type="object" class="btn btn-primary btn-sm mt-2" invisible="state == 'draft' or can_check_inventory == False">Nhập bổ sung</button>
+                  </group>
+                  <chatter />
+              </form>
+        </field>
+    </record>
+    <record id="view_check_session_book" model="ir.ui.view">
+        <field name="name">sgk.book.list</field>
+        <field name="model">sgk.book</field>
+        <field name="arch" type="xml">
+              <list string="Danh sách ảnh SGK" create="0">
+                  <field name="name" />
+                  <field name="ttb_branch_id" />
+                  <field name="name_sgk" />
+                  <field name="state" />
+                  <field name="image_ids"/>
+              </list>
+        </field>
+    </record>
+    <record id="view_sgk_book_images_list" model="ir.ui.view">
+        <field name="name">sgk.book.images.list</field>
+        <field name="model">sgk.book.images</field>
+        <field name="arch" type="xml">
+            <list string="Ảnh SGK">
+                <field name="name_sgk"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_sgk_book_images_form" model="ir.ui.view">
+        <field name="name">sgk.book.images.form</field>
+        <field name="model">sgk.book.images</field>
+        <field name="arch" type="xml">
+            <form string="Ảnh SGK">
+                <group>
+                    <field name="name_sgk" readonly="1"/>
+                    <field name="image_ids" widget="many2many_binary" readonly="1"/>
+                    <field name="barcode_ids"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_sgk_book_images_window" model="ir.actions.act_window">
+        <field name="name">Ảnh barcode theo SGK</field>
+        <field name="res_model">sgk.book.images</field>
+        <field name="view_mode">list,form</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="action_sgk_images_by_name" model="ir.actions.server">
+        <field name="name">Xem ảnh barcode theo sách</field>
+        <field name="model_id" ref="model_sgk_book_images"/>
+        <field name="state">code</field>
+        <field name="code">env['sgk.book.images'].generate_records()
+action = env.ref('ttb_stock_check_session.action_sgk_book_images_window').read()[0]
+        </field>
+    </record>
+
+    <record id="action_check_session_book" model="ir.actions.act_window">
+        <field name="name">Sách giáo khoa</field>
+        <field name="res_model">sgk.book</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,90 @@
+<odoo>
+    <data>
+        <record id="api_call_log_form" model="ir.ui.view">
+            <field name="name">API Call Log</field>
+            <field name="model">api_call.log</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="API call">
+                    <sheet>
+                        <group>
+                            <field name='name'/>
+                            <field name="method"/>
+                            <field name="resource_ref" widget="reference"/>
+                            <field name="url"/>
+                            <field name='user_id'/>
+                            <field name='create_date'/>
+                            <field name='request_time'/>
+                            <field name="response_time"/>
+                            <field name="api_duration"/>
+                            <field name='response_status_code'/>
+                        </group>
+                        <notebook>
+                            <page string="Response">
+                                <field name="response_text" style="color:red" widget="ace"/>
+                            </page>
+                            <page string="Headers">
+                                <field name="headers" style="color:blue" widget="ace"/>
+                            </page>
+                            <page string="Params">
+                                <field name="params" style="color:blue" widget="ace"/>
+                            </page>
+                            <page string="Stack trace">
+                                <field name="call_stack" widget="ace"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="api_call_log_search" model="ir.ui.view">
+            <field name="name">API Call Log</field>
+            <field name="model">api_call.log</field>
+            <field name="arch" type="xml">
+                <search string="API Calls">
+                    <field name="id" filter_domain="['|', '|', ('headers','ilike',self), ('params','ilike',self), ('response_text','ilike',self)]" string="API Log"/>
+                    <field name="params"/>
+                    <field name="response_text"/>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="api_call_log_list" model="ir.ui.view">
+            <field name="name">API Call Log</field>
+            <field name="model">api_call.log</field>
+            <field name="arch" type="xml">
+                <list string="API calls">
+                    <field name='name'/>
+                    <field name="url"/>
+                    <field name="method"/>
+                    <field name='user_id'/>
+                    <field name='request_time'/>
+                    <field name="api_duration"/>
+                    <field name='response_status_code'/>
+                </list>
+            </field>
+        </record>
+
+        <record id="api_call_log_act" model="ir.actions.act_window">
+            <field name="name">API Call Log</field>
+            <field name="res_model">api_call.log</field>
+            <field name='view_mode'>list,form</field>
+        </record>
+
+        <record id="api_call_menu" model="ir.ui.menu">
+            <field name="name">API Calls</field>
+            <field name="parent_id" eval="False"/>
+            <field name="sequence">400</field>
+            <field name="web_icon">api_call_base,static/description/icon.png</field>
+        </record>
+
+        <record id="api_call_log_menu" model="ir.ui.menu">
+            <field name="name">Log</field>
+            <field name="action" ref="api_call_log_act"/>
+            <field name="parent_id" ref="api_call_menu"/>
+            <field name="sequence">100</field>
+        </record>
+    </data>
+</odoo>

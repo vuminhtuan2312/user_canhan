@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- Template cho List Renderer với search box -->
+    <t t-name="ttb_purchase_invoice_stock.NibotListRenderer" t-inherit="web.ListRenderer" t-inherit-mode="primary">
+        <!-- Thêm search bar ở đầu -->
+        <xpath expr="//table" position="before">
+            <div class="o_nibot_search_bar p-3 bg-light border-bottom">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa fa-search"/>
+                    </span>
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Tìm kiếm theo số hóa đơn, ký hiệu, MST, số tiền, ngày..."
+                        t-att-value="state.searchValue"
+                        t-on-input="onSearchInput"
+                    />
+                    <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        t-on-click="clearSearch"
+                        t-if="state.searchValue"
+                        title="Xóa tìm kiếm"
+                    >
+                        <i class="fa fa-times"/>
+                    </button>
+                </div>
+                <small class="text-muted mt-2 d-block" t-if="state.searchValue">
+                    Hiển thị <strong><t t-esc="displayedRecords.length"/></strong> / <t t-esc="props.list.records.length"/> hóa đơn
+                </small>
+            </div>
+        </xpath>
+
+        <!-- Override tbody để render displayedRecords thay vì props.list.records -->
+        <xpath expr="//tbody" position="replace">
+            <tbody class="ui-sortable">
+                <t t-foreach="displayedRecords" t-as="record" t-key="record.id">
+                    <t t-call="{{ constructor.recordRowTemplate }}">
+                        <t t-set="record" t-value="record"/>
+                    </t>
+                </t>
+                <!-- Hiển thị thông báo không tìm thấy -->
+                <tr t-if="displayedRecords.length === 0 and state.searchValue" class="o_data_row">
+                    <td t-att-colspan="allColumns.length" class="text-center text-muted p-4">
+                        <div class="py-3">
+                            <i class="fa fa-search fa-3x mb-3 d-block opacity-25"/>
+                            <p class="mb-0">Không tìm thấy hóa đơn nào phù hợp với từ khóa "<strong t-esc="state.searchValue"/>"</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </xpath>
+    </t>
+</templates>

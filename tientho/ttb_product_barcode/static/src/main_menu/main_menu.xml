@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- copy from stock_barcode.MainMenu -->
+    <t t-name="ttb_product_barcode.MainMenu">
+        <div class="o_home_menu_background h-100 w-100 pt-sm-3">
+            <div class="o_stock_barcode_main_menu container d-flex flex-column h-100 h-sm-auto bg-view shadow">
+                <header>
+                    <div class="d-flex align-items-center justify-content-between my-3">
+                        <a t-if="!pwaService.isScopedApp" href="#" class="o_stock_barcode_home_menu oi oi-apps me-3 text-dark"
+                            t-on-click="() => this.home.toggle(true)"/>
+                        <span class="fs-2 me-auto">Product Scanner</span>
+                        <button t-if="pwaService.isScopedApp" class="btn btn-secondary" t-on-click="logout">Log out</button>
+                        <a t-elif="pwaService.isSupportedOnBrowser" class="btn btn-secondary d-flex align-items-center justify-content-center" href="/scoped_app?app_id=ttb_product_barcode&amp;path=scoped_app/product_scan" target="_blank">Install</a>
+                    </div>
+                </header>
+                <main class="flex-grow-1">
+                    <div t-if="state.displayDemoMessage" class="o_barcode_demo_message alert alert-info alert-dismissible" role="status">
+                        <p class="m-0">
+                            Print the <a href="/stock_barcode/static/img/barcodes_demo.pdf" target="_blank" aria-label="Download demo data sheet" title="Download demo data sheet">demo data sheet</a>
+                            to test or <a href="/stock_barcode/print_inventory_commands?barcode_type=product_barcodes" target="_blank" aria-label="Download product barcodes" title="Download product barcodes">barcodes</a> for products.
+                        </p>
+                        <button t-on-click="removeDemoMessage" type="button" class="btn-close" title="Close"/>
+                    </div>
+                    <div class="my-5 text-center" t-on-click="openManualBarcodeDialog">
+                        <div class="o_barcode_tap_to_scan m-auto mw-50 cursor-pointer">
+                            <img src="/ttb_product_barcode/static/img/barcode.png" alt="Barcode" class="my-1"/>
+                            <div class="o_stock_barcode_laser"/>
+                        </div>
+                        <div class="o_stock_mobile_barcode text-primary fw-bold">
+                            Scan or tap
+                        </div>
+                    </div>
+                    <ul>
+                        <li>Scan a <b>product</b> to open it</li>
+                    </ul>
+                </main>
+            </div>
+        </div>
+    </t>
+</templates>

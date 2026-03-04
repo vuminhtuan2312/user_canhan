@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_imported_goods_shipping_action_1" model="ir.actions.act_window">
+        <field name="name">Nhập kho quốc tế</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="stock.vpicktree"/>
+        <field name="domain">[('ttb_stage','=','1')]</field>
+    </record>
+
+    <record id="ttb_imported_goods_shipping_action_2" model="ir.actions.act_window">
+        <field name="name">Vận chuyển quốc tế</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="stock.vpicktree"/>
+        <field name="domain">[('ttb_stage','=','2')]</field>
+    </record>
+
+    <record id="ttb_imported_goods_shipping_action_3" model="ir.actions.act_window">
+        <field name="name">Nhập kho nội địa</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="stock.vpicktree"/>
+        <field name="domain">[('ttb_stage','=','3')]</field>
+    </record>
+
+    <record id="ttb_imported_goods_shipping_action_4" model="ir.actions.act_window">
+        <field name="name">Nhập kho DC</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="stock.vpicktree"/>
+        <field name="domain">[('ttb_stage','=','4')]</field>
+        <field name="context">{
+            'has_ticket': False}
+        </field>
+    </record>
+
+    <record id="ttb_imported_goods_shipping_action_5" model="ir.actions.act_window">
+        <field name="name">Vận chuyển cơ sở</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="stock.vpicktree"/>
+        <field name="domain">[('ttb_stage','=','5')]</field>
+        <field name="context">{
+            'has_ticket': False}
+        </field>
+    </record>
+
+    <record id="ttb_imported_goods_shipping_action_6" model="ir.actions.act_window">
+        <field name="name">Nhập kho cơ sở</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="stock.vpicktree"/>
+        <field name="domain">[('ttb_stage','=','6')]</field>
+    </record>
+
+
+</odoo>

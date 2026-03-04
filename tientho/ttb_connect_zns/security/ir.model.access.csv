@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_webhook_response,access_webhook_response,model_webhook_response,,1,1,1,1
+access_zalo_shop_config,access_zalo_shop_config,model_zalo_shop_config,,1,1,1,1
+access_zalo_template,access_zalo_template,model_zalo_template,,1,1,1,1
+access_param_mapping,access_param_mapping,model_param_mapping,,1,1,1,1
+access_webhook_service,access_webhook_service,model_webhook_service,,1,1,1,1
+access_condition_to_send_zns,access_condition_to_send_zns,model_condition_to_send_zns,,1,1,1,1
+access_zns_send,access_zns_send,model_zns_send,,1,1,1,1
+access_period_campaign,access_period_campaign,model_period_campaign,,1,1,1,1
+access_bizfly_table_map,access_bizfly_table_map,model_bizfly_table_map,,1,1,1,1
+access_create_template_wizard,access_create_template_wizard,model_create_template_wizard,,1,1,1,1
+access_ttb_pos_order_filter,access_ttb_pos_order_filter,model_ttb_pos_order_filter,,1,1,1,1
+access_param_mapping_line,access_param_mapping_line,model_param_mapping_line,,1,1,1,1
+access_zns_api_code_error,access_zns_api_code_error,model_zns_api_code_error,,1,1,1,1

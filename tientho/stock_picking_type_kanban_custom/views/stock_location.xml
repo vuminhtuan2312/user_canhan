@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="stock_location_form_inherit_augges" model="ir.ui.view">
+        <field name="name">stock.location.form.inherit.augges</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <group>
+                    <label for="augges_id"/>
+                </group>
+                <group>
+                    <h5><field name="augges_id"/></h5>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

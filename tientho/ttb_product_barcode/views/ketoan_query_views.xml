@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_xuatnhap_baocao_tree" model="ir.ui.view">
+    <field name="name">xuatnhap.baocao.tree</field>
+    <field name="model">xuatnhap.baocao</field>
+    <field name="arch" type="xml">
+      <list string="Báo cáo Xuất Nhập" create="false">
+        <field name="augges_id" optional="hide"/>
+        <field name="sngay" optional="hide"/>
+        <field name="ngay_ct"/>
+        <field name="ky_hieu" optional="hide"/>
+        <field name="mau_so" optional="hide"/>
+        <field name="so_ct"/>
+        <field name="sp" optional="hide"/>
+        <field name="id_nx" optional="hide"/>
+        <field name="ma_ct" optional="hide"/>
+        <field name="id_kho" optional="hide"/>
+        <field name="ten_nhom"/>
+        <field name="id_dt" optional="hide"/>
+        <field name="ten_dt"/>
+        <field name="mst"/>
+        <field name="cong_slqd"/>
+        <field name="cong_sl"/>
+        <field name="tien_hang"/>
+        <field name="id_thue" optional="hide"/>
+        <field name="tien_gtgt"/>
+        <field name="tong_tien"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_xuatnhap_baocao_search" model="ir.ui.view">
+    <field name="name">xuatnhap.baocao.search</field>
+    <field name="model">xuatnhap.baocao</field>
+    <field name="arch" type="xml">
+      <search string="Tìm kiếm Báo cáo">
+        <field name="sngay"/>
+        <field name="ngay_ct"/>
+        <field name="ky_hieu"/>
+        <field name="so_ct"/>
+        <field name="ten_nhom"/>
+        <field name="ten_dt"/>
+        <field name="mst"/>
+      </search>
+    </field>
+  </record>
+
+  <record id="view_xuatnhap_detail_tree" model="ir.ui.view">
+    <field name="name">xuatnhap.detail.tree</field>
+    <field name="model">xuatnhap.detail</field>
+    <field name="arch" type="xml">
+      <list string="Chi tiết Xuất Nhập" create="false">
+        <field name="xuatnhap_id"/>
+        <field name="slnxm_id"/>
+        <field name="stt"/>
+        <field name="id_hang" optional="hide"/>
+        <field name="product_id"/>
+        <field name="so_luong"/>
+        <field name="don_gia"/>
+        <field name="don_gia1"/>
+        <field name="gia_kvat"/>
+        <field name="gia_ban"/>
+        <field name="t_tien"/>
+        <field name="t_tien1"/>
+
+        <field name="gia_vat"/>
+        <field name="sl_qd"/>
+        <field name="gia_qd"/>
+        <field name="so_luongt"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_xuatnhap_detail_search" model="ir.ui.view">
+    <field name="name">xuatnhap.detail.search</field>
+    <field name="model">xuatnhap.detail</field>
+    <field name="arch" type="xml">
+      <search string="Tìm kiếm Chi tiết">
+        <field name="id_hang"/>
+      </search>
+    </field>
+  </record>
+
+
+    <menuitem id="menu_xuatnhap_root" name="Báo cáo Xuất Nhập"/>
+    <menuitem id="menu_xuatnhap_baocao" name="Báo cáo" parent="menu_xuatnhap_root"/>
+    
+    <record id="action_xuatnhap_baocao" model="ir.actions.act_window">
+        <field name="name">Báo cáo Xuất Nhập</field>
+        <field name="res_model">xuatnhap.baocao</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_xuatnhap_baocao_tree"/>
+        <field name="search_view_id" ref="view_xuatnhap_baocao_search"/>
+    </record>
+
+    <record id="action_xuatnhap_detail" model="ir.actions.act_window">
+        <field name="name">Báo cáo Xuất Nhập</field>
+        <field name="res_model">xuatnhap.detail</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_xuatnhap_detail_tree"/>
+        <field name="search_view_id" ref="view_xuatnhap_detail_search"/>
+    </record>
+    
+    <menuitem id="menu_xuatnhap_baocao_list" name="Danh sách" parent="menu_xuatnhap_baocao" action="action_xuatnhap_baocao"/>
+
+    <menuitem id="menu_xuatnhap_baocao_detail" name="Chi tiết" parent="menu_xuatnhap_baocao" action="action_xuatnhap_detail"/>
+
+
+    <record id="ir_cron_sync_new_ketoans" model="ir.cron">
+        <field name="name">Đồng bộ dữ liệu nhập xuất MSSQL Augges (Create)</field>
+        <field name="model_id" ref="model_xuatnhap_baocao"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_sync_data_create()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_sync_new_ketoan_detail" model="ir.cron">
+        <field name="name">Đồng bộ dữ liệu nhập xuất chi tiết MSSQL Augges</field>
+        <field name="model_id" ref="model_xuatnhap_detail"/>
+        <field name="state">code</field>
+        <field name="code">model.get_xuatnhap_detail()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+</odoo>

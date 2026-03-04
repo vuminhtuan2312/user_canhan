@@ -1,0 +1,4 @@
+astor
+pyodbc
+sentence-transformers
+cryptography

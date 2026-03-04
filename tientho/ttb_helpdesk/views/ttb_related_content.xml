@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="ttb_related_content_view_tree" model="ir.ui.view">
+        <field name="name">ttb_related_content_view_tree</field>
+        <field name="model">ttb.related.content</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="ttb_description_id"/>
+                <field name="type" invisible="1"/>
+                <field name="level"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_related_content_action" model="ir.actions.act_window">
+        <field name="name">Nội dung liên quan</field>
+        <field name="res_model">ttb.related.content</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

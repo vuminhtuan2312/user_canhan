@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="inventory_result_kanban">
+            <field name="name">inventory.result.view.kanban.stock.barcode</field>
+            <field name="model">inventory.result</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" sample="1" js_class="stock_barcode_list_kanban">
+                    <field name="name"/>
+                    <field name="branch_id"/>
+                    <field name="pid_location_id"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="row">
+                                 <b>
+                                    <field name="name"/>
+                                 </b>
+                                <field name="state" widget="label_selection"/>
+                            </div>
+                            <div class="row">
+                                <field name="branch_id"/>
+                            </div>
+                            <div class="row">
+                                <field name="pid_location_id"/>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="inventory_result_action_kanban" model="ir.actions.act_window">
+            <field name="name">Kết quả kiểm kê</field>
+            <field name="res_model">inventory.result</field>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="ttb_stock_barcode_kiem_ke.inventory_result_kanban"/>
+            <field name="target">fullscreen</field>
+        </record>
+
+        <menuitem id="inventory_result_menu" name="Hậu kiểm" sequence="20" action="ttb_stock_barcode_kiem_ke.inventory_result_action_kanban" parent="ttb_stock.inventory_session_root" active="False"/>
+    </data>
+</odoo>

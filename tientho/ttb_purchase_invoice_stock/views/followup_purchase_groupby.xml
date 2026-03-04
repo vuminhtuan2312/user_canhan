@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="followup_purchase_groupby_view" model="ir.ui.view">
+        <field name="name">followup.purchase.groupby.view.list</field>
+        <field name="model">purchase.order</field>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="alert_po == True">
+                <field name="name" optional="show"/>
+                <field name="date_approve" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="ttb_branch_id" optional="show"/>
+                <field name="received_amount_total" optional="show"/>
+                <field name="amount_total" optional="show"/>
+                <field name="compare_invoice" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="followup_purchase_groupby_branch_action" model="ir.actions.act_window">
+        <field name="name">Theo dõi đơn hàng theo cơ sở</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="followup_purchase_groupby_view"/>
+        <field name="context">{'group_by': ['ttb_branch_id','compare_invoice','create_uid']}</field>
+        <field name="domain">[('partner_id.ttb_show_report', '=', True), ('ttb_type', '=', 'sale'), ('compare_invoice', '!=', False), '|', ('state', 'in', ['purchase', 'done']),
+            ('invoice_status', 'not in', ['invoiced', 'no'])]
+        </field>
+    </record>
+
+    <record id="followup_purchase_groupby_partner_action" model="ir.actions.act_window">
+        <field name="name">Theo dõi đơn hàng theo nhà cung cấp</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="followup_purchase_groupby_view"/>
+        <field name="context">{'group_by': ['partner_id','compare_invoice']}</field>
+        <field name="domain">[('partner_id.ttb_show_report', '=', True), ('ttb_type', '=', 'sale'), ('compare_invoice', '!=', False), '|', ('state', 'in', ['purchase', 'done']),
+            ('invoice_status', 'not in', ['invoiced', 'no'])]
+        </field>
+    </record>
+
+
+    <record id="followup_purchase_groupby_sale_action" model="ir.actions.act_window">
+        <field name="name">Theo dõi đơn hàng theo người phụ trách</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="followup_purchase_groupby_view"/>
+        <field name="context">{'group_by': ['user_id','compare_invoice']}</field>
+        <field name="domain">[('partner_id.ttb_show_report', '=', True), ('ttb_type', '=', 'sale'), ('compare_invoice', '!=', False), '|', ('state', 'in', ['purchase', 'done']),
+            ('invoice_status', 'not in', ['invoiced', 'no'])]
+        </field>
+    </record>
+
+
+    <record id="followup_purchase_groupby_account_action" model="ir.actions.act_window">
+        <field name="name">Theo dõi đơn hàng theo kế toán</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="followup_purchase_groupby_view"/>
+        <field name="context">{'group_by': ['partner_id','compare_invoice']}</field>
+        <field name="domain">[('partner_id.accountant_id.user_id.id', '=', uid), ('partner_id.ttb_show_report', '=', True),
+            ('ttb_type', '=', 'sale'), ('compare_invoice', '!=', False),
+            '|', ('state', 'in', ['purchase', 'done']), ('invoice_status', 'not in', ['invoiced', 'no'])]
+        </field>
+    </record>
+
+    <menuitem
+            id="purchase.followup_purchase_groupby_branch_item"
+            name="Theo dõi đơn hàng theo cơ sở"
+            action="followup_purchase_groupby_branch_action"
+            sequence="30"
+            parent="followup_purchase_orders_menu"
+    />
+
+    <menuitem
+            id="purchase.followup_purchase_groupby_partner_item"
+            name="Theo dõi đơn hàng theo nhà cung cấp"
+            action="followup_purchase_groupby_partner_action"
+            sequence="30"
+            parent="followup_purchase_orders_menu"
+    />
+
+    <menuitem
+            id="purchase.followup_purchase_groupby_sale_item"
+            name="Theo dõi đơn hàng theo người phụ trách"
+            action="followup_purchase_groupby_sale_action"
+            sequence="30"
+            parent="followup_purchase_orders_menu"
+    />
+
+
+    <menuitem
+            id="purchase.followup_purchase_groupby_account"
+            name="Theo dõi đơn hàng theo kế toán"
+            action="followup_purchase_groupby_account_action"
+            sequence="30"
+            parent="followup_purchase_orders_menu"
+    />
+</odoo>

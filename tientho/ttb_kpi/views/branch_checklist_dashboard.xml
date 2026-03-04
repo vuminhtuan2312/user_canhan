@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="branch_checklist_dashboard_kanban_view" model="ir.ui.view">
+        <field name="name">branch.checklist.dashboard.kanban</field>
+        <field name="model">ttb.branch</field>
+        <field name="arch" type="xml">
+            <!--
+                Sử dụng chính xác các class và thuộc tính từ view mẫu để đảm bảo giao diện,
+                hành vi và khả năng tương thích với thiết bị di động là đồng nhất.
+            -->
+            <kanban class="o_kanban_mobile o_stock_barcode_operations_kanban_view" create="0" sample="1" type="object" group_create="false">
+
+                <!-- Khai báo tất cả các trường dữ liệu cần dùng trong template -->
+                <field name="name"/>
+                <field name="checklist_count_need_approve"/>
+                <field name="checklist_count_acceptance"/>
+                <field name="checklist_count_overdue"/>
+                <field name="graph_dashboard_checklist"/>
+
+                <templates>
+                    <t t-name="card" class="o_barcode_picking_type">
+                        <div style="font-weight: bold; font-size: 18px; color: #007272;">
+                            <field name="name"/>
+                        </div>
+                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                            <a name="action_checklist_need_approve" type="object"
+                               context="{'branch_id': id}">
+                                <field name="checklist_count_need_approve"/>
+                                phiếu cần duyệt
+                            </a>
+                            <span style="color: #888;">|</span>
+                        </div>
+                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                            <a name="action_checklist_acceptance" type="object"
+                               context="{'branch_id': id}">
+                                 <field name="checklist_count_acceptance"/>
+                                phiếu nghiệm thu
+                            </a>
+                            <span style="color: #888;">|</span>
+                        </div>
+
+                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                            <a name="action_checklist_overdue" type="object"
+                               context="{'branch_id': id}">
+                                <field name="checklist_count_overdue"/>
+                                trễ hạn
+                            </a>
+                            <span style="color: #888;">|</span>
+                        </div>
+                        <field name="graph_dashboard_checklist" widget="branch_dashboard_graph_check_list" graph_type="bar"/>
+                    </t>
+                    <!-- Đặt tên template là "card" và thêm class CSS để giống hệt mẫu -->
+<!--                    <t t-name="card" class="o_barcode_picking_type">-->
+<!--                        &lt;!&ndash; Tiêu đề thẻ: Tên cơ sở &ndash;&gt;-->
+<!--                        <div style="font-weight: bold; font-size: 18px; color: #007272;">-->
+<!--                            <field name="name"/>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Dòng 1: Phiếu cần duyệt &ndash;&gt;-->
+<!--                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">-->
+<!--                            <a name="action_checklist_need_approve" type="object"-->
+<!--                               context="{'branch_id': id}">-->
+<!--                                <field name="checklist_count_need_approve"/>-->
+<!--                                phiếu cần duyệt-->
+<!--                            </a>-->
+<!--                            &lt;!&ndash; Phần giá trị được lược bỏ vì không có trong yêu cầu checklist &ndash;&gt;-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Dòng 2: Phiếu nghiệm thu &ndash;&gt;-->
+<!--                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">-->
+<!--                            <a name="action_checklist_acceptance" type="object"-->
+<!--                               context="{'branch_id': id}">-->
+<!--                                <field name="checklist_count_acceptance"/>-->
+<!--                                phiếu nghiệm thu-->
+<!--                            </a>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Dòng 3: Trễ hạn (được tô màu đỏ để cảnh báo) &ndash;&gt;-->
+<!--                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px; color: red;">-->
+<!--                            <a name="action_checklist_overdue" type="object" style="color: red;"-->
+<!--                               context="{'branch_id': id}">-->
+<!--                                <field name="checklist_count_overdue"/>-->
+<!--                                trễ hạn-->
+<!--                            </a>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Phần biểu đồ, sử dụng widget và trường của màn hình checklist &ndash;&gt;-->
+<!--                        <field name="graph_dashboard_checklist" widget="branch_dashboard_graph_check_list" graph_type="bar"/>-->
+<!--                    </t>-->
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="branch_checklist_dashboard_action" model="ir.actions.act_window">
+        <field name="name">Tổng hợp checklist</field>
+        <field name="res_model">ttb.branch</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="branch_checklist_dashboard_kanban_view"/>
+    </record>
+</odoo>

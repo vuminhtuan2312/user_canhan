@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Phân công Ca: List + Form + Search + Action + Menu -->
+
+    <record id="view_ttb_shift_assignment_list" model="ir.ui.view">
+        <field name="name">ttb.shift.assignment.list</field>
+        <field name="model">ttb.shift.assignment</field>
+        <field name="arch" type="xml">
+            <list decoration-bf="state == 'draft'" decoration-success="state == 'done'" decoration-muted="state == 'cancel'" decoration-warning="state == 'assigning'" default_order="date desc, branch_id asc">
+                <field name="name" width="20%"/>
+                <field name="branch_id" width="20%"/>
+                <field name="date" width="15%"/>
+                <field name="shift_id" width="15%"/>
+                <field name="manager_id" width="15%" widget="many2one_avatar_user"/>
+                <field name="state" width="15%" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'assigning'" decoration-success="state == 'done'" decoration-muted="state == 'cancel'"/>
+                <field name="post_audit_generated" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ttb_shift_assignment_form" model="ir.ui.view">
+        <field name="name">ttb.shift.assignment.form</field>
+        <field name="model">ttb.shift.assignment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start_assign" string="Bắt đầu phân công" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_confirm" string="Xác nhận &amp; Sinh việc" type="object" class="oe_highlight" invisible="state != 'assigning'" confirm="Bạn có chắc chắn muốn sinh việc?"/>
+                    <button name="action_start_assign" string="Phân công lại" type="object" class="btn-secondary" confirm="Bạn có chắc chắn muốn phân công lại?" invisible="state != 'done'"/>
+                    <button name="action_cancel" string="Hủy phiếu" type="object" class="btn-danger" invisible="state == 'cancel'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,assigning,done,cancel"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="branch_id" readonly="state != 'draft'"/>
+                            <field name="date" readonly="state in ('done', 'cancel')"/>
+                        </group>
+                        <group>
+                            <field name="shift_id" readonly="state in ('done', 'cancel')"/>
+                            <field name="manager_id" widget="many2one_avatar_user" readonly="state in ('done', 'cancel')"/>
+                            <field name="post_audit_generated" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Phân công Tự động">
+                            <field name="line_ids" readonly="state in ('done', 'cancel')">
+                                <list editable="bottom">
+                                    <field name="area_id" options="{'no_create': True}"/>
+                                    <field name="employee_ids" widget="many2many_tags_avatar" options="{'no_create': True}" context="{'prioritize_area_id': area_id}"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Công việc Phát sinh">
+                            <field name="adhoc_task_ids" context="{'default_is_adhoc': True}" readonly="state == 'cancel'">
+                                <list editable="bottom" decoration-info="state in ('waiting', 'ready')" decoration-warning="state in ('delayed', 'suspended')" decoration-success="state == 'done'" decoration-muted="state == 'undone'">
+                                    <field name="name" required="1" readonly="state != 'waiting'"/>
+                                    <field name="area_id" required="1" readonly="state != 'waiting'"/>
+                                    <field name="employee_id" widget="many2one_avatar_employee" domain="[('ttb_branch_ids', 'in', branch_id)]" options="{'no_create': True}" context="{'prioritize_area_id': area_id}" required="1" readonly="state != 'waiting'"/>
+                                    <field name="planned_date_start" required="1" readonly="state != 'waiting'"/>
+                                    <field name="planned_date_end" required="1" readonly="state != 'waiting'"/>
+                                    <field name="adhoc_source" readonly="state != 'waiting'"/>
+                                    <field name="state" readonly="1"/>
+                                    <field name="is_adhoc" widget="boolean_toggle" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ttb_shift_assignment_search" model="ir.ui.view">
+        <field name="name">ttb.shift.assignment.search</field>
+        <field name="model">ttb.shift.assignment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="branch_id"/>
+                <field name="manager_id"/>
+                <filter string="Cần xử lý" name="todo" domain="[('state', 'in', ('draft', 'assigning'))]"/>
+                <filter string="Đã hoàn thành" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Hôm nay" name="today" domain="[('date', '=', context_today())]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Cơ sở" name="group_branch" context="{'group_by': 'branch_id'}"/>
+                    <filter string="Trạng thái" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Ngày" name="group_date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_shift_assignments" model="ir.actions.act_window">
+        <field name="name">Phân công Ca</field>
+        <field name="res_model">ttb.shift.assignment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_ttb_shift_assignment_search"/>
+    </record>
+
+    <menuitem id="ttb_menu_shift_assignment" name="Phân công Ca" parent="ttb_menu_management" action="action_shift_assignments" sequence="10"/>
+</odoo>

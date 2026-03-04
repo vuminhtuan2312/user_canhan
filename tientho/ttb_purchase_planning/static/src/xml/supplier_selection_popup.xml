@@ -1,0 +1,82 @@
+<!-- Template cho popup chọn nhà cung cấp -->
+<t t-name="ttb_purchase_planning.SupplierSelectionPopup" owl="1">
+    <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);" t-att-class="{'d-block': props.isVisible}">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-truck me-2"></i>Chọn nhà cung cấp cho từng sản phẩm
+                    </h5>
+                    <button type="button" class="btn-close" t-on-click="onClose"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle me-1"></i>
+                        Vui lòng chọn nhà cung cấp cho từng sản phẩm. Số lượng sẽ được lấy từ dự trù mua hàng.
+                    </div>
+
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-bordered table-sm">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th style="width: 40%;">Sản phẩm</th>
+                                    <th style="width: 20%;">Số lượng</th>
+                                    <th style="width: 40%;">Nhà cung cấp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="props.products" t-as="product" t-key="product.id">
+                                    <tr>
+                                        <td>
+                                            <div class="fw-bold"><t t-esc="product.name"/></div>
+                                            <small class="text-muted"><t t-esc="product.code"/></small>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-primary fs-6">
+                                                <t t-esc="props.quantities[product.id] or 0"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <select class="form-select form-select-sm"
+                                                    t-on-change="(ev) => this.onSupplierChange(product.id, ev.target.value)">
+                                                <option value="">-- Chọn nhà cung cấp --</option>
+                                                <t t-foreach="props.suppliers" t-as="supplier" t-key="supplier.id">
+                                                    <option t-att-value="supplier.id"
+                                                            t-att-selected="props.selectedSuppliers[product.id] == supplier.id">
+                                                        <t t-esc="supplier.name"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" t-on-click="onClose">
+                        <i class="fa fa-times me-1"></i>Hủy
+                    </button>
+                    <button type="button" class="btn btn-success" t-on-click="onConfirm"
+                            t-att-disabled="!this.hasAllSuppliersSelected()">
+                        <i class="fa fa-check me-1"></i>Xác nhận tạo đơn mua hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <!-- Popup chọn nhà cung cấp -->
+    <SupplierSelectionPopup
+        t-if="state.showSupplierPopup"
+        isVisible="state.showSupplierPopup"
+        products="state.products"
+        suppliers="state.suppliers"
+        selectedSuppliers="state.selectedSuppliers"
+        quantities="state.purchaseQuantities"
+        onClose="() => this.onCloseSupplierPopup()"
+        onSupplierChange="(productId, supplierId) => this.onSupplierChange(productId, supplierId)"
+        onConfirm="() => this.onConfirmCreatePurchaseOrder()"
+        hasAllSuppliersSelected="() => this.hasAllSuppliersSelected()"
+    />
+</t>

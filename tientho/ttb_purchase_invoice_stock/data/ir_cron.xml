@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ir_cron_sync_nibot_to_odoo_kidzone" model="ir.cron">
+        <field name="name">Nibot api: kidzone đồng bộ hoá đơn đầu vào nibot -> odoo</field>
+        <field name="model_id" ref="model_ttb_nibot_api"/>
+        <field name="state">code</field>
+        <field name="code">model.env.ref('ttb_purchase_invoice_stock.nibot_api_kidzone').with_context(nibot_pending_action_confirm=True).sync_today(nibot=True)</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_sync_to_nibot_kidzone" model="ir.cron">
+        <field name="name">Nibot api: kidzone đồng bộ hoá đơn về nibot</field>
+        <field name="model_id" ref="model_ttb_nibot_api"/>
+        <field name="state">code</field>
+        <field name="code">model.env.ref('ttb_purchase_invoice_stock.nibot_api_kidzone').dong_bo_hoa_don_tong_quat(datetime.date(2025, 6, 30), datetime.date(2025, 6, 30))</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_confirm_nibot_invoice" model="ir.cron">
+        <field name="name">Nibot: Xác nhận hoá đơn đầu vào</field>
+        <field name="model_id" ref="model_ttb_nimbox_invoice"/>
+        <field name="state">code</field>
+        <field name="code">
+nimboxes = env['ttb.nimbox.invoice'].search([('create_date', '>=', '2025-06-19'), ('state', 'not in', ['waiting','amout_vat', 'many_po'])])
+if nimboxes: nimboxes.find_and_apply_purchase()
+nimboxes = env['ttb.nimbox.invoice'].search([('state', 'in', ['waiting','amout_vat', 'many_po'])])
+# nimboxes = env['ttb.nimbox.invoice'].search([('state', 'in', ['waiting'])])
+#amout_vat, many_po
+# raise UserError(len(nimboxes))
+for rec in nimboxes:
+    try:
+        rec.with_context(no_check_document=True).action_confirm()
+        env.cr.commit()
+    except:
+        env.cr.rollback()
+</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">months</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_tu_dong_xuat_hddt" model="ir.cron">
+        <field name="name">Xuất HDDT: tự động tạo phiếu </field>
+        <field name="model_id" ref="model_ttb_pos_invoice"/>
+        <field name="state">code</field>
+        <field name="code">model.xuat_hddt_tu_dong()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_tu_dong_xac_nhan_xuat_hddt" model="ir.cron">
+        <field name="name">Xuất HDDT: tự động xác nhận phiên</field>
+        <field name="model_id" ref="model_ttb_pos_invoice"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_finish_pos_invoice()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_tu_dong_retry_xuat_hddt" model="ir.cron">
+        <field name="name">Xuất HDDT: Retry gọi api VNPT</field>
+        <field name="model_id" ref="model_ttb_pos_invoice"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_retry_pos_invoice()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_send_picking_to_augges" model="ir.cron">
+        <field name="name">Augges: Đồng bộ hóa đơn phiếu nhập kho</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_send_augges()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="ir_cron_push_invoices_po" model="ir.cron">
+        <field name="name">Augges: Đồng bộ hóa đơn của đơn hàng có hóa đơn không đi cùng hàng</field>
+        <field name="model_id" ref="model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">model.push_invoices_po()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="ir_cron_create_invoice_by_po_name" model="ir.cron">
+        <field name="name">Hóa đơn: Tạo hóa đơn từ PO nhập vào (name PO, ID PO)</field>
+        <field name="model_id" ref="model_account_move"/>
+        <field name="state">code</field>
+        <field name="code">model._create_invoice_from_po()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="ir_cron_update_einvoice_tracking_status" model="ir.cron">
+        <field name="name">POS: Cập nhật trạng thái Theo dõi HĐĐT</field>
+        <field name="model_id" ref="model_pos_order"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_update_einvoice_tracking()</field>
+        <field name="interval_number">10</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="ir_cron_warning_ttb_einvoice_state" model="ir.cron">
+        <field name="name">POS: Cảnh báo và liệt kê danh sách dđơn chuyển khoản chưa được xuất hóa đơn</field>
+        <field name="model_id" ref="model_pos_order"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_ttb_einvoice_state()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

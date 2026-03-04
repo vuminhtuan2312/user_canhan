@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="advance_request_shortage_wizard_view_form" model="ir.ui.view">
+        <field name="name">advance.request.shortage.wizard.view.form</field>
+        <field name="model">advance.request.shortage.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Cảnh báo thiếu hàng">
+                <div class="alert alert-warning" role="alert">
+                    <field name="shortage_message" readonly="1" />
+                </div>
+                <footer>
+                    <button name="action_confirm" string="Xác nhận" type="object" class="btn-primary" />
+                    <button string="Hủy" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

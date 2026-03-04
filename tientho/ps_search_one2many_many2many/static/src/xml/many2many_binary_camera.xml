@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        Định nghĩa template hoàn toàn mới cho widget của chúng ta.
+        Chúng ta không kế thừa (t-inherit) nữa mà tạo một template độc lập.
+    -->
+    <t t-name="ps_search_one2many_many2many.Many2ManyBinaryCamera" owl="1">
+        <div class="o_field_many2many_binary_camera o_field_widget">
+            <!-- Vùng hiển thị danh sách các ảnh đã upload -->
+            <div t-if="props.record.data[props.name].records.length" class="o_existing_attachment_container">
+                <!-- Hiển thị ảnh theo chiều dọc -->
+                <div class="d-flex flex-column gap-2">
+                    <t t-foreach="props.record.data[props.name].records" t-as="attachment" t-key="attachment.resId">
+                        <div class="o_attachment_card position-relative mb-2" style="max-width: 220px;">
+                            <img class="img img-fluid rounded border"
+                                 style="max-width: 200px; max-height: 200px; object-fit: contain;"
+                                 t-att-src="'/web/image/' + attachment.resId + '?unique=1'"
+                                 alt="Attachment"/>
+
+                            <!-- Nút xóa ảnh nhỏ gọn -->
+                            <button t-if="!props.readonly"
+                                    class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 o_attachment_delete_btn"
+                                    style="width: 24px; height: 24px; padding: 0; font-size: 14px; display: flex; align-items: center; justify-content: center;"
+                                    t-on-click="() => this.onFileRemove(attachment.resId)"
+                                    title="Xóa">
+                                <i class="fa fa-trash"/>
+                            </button>
+
+                            <!-- Tên file (tùy chọn) -->
+                            <div class="o_attachment_name small text-muted text-truncate p-1">
+                                <t t-esc="attachment.data.name"/>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+            <!-- Nút để mở camera/upload, chỉ hiện khi không ở chế độ chỉ đọc -->
+            <div t-if="!props.readonly" class="o_add_attachment_button_container mt-2">
+                <button class="btn btn-primary" t-on-click="onClickAdd">
+                    <i class="fa fa-camera me-1"/>
+                    <span>Chụp hoặc Tải ảnh lên</span>
+                </button>
+            </div>
+        </div>
+    </t>
+
+</templates>

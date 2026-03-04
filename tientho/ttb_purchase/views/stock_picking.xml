@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_picking_form" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <field name="ttb_augges_export" invisible="1"/>
+                <field name="has_ticket" invisible="1"/>
+<!--                <button name="action_ttb_augges_export" type="object" string="Xuất file Augges" invisible="state !='done' or picking_type_code != 'incoming' or ttb_augges_export or (ttb_stage and ttb_stage != '6')"/>-->
+<!--                <button name="action_ttb_augges_export" type="object" string="Xuất file Augges" invisible="state !='done' or picking_type_code != 'incoming' or not ttb_augges_export or (ttb_stage and ttb_stage != '6')" confirm="Phiếu nhập kho này đã xuất file Augges, bạn có muốn xuất lại?"/>-->
+<!--                <button name="button_sent_augges" string="SYNC AUGGES" type="object" invisible="state != 'done' or is_sent_augges == True or purchase_id == False or purchase_is_sent_augges == True or (ttb_stage and ttb_stage != '6')" confirm="Dữ liệu chỉ gửi sang 1 lần, bạn có chắc chắn đẩy dữ liệu"/>-->
+
+<!--                <button name="button_sent_augges_again" string="Xoá và tạo lại Augges" type="object" groups="base.group_no_one,base.group_system"-->
+<!--                        invisible="ttb_stage and ttb_stage != '6'" confirm="Nút này rất nguy hiểm, chỉ dành cho admin. Bạn đã chắc chắn chưa?"/>-->
+                <button name="confirm_shipping_ticket" string="Xác nhận hàng" type="object"
+                        invisible="state!='assigned' or ttb_stage in ('4','6') or ttb_type != 'imported_goods'"/>
+                <button name="confirm_shipping_ticket_dc" string="Xác nhận hàng" type="object"
+                        invisible="state!='assigned' or ttb_stage not in ('4','6') or ttb_type != 'imported_goods'"/>
+                <button name="button_create_goods_istribution_ticket" string="Tạo phiếu chia hàng" type="object"
+                        invisible="ttb_stage!='4' or ttb_type != 'imported_goods' or has_ticket"/>
+                <button type="object"
+                        name="action_view_ticket"
+                        class="oe_stat_button"
+                        icon="fa-truck" invisible="not has_ticket"
+                        string="Phiếu chia hàng"/>
+                <button type="object"
+                        name="action_create_complaint_ticket"
+                        class="oe_stat_button"
+                        invisible="ttb_stage not in ('4', '6') or ttb_type != 'imported_goods'"
+                        string="Tạo phiếu khiếu nại"/>
+                <button type="object"
+                        name="action_view_complaint_ticket"
+                        class="oe_stat_button"
+                        icon="fa-solid fa-ticket"
+                        invisible="ttb_stage not in ('4', '6') or ttb_type != 'imported_goods'"
+                        string="Xem phiếu khiếu nại"/>
+<!--                <button name="action_open_confirm_receipt_wizard"-->
+<!--                        string="Xác nhận hàng về"-->
+<!--                        type="object"-->
+<!--                        class="oe_highlight"-->
+<!--                        invisible="picking_type_code != 'incoming' or state in ('done', 'cancel') or ttb_stage in ('1', '2', '3', '5')"/>-->
+            </header>
+            <button name="action_confirm" position="attributes">
+                <attribute name="groups">stock.group_stock_user</attribute>
+            </button>
+            <button name="action_assign" position="attributes">
+                <attribute name="groups">stock.group_stock_user</attribute>
+            </button>
+            <button name="action_cancel" position="attributes">
+                <attribute name="groups">stock.group_stock_user</attribute>
+            </button>
+            <button name="%(stock.action_report_delivery)d" position="attributes">
+                <attribute name="groups">stock.group_stock_user</attribute>
+            </button>
+            <button name="%(stock.act_stock_return_picking)d" position="attributes">
+                <attribute name="groups">stock.group_stock_user</attribute>
+            </button>
+            <!--            <div name="button_box" position="inside">-->
+            <!--                <field name="purchase_id" invisible="1"/>-->
+            <!--                <button name="action_to_po" class="oe_stat_button" icon="fa-credit-card" type="object" invisible="not purchase_id">-->
+            <!--                    <div class="o_form_field o_stat_info">-->
+            <!--                        <span class="o_stat_text">Đơn mua hàng</span>-->
+            <!--                    </div>-->
+            <!--                </button>-->
+            <!--            </div>-->
+<!--            <xpath expr="//field[@name='origin']" position="after">-->
+<!--                <field name="ttb_received_date" invisible="not ttb_received_date"/>-->
+<!--                <field name="ttb_received_packages" invisible="not ttb_received_packages"/>-->
+<!--            </xpath>-->
+            <xpath expr="//label[@for='scheduled_date']" position="before">
+                <field name="ttb_stage" invisible="ttb_type != 'imported_goods'" readonly="1" string="Trạng thái vận chuyển"/>
+            </xpath>
+            <xpath expr="//field[@name='owner_id']" position="after">
+                <field name="attachment" invisible="ttb_type != 'imported_goods'"/>
+            </xpath>
+            <xpath expr="//button[@name='button_validate']" position="attributes">
+                <attribute name="invisible" operation="text_add"> ({old_value}) or (ttb_type == 'imported_goods')</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_view_stock_valuation_layers']" position="after">
+                <button name="action_view_po" type="object" string="Đơn mua hàng" class="btn-link" icon="fa-credit-card"
+                        invisible="ttb_type != 'imported_goods'"/>
+                <button name="action_view_stock_picking_ticket" type="object" string="Phiếu nhập kho quốc tế" class="btn-link"
+                        invisible="ttb_type != 'imported_goods' or ttb_stage != '2'" context="{'type_ticket': 'international_warehousing'}"/>
+                <button name="action_view_stock_picking_ticket" type="object" string="Phiếu vận chuyển quốc tế" class="btn-link"
+                        invisible="ttb_type != 'imported_goods' or ttb_stage != '3'" context="{'type_ticket': 'international_shipping'}"/>
+                <button name="action_view_stock_picking_ticket" type="object" string="Phiếu nhập kho nội địa" class="btn-link"
+                        invisible="ttb_type != 'imported_goods' or ttb_stage != '4'" context="{'type_ticket': 'domestic_warehousing'}"/>
+                <field name="has_branch_warehousing_picking" invisible="1"/>
+                <button name="action_view_dc_warehousing" type="object" string="Nhập kho DC" class="oe_stat_button" icon="fa-warehouse"
+                        invisible="ttb_type != 'imported_goods' or ttb_stage != '5'"/>
+                <button name="action_view_branch_warehousing" type="object" string="Nhập kho cơ sở" class="oe_stat_button" icon="fa-building"
+                        invisible="ttb_type != 'imported_goods' or ttb_stage != '5' or state != 'done' or not has_branch_warehousing_picking"/>
+                <button name="action_view_branch_shipping" type="object" string="Vận chuyển cơ sở" class="oe_stat_button" icon="fa-truck"
+                        invisible="ttb_type != 'imported_goods' or ttb_stage != '6'"/>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="product_image" widget="image" column_invisible="parent.ttb_type != 'imported_goods'"
+                       readonly="1"/>
+                <button name="button_open_link_prd" type="object" string="Link" class="btn-link" icon="fa-external-link"
+                        invisible="not product_link or parent.ttb_type != 'imported_goods'"/>
+                <field name="product_link" column_invisible="parent.ttb_type != 'imported_goods'"
+                       optional="hide" readonly="1"/>
+            </xpath>
+            <notebook position="inside">
+                <page name="Chứng từ vận chuyển" invisible="ttb_type != 'imported_goods'">
+                    <group>
+                        <field name="bill_supplier" widget="binary_preview_ticket" invisible="ttb_stage != '1'"/>
+                        <field name="wire_transfer" invisible="ttb_stage != '1'" widget="binary_preview_ticket"/>
+
+                        <field name="date_of_shipment" invisible="ttb_stage != '2'"/>
+                        <field name="expected_arrival_date" invisible="ttb_stage != '2'"/>
+                        <field name="number_of_trips" invisible="ttb_stage != '2'"/>
+
+                        <field name="import_photos" invisible="ttb_stage != '3'" widget="binary_preview_ticket"/>
+
+                        <field name="check_goods_ticket" invisible="ttb_stage != '4'" widget="binary_preview_ticket"/>
+                        <field name="imported_ticket" invisible="ttb_stage != '4'" widget="binary_preview_ticket"/>
+                        <field name="import_photos_dc" invisible="ttb_stage != '4'" widget="binary_preview_ticket"/>
+                    </group>
+                </page>
+                <page name="Chi phí vận chuyển" invisible="ttb_type != 'imported_goods' or ttb_stage != '3'">
+                    <group>
+                        <field name="cost_inland_china"/>
+                        <field name="cost_international_shipping"/>
+                        <field name="cost_shipping_total"/>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="ttb_stock_view_picking_form" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="ttb_stock.view_picking_form"/>
+        <field name="arch" type="xml">
+<!--            <header position="inside">-->
+<!--                <button name="ttb_send_accounting_info" groups="ttb_stock.group_accounting_info_sender" string="Gửi tài liệu kế toán" type="object" invisible="ttb_sent_doc or not ttb_document_done"/>-->
+<!--            </header>-->
+            <page name="accounting_info" position="attributes">
+                <attribute name="invisible" operation="text_add">
+                    {old_value} or not purchase_id
+                </attribute>
+            </page>
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='quantity']" position="after">
+                <field name="ttb_price_unit" column_invisible="not parent.purchase_id" optional="show"/>
+                <field name="ttb_discount" column_invisible="not parent.purchase_id" optional="show"/>
+                <field name="ttb_taxes_id" widget="many2many_tags" column_invisible="not parent.purchase_id" optional="show"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='operations']/field[@name='move_ids_without_package']" position="after">
+                <group class="oe_subtotal_footer">
+                    <field name="amount_total" invisible="not purchase_id" style="font-weight: bold" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    <field name="quantity" invisible="not purchase_id" style="font-weight: bold"/>
+                    <field name="currency_id" invisible="1"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="done_user_id" invisible="not purchase_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_picking_accounting_base_list" model="ir.ui.view">
+        <field name="name">Cơ sở</field>
+        <field name="model">stock.picking</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <list create="0" multi_edit="1">
+                <field name="priority" optional="show" widget="priority" nolabel="1"/>
+                <field name="name"/>
+                <field name="date_done"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="ttb_branch_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="stock_picking_accounting_base_search" model="ir.ui.view">
+        <field name="name">Cơ sở</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="ttb_branch_id"/>
+                <field name="product_id"/>
+                <field name="description"/>
+                <filter string="Chưa đầy đủ chứng từ" name="ttb_document_done_false" domain="[('ttb_document_done', '=', False)]"/>
+                <filter string="Đầy đủ chứng từ" name="ttb_document_done_true" domain="[('ttb_document_done', '=', True)]"/>
+                <separator/>
+                <filter string="Đã gửi tài liệu" name="ttb_sent_doc_ok" domain="[('ttb_sent_doc', '=', True)]"/>
+                <filter string="Chưa gửi tài liệu" name="ttb_sent_doc_not_ok" domain="[('ttb_sent_doc', '!=', True)]"/>
+                <group expand="1" string="Group By">
+                    <filter string="Cơ sở" name="groupby_ttb_branch_id" context="{'group_by':'ttb_branch_id'}"/>
+                    <filter string="Ngày xác nhận" name="groupby_create_date" context="{'group_by':'create_date:month'}"/>
+                    <filter string="Ngày nhập kho" name="groupby_date_done" context="{'group_by':'date_done:month'}"/>
+                    <filter string="Xác nhận của kế toán" name="groupby_ttb_accountant_accept" context="{'group_by':'ttb_accountant_accept'}"/>
+                    <filter string="Nhà cung cấp" name="groupby_partner_id" context="{'group_by':'partner_id'}"/>
+                    <filter string="Trạng thái" name="groupby_state" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="stock_picking_accounting_base_act" model="ir.actions.act_window">
+        <field name="name">Cơ sở</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="stock_picking_accounting_base_list"/>
+        <field name="search_view_id" ref="stock_picking_accounting_base_search"/>
+        <field name="domain">[('picking_type_code','=','incoming'),('state','=','done'), ('location_dest_id', 'not ilike', 'HDT')]</field>
+    </record>
+
+    <record id="vpicktree_incoming" model="ir.ui.view">
+        <field name="name">stock.picking.list</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="ttb_stock.vpicktree_incoming"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="quantity"/>
+                <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="currency_id" column_invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="vpicktree_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.list</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="priority" eval="90"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="description" optional="show"/>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="has_ticket" column_invisible="context.get('has_ticket', True)"/>
+            </xpath>
+        </field>
+    </record>
+
+        <record id="paperformat_portrait_a4" model="report.paperformat">
+        <field name="name">A4 Portrait</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">30</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">15</field>
+        <field name="dpi">90</field>
+    </record>
+
+     <record id="action_report_separate_products" model="ir.actions.report">
+        <field name="name">In phiếu sản phẩm tách mã</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ttb_purchase.template_print_separate_prd_document</field>
+        <field name="binding_model_id" ref="model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="multi">True</field>
+        <field name="paperformat_id" ref="paperformat_portrait_a4"/>
+     </record>
+
+</odoo>

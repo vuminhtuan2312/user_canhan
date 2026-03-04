@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+	<t t-name="ttb_html5_qr_scanner.BarcodeDialog" t-inherit-mode="extension">
+			<Dialog title.translate="Barcode Scanner" fullscreen="true" footer="false" contentClass="'o-barcode-modal d-flex flex-column'">
+				<div class="o_barcode_scanner_content flex-grow-1 position-relative mb-5">
+					<select class="form-select ms-4" t-on-change="onChangeScannerType">
+						<option selected="selected">Select your desired format</option>
+						<option value="barcode" selected="selected">Barcode</option>
+						<option value="qrcode" selected="selected">QR Code</option>
+					</select>
+					<t t-if="state.activeScannerType === 'html5'">
+							<CustomBarcodeVideoScanner
+								t-props="propsToPassToScanner"
+								useHtml5QrScanner="true"
+								onError.bind="onHtml5ScannerError"
+								onResult.bind="onScannerResult"/>
+					</t>
+					<t t-if="state.activeScannerType === 'zxing'">
+						<t t-if="state.zxingScannerSupported">
+							<CustomBarcodeVideoScanner
+								t-props="props"
+								useHtml5QrScanner="false"
+								onError.bind="onZxingScannerError"
+								onResult.bind="onScannerResult"/>
+						</t>
+						<div t-else=""
+							 class="h-100 d-flex flex-column justify-content-center align-items-center gap-1">
+							<i class="fa fa-2x fa-camera text-muted"></i>
+							<strong>Unable to access camera</strong>
+							<span class="text-muted" t-out="state.errorMessage"/>
+						</div>
+					</t>
+					<div t-if="state.isLoading"
+						 class="h-100 d-flex flex-column justify-content-center align-items-center gap-1">
+						<span class="fa fa-spinner fa-spin fa-3x text-primary"/>
+						<span>Loading Scanner...</span>
+					</div>
+				</div>
+        	</Dialog>
+	</t>
+</templates>

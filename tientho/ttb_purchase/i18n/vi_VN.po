@@ -1,0 +1,473 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ttb_purchase
+#   * purchase
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-18 06:44+0000\n"
+"PO-Revision-Date: 2025-03-18 06:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__message_needaction
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__message_needaction
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__message_needaction
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__message_needaction
+msgid "Action Needed"
+msgstr "Tác vụ cần thiết"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__activity_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__activity_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__activity_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__activity_ids
+msgid "Activities"
+msgstr "Hoạt động"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__activity_exception_decoration
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__activity_exception_decoration
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__activity_exception_decoration
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Hoạt động ngoại lệ"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__activity_state
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__activity_state
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__activity_state
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__activity_state
+msgid "Activity State"
+msgstr "Trạng thái hoạt động"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__activity_type_icon
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__activity_type_icon
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__activity_type_icon
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Biểu tượng loại hoạt động"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__message_attachment_count
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__message_attachment_count
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__message_attachment_count
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__message_attachment_count
+msgid "Attachment Count"
+msgstr "Số lượng tệp đính kèm"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__create_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_detail__create_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_line__create_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__create_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_line__create_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_select_pr_wizard__create_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__create_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price_line__create_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__create_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request_line__create_uid
+msgid "Created by"
+msgstr "Được tạo bởi"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__create_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_detail__create_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_line__create_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__create_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_line__create_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_select_pr_wizard__create_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__create_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price_line__create_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__create_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request_line__create_date
+msgid "Created on"
+msgstr "Được tạo vào"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__display_name
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_detail__display_name
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_line__display_name
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__display_name
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_line__display_name
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_select_pr_wizard__display_name
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__display_name
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price_line__display_name
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__display_name
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request_line__display_name
+msgid "Display Name"
+msgstr "Tên hiển thị"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__message_follower_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__message_follower_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__message_follower_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__message_follower_ids
+msgid "Followers"
+msgstr "Người theo dõi"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__message_partner_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__message_partner_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__message_partner_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Người theo dõi (Đối tác)"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_product_allocation__activity_type_icon
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_batch__activity_type_icon
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_price__activity_type_icon
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_request__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font biểu tượng, ví dụ: fa-tasks"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__has_message
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__has_message
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__has_message
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__has_message
+msgid "Has Message"
+msgstr "Có tin nhắn"
+
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_detail__id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_line__id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_line__id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_select_pr_wizard__id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price_line__id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__activity_exception_icon
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__activity_exception_icon
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__activity_exception_icon
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__activity_exception_icon
+msgid "Icon"
+msgstr "Biểu tượng"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_product_allocation__activity_exception_icon
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_batch__activity_exception_icon
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_price__activity_exception_icon
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_request__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Biểu tượng cho thấy một hoạt động ngoại lệ."
+
+#. module: ttb_purchase
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_product_allocation__message_needaction
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_batch__message_needaction
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_price__message_needaction
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_request__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Nếu chọn, bạn cần chú ý tới các tin nhắn mới."
+
+#. module: ttb_purchase
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_product_allocation__message_has_error
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_product_allocation__message_has_sms_error
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_batch__message_has_error
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_batch__message_has_sms_error
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_price__message_has_error
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_price__message_has_sms_error
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_request__message_has_error
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_request__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Nếu chọn, một số tin nhắn sẽ có lỗi gửi."
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__message_is_follower
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__message_is_follower
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__message_is_follower
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__message_is_follower
+msgid "Is Follower"
+msgstr "Là người theo dõi"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__write_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_detail__write_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_line__write_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__write_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_line__write_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_select_pr_wizard__write_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__write_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price_line__write_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__write_uid
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request_line__write_uid
+msgid "Last Updated by"
+msgstr "Cập nhật lần cuối bởi"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__write_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_detail__write_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation_line__write_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__write_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_line__write_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch_select_pr_wizard__write_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__write_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price_line__write_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__write_date
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request_line__write_date
+msgid "Last Updated on"
+msgstr "Cập nhật lần cuối vào"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__message_has_error
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__message_has_error
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__message_has_error
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__message_has_error
+msgid "Message Delivery error"
+msgstr "Lỗi gửi tin nhắn"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__message_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__message_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__message_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__message_ids
+msgid "Messages"
+msgstr "Tin nhắn"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__my_activity_date_deadline
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__my_activity_date_deadline
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__my_activity_date_deadline
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Hạn chót hoạt động của tôi"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__activity_date_deadline
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__activity_date_deadline
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__activity_date_deadline
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Hạn chót cho hoạt động tiếp theo"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__activity_summary
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__activity_summary
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__activity_summary
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__activity_summary
+msgid "Next Activity Summary"
+msgstr "Tóm tắt hoạt động tiếp theo"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__activity_type_id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__activity_type_id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__activity_type_id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__activity_type_id
+msgid "Next Activity Type"
+msgstr "Loại hoạt động tiếp theo"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__message_needaction_counter
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__message_needaction_counter
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__message_needaction_counter
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Số lượng tác vụ"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__message_has_error_counter
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__message_has_error_counter
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__message_has_error_counter
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__message_has_error_counter
+msgid "Number of errors"
+msgstr "Số lượng lỗi"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_product_allocation__message_needaction_counter
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_batch__message_needaction_counter
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_price__message_needaction_counter
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_request__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Số tin nhắn cần xử lý"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_product_allocation__message_has_error_counter
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_batch__message_has_error_counter
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_price__message_has_error_counter
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_request__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Số tin nhắn bị gửi lỗi"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__activity_user_id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__activity_user_id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__activity_user_id
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__activity_user_id
+msgid "Responsible User"
+msgstr "Người phụ trách"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__message_has_sms_error
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__message_has_sms_error
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__message_has_sms_error
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Lỗi gửi SMS"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_product_allocation__activity_state
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_batch__activity_state
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_price__activity_state
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_request__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Trạng thái dựa trên hoạt động\n"
+"Quá hạn: Hạn chót hạn đã qua\n"
+"Hôm nay: Hôm nay là ngày phải thực hiện\n"
+"Kế hoạch: Cần thực hiện trong tương lai."
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__approval_line_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__approval_line_ids
+msgid "Thông tin phê duyệt (All)"
+msgstr "Thông tin phê duyệt (Kỹ thuật)"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_product_allocation__activity_exception_decoration
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_batch__activity_exception_decoration
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_price__activity_exception_decoration
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_request__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Loại hoạt động ngoại lệ trong bản ghi."
+
+#. module: ttb_purchase
+#: model_terms:ir.ui.view,arch_db:ttb_purchase.purchase_request_form
+msgid "View Product"
+msgstr "Xem sản phẩm"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_product_allocation__website_message_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_batch__website_message_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_price__website_message_ids
+#: model:ir.model.fields,field_description:ttb_purchase.field_ttb_purchase_request__website_message_ids
+msgid "Website Messages"
+msgstr "Thông báo trên trang web"
+
+#. module: ttb_purchase
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_product_allocation__website_message_ids
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_batch__website_message_ids
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_price__website_message_ids
+#: model:ir.model.fields,help:ttb_purchase.field_ttb_purchase_request__website_message_ids
+msgid "Website communication history"
+msgstr "Lịch sử trao đổi qua trang web"
+
+#. module: purchase
+#: model:ir.model.fields.selection,name:purchase.selection__purchase_order__state__draft
+msgid "RFQ"
+msgstr "Mới"
+
+#. module: purchase
+#: model:ir.model.fields.selection,name:purchase.selection__purchase_report__state__draft
+msgid "Draft RFQ"
+msgstr "Mới"
+
+#. module: purchase
+#: model:ir.model.fields.selection,name:purchase.selection__purchase_order__state__sent
+#: model:ir.model.fields.selection,name:purchase.selection__purchase_report__state__sent
+msgid "RFQ Sent"
+msgstr "Đã gửi NCC"
+
+#. module: purchase
+#: model:ir.model.fields.selection,name:purchase.selection__purchase_order__state__to_approve
+#: model:ir.model.fields.selection,name:purchase.selection__purchase_report__state__to_approve
+#: model_terms:ir.ui.view,arch_db:purchase.view_purchase_order_filter
+msgid "To Approve"
+msgstr "Đã gửi duyệt"
+
+#. module: purchase
+#: model:ir.model.fields.selection,name:purchase.selection__purchase_order__state__purchase
+#: model:ir.model.fields.selection,name:purchase.selection__purchase_report__state__purchase
+msgid "Purchase Order"
+msgstr "Đã duyệt"
+
+#. module: purchase
+#: model_terms:ir.ui.view,arch_db:purchase.purchase_order_form
+msgid "Confirm Order"
+msgstr "Gửi duyệt"
+
+#. module: purchase
+#: model_terms:ir.ui.view,arch_db:purchase.purchase_order_form
+msgid "Approve Order"
+msgstr "Duyệt"
+
+#. module: purchase
+#: model:ir.actions.act_window,name:purchase.action_rfq_form
+#: model:ir.actions.act_window,name:purchase.purchase_rfq
+#: model:ir.ui.menu,name:purchase.menu_purchase_rfq
+#: model_terms:ir.ui.view,arch_db:purchase.portal_my_home_menu_purchase
+#: model_terms:ir.ui.view,arch_db:purchase.portal_my_home_purchase
+#: model_terms:ir.ui.view,arch_db:purchase.view_purchase_order_search
+msgid "Requests for Quotation"
+msgstr "Đơn mua hàng"
+
+#. module: purchase
+#: model_terms:ir.ui.view,arch_db:purchase.view_purchase_order_filter
+msgid "My Purchases"
+msgstr "Đơn hàng của tôi"
+
+#. module: purchase
+#: model:ir.actions.report,name:purchase.report_purchase_quotation
+msgid "Request for Quotation"
+msgstr "Đơn mua hàng có ảnh"
+
+#. module: purchase
+#: model:ir.actions.report,print_report_name:purchase.report_purchase_quotation
+msgid "'Request for Quotation - %s' % (object.name)"
+msgstr "'Đơn mua hàng có ảnh - %s' % (object.name)"
+
+#. module: purchase
+#: model:ir.actions.report,name:purchase.action_report_purchase_order
+msgid "Purchase Order"
+msgstr "Đơn mua hàng không ảnh"
+
+#. module: purchase
+#: model:ir.actions.report,print_report_name:purchase.action_report_purchase_order
+msgid ""
+"\n"
+"                (object.state in ('draft', 'sent') and 'Đơn mua hàng không ảnh - %s' % (object.name) or\n"
+"                'Purchase Order - %s' % (object.name))"
+msgstr ""
+"\n"
+"                (object.state in ('draft', 'sent') and 'Yêu cầu Báo giá - %s' % (object.name) or\n"
+"                'Đơn mua hàng không ảnh - %s' % (object.name))"
+
+#. module: purchase
+#: model:ir.model.fields,field_description:purchase.field_purchase_order__partner_ref
+msgid "Vendor Reference"
+msgstr "Mã đơn của NCC"
+
+#. module: purchase
+#: model:ir.model.fields,field_description:purchase.field_purchase_order__notes
+msgid "Terms and Conditions"
+msgstr "Diễn giải"
+
+#. module: purchase
+#. odoo-python
+#: model:ir.model.fields,field_description:purchase.field_purchase_order_line__price_total
+msgid "Total"
+msgstr "Tổng tiền sau thuế"
+
+#. module: purchase
+#: model:ir.model.fields,field_description:purchase.field_purchase_order_line__name
+msgid "Description"
+msgstr "Mô tả"

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ttb_html5_qr_scanner.CustomBarcodeVideoScanner">
+			<t t-if="props.useHtml5QrScanner">
+				<div class="o_barcode_scanner_container w-100 h-100 d-flex flex-column align-items-center justify-content-center p-2">
+					<!-- This div will be used by Html5Qrcode; its ID is set in JS if not present -->
+					<div t-ref="qrScannerElement" style="width: 85%; max-width: 600px; min-height: 250px;" class="border bg-light">
+						<!-- HTML5-QRCode will render its video and UI here -->
+					</div>
+					<label class="font-weight-bold align-self-start mt-2" for="camera-select">Select Cameras</label>
+					<select t-ref="cameraOptions" id="camera-select" class="form-select form-select-sm mt-2 mb-2" t-on-change="onSelect">
+							<t t-foreach="state.availableCameras" t-as="camera" t-key="camera.id">
+								<option t-att-value="camera.id" t-att-disabled="state.openCamera">
+									<t t-esc="camera.label"/>
+								</option>
+							</t>
+					</select>
+<!--					<button t-on-click="startHtml5Scanner" type="button">Start Scanning</button>-->
+				</div>
+			</t>
+				<t t-else=""> <!-- Corresponds to ZXing/Native scanner -->
+					<div class="o_barcode_scanner_container w-100 h-100 d-flex flex-column align-items-center justify-content-center p-2">
+						<CropOverlay onResize.bind="onResize" isReady="state.isZxingReady">
+							<video t-ref="videoPreview" muted="true" autoplay="true" playsinline="true" t-att-class="props.cssClass"/>
+								<canvas id="drawingBuffer" />
+						</CropOverlay>
+						<div class="pt-2 mt-2">
+							<label class="font-weight-bold align-self-start mt-2" for="camera-select">Select Cameras</label>
+							<select t-ref="cameraOptions" id="camera-select" class="form-select form-select-sm mt-2 mb-2 align-items-start" t-on-change="onSelectZxing">
+								<t t-foreach="state.availableCameras" t-as="camera" t-key="camera.deviceId">
+									<option t-att-value="camera.id" t-att-disabled="state.openCamera">
+										<t t-esc="camera.label"/>
+									</option>
+								</t>
+						</select>
+						</div>
+					</div>
+			</t>
+    </t>
+</templates>

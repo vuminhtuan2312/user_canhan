@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_adjust_mch5_wizard_form" model="ir.ui.view">
+        <field name="name">adjust.mch5.wizard.form</field>
+        <field name="model">adjust.mch5.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Điều chỉnh MCH5">
+                <group>
+                    <field name="categ_id_level_1"/>
+                    <field name="categ_id_level_2"/>
+                    <field name="categ_id_level_3"/>
+                    <field name="categ_id_level_4"/>
+                    <field name="categ_id_level_5"/>
+                </group>
+                <footer>
+                    <button name="action_apply" string="Cập nhật" type="object" class="btn-primary"/>
+                    <button string="Đóng" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

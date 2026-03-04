@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_kpi_type_view_tree" model="ir.ui.view">
+        <field name="name">ttb.kpi.type.view.list</field>
+        <field name="model">ttb.kpi.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="source"/>
+                <field name="method"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_kpi_type_view_form" model="ir.ui.view">
+        <field name="name">ttb.kpi.type.view.form</field>
+        <field name="model">ttb.kpi.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="is_checklist" invisible="is_checklist_restaurant"/>
+                            <field name="is_checklist_restaurant" invisible="is_checklist"/>
+                            <field name="branch_ids" widget="many2many_tags"/>
+                            <field name="job_ids" widget="many2many_tags"/>
+                            <field name="job_ids_user" widget="many2many_tags" invisible="not is_checklist_restaurant"/>
+                            <field name="area_ids" widget="many2many_tags" invisible="not is_checklist_restaurant"/>
+                            <field name="group_id"/>
+                            <field name="need_approved_plan"/>
+                        </group>
+                        <group>
+                            <field name="day_of_week"/>
+                            <field name="deadline"/>
+                            <field name="interval_type" />
+                            <field name="run_time" widget="float_time"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_kpi_type_action" model="ir.actions.act_window">
+        <field name="name">Loại KPI</field>
+        <field name="res_model">ttb.kpi.type</field>
+        <field name="view_mode">list,form</field>
+     </record>
+</odoo>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="ttb_form_layout_header">
+        <div t-attf-class="header o_company_#{o.company_id.id}_layout">
+        </div>
+    </template>
+</odoo>

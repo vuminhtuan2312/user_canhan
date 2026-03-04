@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_nibot_invoice_api_view_form" model="ir.ui.view">
+        <field name="name">ttb.nibot.api.form</field>
+        <field name="model">ttb.nibot.api</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="masothue"/>
+                            <field name="active"/>
+                        </group>
+                        
+                        <group>
+                            <field name="base_url"/>
+                            <field name="enable_ban_ra"/>
+                            <field name="enable_mua_vao"/>
+                            <field name="batch_day_number"/>
+                            <field name="is_get_pdf"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="cookie"/>
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                        <field name="date_current" readonly="True"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_nibot_invoice_api_view_list" model="ir.ui.view">
+        <field name="name">ttb.nibot.api.list</field>
+        <field name="model">ttb.nibot.api</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="masothue"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_nibot_invoice_api_action" model="ir.actions.act_window">
+        <field name="name">Nibot (API)</field>
+        <field name="res_model">ttb.nibot.api</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="ttb_nibot_invoice_api_menu"
+        name="Nibot (API)"
+        parent="purchase.menu_purchase_config"
+        action="ttb_nibot_invoice_api_action"
+        sequence="5"
+    />
+</odoo>

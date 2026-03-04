@@ -1,0 +1,98 @@
+.o_field_capture_image {
+    background-color: var(--ImageField-background-color, transparent);
+
+    /* Nút luôn hiển thị, không cần hover */
+    .o_capture_controls_always {
+        opacity: 1;
+    }
+
+    button {
+        transition: opacity ease 400ms;
+    }
+
+    .o_mobile_controls {
+        opacity: 1;
+        button {
+            min-width: 44px;
+            min-height: 44px;
+            width: 44px;
+            height: 44px;
+            padding: 10px !important;
+            border-radius: 50%;
+        }
+        .o_capture_image_button {
+            touch-action: manipulation;
+        }
+    }
+
+    .o_capture_video,
+    .o_capture_canvas {
+        max-width: 100%;
+        padding: 15px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .o_capture_modal {
+        position: fixed;
+        inset: 0;
+        z-index: 1050;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+    }
+
+    .o_capture_modal_backdrop {
+        position: absolute;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .o_capture_modal_dialog {
+        position: relative;
+        z-index: 1;
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        max-width: 480px;
+        width: 100%;
+        box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.35);
+    }
+
+    .o_capture_modal_body {
+        max-width: 100%;
+        width: 100%;
+        min-height: 320px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f1f5f9;
+        border-radius: 8px;
+    }
+
+    .o_capture_modal_body .o_capture_video,
+    .o_capture_modal_body .o_capture_canvas {
+        width: 100%;
+        max-width: 100%;
+        max-height: 60vh;
+        object-fit: contain;
+        display: block;
+    }
+
+    .o_capture_modal_footer button {
+        min-width: 110px;
+    }
+
+    .o_capture_device_select {
+        min-width: 160px;
+    }
+
+    @media (max-width: 576px) {
+        .o_capture_video,
+        .o_capture_canvas {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+}

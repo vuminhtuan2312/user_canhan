@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Công việc của tôi: Kanban + List + Form + Search + Wizards + Action + Menu -->
+
+    <record id="view_ttb_operational_task_kanban" model="ir.ui.view">
+        <field name="name">ttb.operational.task.kanban</field>
+        <field name="model">ttb.operational.task</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_mobile" records_draggable="false">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="is_adhoc"/>
+                <field name="is_rework"/>
+                <field name="is_late"/>
+                <field name="is_audit_required"/>
+                <field name="audit_state"/>
+                <field name="area_id"/>
+                <field name="planned_date_start"/>
+                <field name="planned_date_end"/>
+                <field name="employee_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top mb-1">
+                                <div class="o_kanban_record_headings">
+                                    <strong t-att-class="record.is_rework.raw_value ? 'o_kanban_record_title text-danger' : 'o_kanban_record_title'" style="font-size: 16px;">
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div>
+                                    <span t-if="record.is_rework.raw_value" class="badge text-bg-danger me-1">Khắc phục</span>
+                                    <span t-if="record.is_adhoc.raw_value" class="badge text-bg-primary me-1">Phát sinh</span>
+                                    <span t-if="record.is_late.raw_value" class="badge text-bg-danger me-1">Trễ hạn</span>
+                                    <span t-if="record.state.raw_value == 'waiting'" class="badge text-bg-warning">Chờ</span>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="mb-1">
+                                    <i class="fa fa-map-marker me-1" title="Khu vực"/>
+                                    <field name="area_id"/>
+                                </div>
+                                <div class="mb-1">
+                                    <i class="fa fa-clock-o me-1" title="Thời gian"/>
+                                    <field name="planned_date_start" widget="daterange" options="{'end_date_field': 'planned_date_end'}"/>
+                                </div> 
+                            </div>
+                            <div class="o_kanban_record_bottom mt-2">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="employee_id" widget="many2one_avatar_user"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <button name="action_done" type="object" class="btn btn-primary btn-sm" invisible="state != 'ready'">
+                                        <i class="fa fa-camera"/> Xong
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_ttb_operational_task_list" model="ir.ui.view">
+        <field name="name">ttb.operational.task.list</field>
+        <field name="model">ttb.operational.task</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_late or is_rework" decoration-muted="state in ('done','cancel')" decoration-bf="state == 'ready'" default_order="is_late desc, state asc, planned_date_start asc">
+                <field name="name"/>
+                <field name="area_id"/>
+                <field name="planned_date_start"/>
+                <field name="planned_date_end"/>
+                <field name="state" widget="badge" decoration-warning="state == 'waiting'" decoration-info="state == 'ready'" decoration-success="state == 'done'" decoration-muted="state == 'delayed'"/>
+                <field name="audit_state" widget="badge" decoration-warning="audit_state == 'pending'" decoration-success="audit_state == 'pass'" decoration-danger="audit_state == 'fail'" invisible="not is_audit_required"/>
+                <field name="is_late" column_invisible="True"/>
+                <field name="is_rework" column_invisible="True"/>
+                <field name="is_audit_required" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ttb_operational_task_form" model="ir.ui.view">
+        <field name="name">ttb.operational.task.form</field>
+        <field name="model">ttb.operational.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_done" string="Hoàn thành &amp; Up ảnh" type="object" class="oe_highlight" invisible="state != 'ready'"/>
+                    <button name="action_open_delay_report_wizard" string="Tạm hoãn / Báo sự cố" type="object" class="btn-warning" invisible="state != 'ready'"/>
+                    <button name="action_open_delay_confirm_wizard" string="Xác nhận tạm hoãn" type="object" class="oe_highlight" invisible="state != 'suspended' or not can_audit"/>
+                    <button name="action_resume" string="Tiếp tục" type="object" class="btn-success" invisible="state != 'delayed'"/>
+                    <button name="action_cancel_delay" string="Từ chối" type="object" class="btn-danger" invisible="state != 'suspended' or not can_audit"/>
+                    <field name="state" widget="statusbar" statusbar_visible="waiting,ready,suspended,delayed,undone,done"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="TRỄ HẠN" bg_color="text-bg-danger" invisible="not is_late"/>
+                    <widget name="web_ribbon" title="ĐANG HOÃN" bg_color="text-bg-warning" invisible="state != 'delayed'"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" class="text-danger" invisible="not is_rework"/>
+                            <field name="name" readonly="1" invisible="is_rework"/>
+                        </h1>
+                        <field name="is_rework" invisible="1"/>
+                    </div>
+                    <group>
+                        <group string="Hình ảnh minh chứng">
+                            <field name="proof_image" widget="capture_image" nolabel="1" invisible="proof_image_count >= 5 or state != 'ready'"/>
+                            <field name="proof_image_count" invisible="1"/>
+                            <field name="proof_image_ids" nolabel="1" readonly="state != 'ready' or proof_image_count &lt; 5" invisible="not proof_image_ids">
+                                <list editable="bottom" create="false" delete="false" default_order="sequence asc">
+                                    <field name="sequence" column_invisible="1"/>
+                                    <field name="image" widget="capture_image" options="{'size': [300, 300]}"/>
+                                </list>
+                            </field>
+                        </group>
+                        <group string="Thông tin công việc">
+                            <group>
+                                <field name="area_id" readonly="1"/>
+                                <field name="template_id" readonly="1"/>
+                                <field name="employee_id" readonly="not is_rework or not can_audit or state == 'done'"/>
+                                <field name="notification_sent" string="Thông báo" groups="base.group_system"/>
+                            </group>
+                            <group>
+                                <field name="planned_date_start" string="Thời gian bắt đầu" readonly="1"/>
+                                <field name="planned_date_end" string="Thời gian kết thúc" readonly="1"/>
+                                <field name="planned_date_end_by_delay" invisible="planned_date_end_by_delay == False"/>
+                                <field name="actual_date_end" readonly="1"/>
+                                <field name="is_late" invisible="1"/>
+                                <field name="can_audit" invisible="1"/>
+                            </group>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Hướng dẫn">
+                            <field name="template_id" invisible="1"/>
+                            <div invisible="not template_id">
+                                <div class="alert alert-info" role="alert">
+                                    <strong>Hướng dẫn thực hiện:</strong>
+                                    <div class="mt-2">
+                                        <field name="description" readonly="1" nolabel="1" placeholder="Chưa có hướng dẫn"/>
+                                    </div>
+                                </div>
+                                <div class="alert alert-success" role="alert" invisible="not expected_result">
+                                    <strong>Kết quả mong muốn:</strong>
+                                    <div class="mt-2">
+                                        <field name="expected_result" readonly="1" nolabel="1"/>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning" role="alert" invisible="not avoid_errors">
+                                    <strong>Lỗi cần tránh:</strong>
+                                    <div class="mt-2">
+                                        <field name="avoid_errors" readonly="1" nolabel="1"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-muted" invisible="template_id">
+                                Công việc này không gắn mẫu hướng dẫn (việc phát sinh).
+                            </div>
+                        </page>
+                        <page string="Thông tin Sự cố" invisible="not delay_reason_id">
+                            <group>
+                                <group string="Báo cáo của Nhân viên">
+                                    <field name="delay_reason_id" readonly="1" decoration-danger="1"/>
+                                    <field name="delay_note" readonly="1"/>
+                                </group>
+                                <group string="Xử lý của Quản lý">
+                                    <field name="delay_until" string="Hoãn đến khi" readonly="1"/>
+                                    <field name="planned_date_end_by_delay" string="Thời gian kết thúc do hoãn công việc" readonly="1" invisible="not planned_date_end_by_delay"/>
+                                    <div class="text-muted" invisible="not delay_until">
+                                        <i>(Hệ thống sẽ không sinh việc mới cho đến thời gian này)</i>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ttb_operational_task_search" model="ir.ui.view">
+        <field name="name">ttb.operational.task.search</field>
+        <field name="model">ttb.operational.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="area_id"/>
+                <filter string="Cần làm ngay" name="ready" domain="[('state', '=', 'ready')]"/>
+                <separator/>
+                <filter string="Trễ hạn" name="late" domain="[('is_late', '=', True)]"/>
+                <separator/>
+                <filter string="Hôm nay" name="today" domain="[('planned_date_start', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')), ('planned_date_start', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                <separator/>
+                <filter string="Đã phân công (tổng quan)" name="dashboard_assigned" domain="[('state', '!=', 'cancel')]"/>
+                <filter string="Đã hoàn thành (tổng quan)" name="dashboard_done" domain="[('state', '=', 'done')]"/>
+                <filter string="Chưa hoàn thành (tổng quan)" name="dashboard_not_done" domain="[('state', 'in', ['waiting', 'ready', 'delayed']), ('state', '!=', 'cancel')]"/>
+                <filter string="Trễ hạn (tổng quan)" name="dashboard_late" domain="[('is_late', '=', True), ('state', '!=', 'done'), ('state', '!=', 'cancel')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Trạng thái" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Khu vực" name="group_area" context="{'group_by': 'area_id'}"/>
+                    <filter string="Nhân viên" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_my_tasks" model="ir.actions.act_window">
+        <field name="name">Công việc của tôi</field>
+        <field name="res_model">ttb.operational.task</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_ttb_operational_task_kanban')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_ttb_operational_task_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_ttb_operational_task_form')})]"/>
+    </record>
+
+    <menuitem id="ttb_menu_my_tasks" name="Công việc của tôi" parent="ttb_menu_root" action="action_my_tasks" sequence="10"/>
+</odoo>

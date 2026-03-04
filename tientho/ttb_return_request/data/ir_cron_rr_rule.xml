@@ -1,0 +1,42 @@
+<odoo>
+
+    <record id="ir_cron_rr_rule1" model="ir.cron">
+        <field name="name">SLA Rule - Phiếu nhặt hàng Nháp quá 2 ngày</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_rr_rule3()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_rr_request_sla" model="ir.cron">
+        <field name="name">SLA Rule - Đề nghị trả hàng </field>
+        <field name="model_id" ref="model_ttb_return_request"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_rr_rules_request_sla()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_rr_internal_sla" model="ir.cron">
+        <field name="name">SLA Rule - Điều chuyển nội bộ</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_rr_ruleC_D_internal()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_rr_internal_sla_1" model="ir.cron">
+        <field name="name">SLA Rule - Phiếu nhặt</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_rr_ruleA_return_pick_confirm_qty()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

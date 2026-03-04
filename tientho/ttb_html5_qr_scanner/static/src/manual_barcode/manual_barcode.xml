@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+	<t t-name="ttb_html5_qr_scanner.ManualBarcodeScanner" t-inherit="ttb_html5_qr_scanner.BarcodeDialog" t-inherit-mode="primary">
+        <Dialog position="attributes">
+            <attribute name="footer">true</attribute>
+        </Dialog>
+		<Dialog position="inside">
+            <t t-set-slot="footer">
+                <BarcodeInput onSubmit="props.onResult"/>
+            </t>
+        </Dialog>
+    </t>
+</templates>

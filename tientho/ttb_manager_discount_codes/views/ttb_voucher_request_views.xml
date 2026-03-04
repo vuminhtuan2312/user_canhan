@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_voucher_type_view_kanban" model="ir.ui.view">
+        <field name="name">ttb.voucher.type.view.kanban</field>
+        <field name="model">ttb.voucher.type</field>
+        <field name="arch" type="xml">
+            <kanban create="False" can_open="0">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card p-3">
+                            <div>
+                                <strong>
+                                    <field name="name"/>
+                                </strong>
+                            </div>
+
+                            <div class="mt8 d-flex justify-content-end">
+                                <button type="object" name="action_get_voucher" class="btn btn-primary">
+                                    Lấy mã
+                                </button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="action_voucher_type_kanban" model="ir.actions.act_window">
+        <field name="name">Tạo mã</field>
+        <field name="res_model">ttb.voucher.type</field>
+        <field name="view_mode">kanban</field>
+        <field name="domain">[('active','=',True)]</field>
+    </record>
+</odoo>

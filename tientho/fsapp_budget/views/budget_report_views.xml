@@ -1,0 +1,63 @@
+<odoo>
+  <!-- List view chung -->
+  <record id="view_budget_report_tree" model="ir.ui.view">
+    <field name="name">fsapp.budget.line.tree</field>
+    <field name="model">fsapp.budget.line</field>
+    <field name="arch" type="xml">
+      <list string="Báo cáo ngân sách" create="false" edit="false">
+        <field name="cost_group"/>
+        <field name="analytic_account_id"/>
+        <field name="date_from"/>
+        <field name="date_to"/>
+        <field name="planned_cost"/>
+        <field name="adjustment_cost"/>
+        <field name="adjustment_count"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Action riêng theo từng loại ngân sách -->
+  <record id="action_budget_report_month" model="ir.actions.act_window">
+    <field name="name">Báo cáo ngân sách tháng</field>
+    <field name="res_model">fsapp.budget.line</field>
+    <field name="view_mode">list</field>
+    <field name="domain">[('budget_type', '=', 'month')]</field>
+  </record>
+
+  <record id="action_budget_report_quarter" model="ir.actions.act_window">
+    <field name="name">Báo cáo ngân sách quý</field>
+    <field name="res_model">fsapp.budget.line</field>
+    <field name="view_mode">list</field>
+    <field name="domain">[('budget_type', '=', 'quarter')]</field>
+  </record>
+
+  <record id="action_budget_report_half_year" model="ir.actions.act_window">
+    <field name="name">Báo cáo ngân sách nửa năm</field>
+    <field name="res_model">fsapp.budget.line</field>
+    <field name="view_mode">list</field>
+    <field name="domain">[('budget_type', '=', 'half-year')]</field>
+  </record>
+
+  <record id="action_budget_report_year" model="ir.actions.act_window">
+    <field name="name">Báo cáo ngân sách năm</field>
+    <field name="res_model">fsapp.budget.line</field>
+    <field name="view_mode">list</field>
+    <field name="domain">[('budget_type', '=', 'year')]</field>
+  </record>
+
+  <!-- Menu cha Báo cáo -->
+  <menuitem id="menu_fsapp_budget_report_root" name="Báo cáo" parent="menu_fsapp_budget_root" sequence="30"/>
+
+  <!-- Các menu con -->
+  <menuitem id="menu_fsapp_budget_report_month" name="Báo cáo ngân sách tháng"
+            parent="menu_fsapp_budget_report_root" action="action_budget_report_month" sequence="1"/>
+
+  <menuitem id="menu_fsapp_budget_report_quarter" name="Báo cáo ngân sách quý"
+            parent="menu_fsapp_budget_report_root" action="action_budget_report_quarter" sequence="2"/>
+
+  <menuitem id="menu_fsapp_budget_report_half_year" name="Báo cáo ngân sách nửa năm"
+            parent="menu_fsapp_budget_report_root" action="action_budget_report_half_year" sequence="3"/>
+
+  <menuitem id="menu_fsapp_budget_report_year" name="Báo cáo ngân sách năm"
+            parent="menu_fsapp_budget_report_root" action="action_budget_report_year" sequence="4"/>
+</odoo>

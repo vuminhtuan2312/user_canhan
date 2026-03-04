@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_voucher,access_voucher,model_ttb_voucher,base.group_user,1,1,1,1
+access_voucher_type,access_voucher_type,model_ttb_voucher_type,base.group_user,1,1,1,1
+access_voucher_wizard,access_voucher_wizard,model_ttb_voucher_wizard,base.group_user,1,1,1,1

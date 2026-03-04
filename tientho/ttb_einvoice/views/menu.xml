@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="menu_ttb_einvoice_root" parent="accountant.menu_accounting" sequence="3" name="Hóa đơn điện tử">
+        <menuitem id="pos_order_menu" action="pos_order_action" name="Đơn hàng" sequence="1"/>
+        <menuitem id="account_move_menu" action="account_move_action" name="Hóa đơn" sequence="5"/>
+        <menuitem id="einvoice_service_menu" action="einvoice_service_action" name="Dịch vụ hóa đơn điện tử" sequence="10"/>
+        <menuitem id="einvoice_serial_menu" action="einvoice_serial_action" name="Ký hiệu hóa đơn điện tử" sequence="15"/>
+    </menuitem>
+</odoo>

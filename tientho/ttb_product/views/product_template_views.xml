@@ -1,0 +1,147 @@
+<odoo>
+    <record id="inherit_product_template_form_view" model="ir.ui.view">
+        <field name="name">product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Chèn tab mới vào trong notebook -->
+            <xpath expr="//notebook" position="inside">
+                <!-- Ảnh sản phẩm hiển thị rộng trên mobile -->
+                <!-- <page string="Ảnh" name="image">
+                    <field name="last_image_1920" widget="image" class="oe_full_mobile"/>
+                </page> -->
+                <page string="Toàn bộ ảnh" name="all_image" groups="base.group_no_one">
+                    <!-- Ảnh sản phẩm (Many2many) -->
+                    <field name="ttb_product_template_image_ids" readonly="1">
+                        <list>
+                            <field name="create_uid" string="Người chụp"/>
+                            <field name="create_date" string="Ngày chụp" widget="remaining_days" optional="show"/>
+                            <field name="image_1920" string="Ảnh" class="oe_avatar" widget="image" options="{'zoom': true, 'preview_image': 'image_128'}"/>
+                        </list>
+                    </field>
+                </page>
+<!--                <page string="Nhóm MCH">-->
+<!--                    <group>-->
+<!--                        <field name="categ_id_level_1"/>-->
+<!--                        <field name="categ_id_level_2"/>-->
+<!--                        <field name="categ_id_level_3"/>-->
+<!--                        <field name="categ_id_level_4"/>-->
+<!--                        <field name="categ_id_level_5"/>-->
+<!--                    </group>-->
+<!--                </page>-->
+                <page string="Sản phẩm thay thế" name="page_ttb_substitute_product_ids">
+                    <field name="ttb_substitute_product_ids">
+                        <list editable="bottom">
+                            <field name="priority"/>
+                            <field name="product_id"/>
+                            <field name="different"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Augges">
+                    <group>
+                        <field name="augges_id"/>
+                        <button type="object" name="action_create_augges" string="Tạo sản phẩm Augges" invisible="augges_id != 0" class="btn-primary"/>
+
+                        <button type="object" name="action_refresh_augges_info" string="Lấy thông tin Augges" invisible="augges_id == 0" class="btn-primary"/>
+                        <button type="object" name="action_update_augges" string="Đồng bộ lại sp Augges" invisible="augges_id == 0" class="btn-primary" help="Cập nhật đè thông tin từ Odoo sang Augges cho sản phẩm này."/>
+                        <field name="augges_info" readonly="1" widget="ace" invisible="augges_id == 0"/>
+                    </group>
+                </page>
+                <page string="Nguyên vật liệu thay thế">
+                    <group>
+                        <field name="alternative_product_ids" widget="many2many_tags"/>
+                    </group>
+                </page>
+                <page string="Sản phẩm Gốc/Con" name="page_parent_child_products">
+                    <group>
+                        <field name="parent_product_id"/>
+                        <field name="child_product_ids" readonly="1">
+                            <list>
+                                <field name="default_code" optional="show"/>
+                                <field name="name"/>
+                                <field name="barcode" optional="show"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+            <group name="group_general" position="inside">
+                <field name="ttb_product_status"/>
+                <field name="product_status_ids">
+                    <list editable="bottom">
+                        <field name="branch_id"/>
+                        <field name="state"/>
+                    </list>
+                    <form>
+                        <sheet>
+                            <field name="branch_id"/>
+                            <field name="state"/>
+                        </sheet>
+                    </form>
+                </field>
+            </group>
+        </field>
+    </record>
+
+    <record id="product_template_only_form_view" model="ir.ui.view">
+        <field name="name">product.template.product.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+<!--            <field name="default_code" position="attributes">-->
+<!--                <attribute name="readonly">1</attribute>-->
+<!--            </field>-->
+
+            <xpath expr="//page[@name='variants']" position="inside">
+                <div class="mt-2">
+                    <button name="action_update_attribute" type="object" string="Cập nhật thuộc tính" class="btn btn-primary"/>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='product_tag_ids']" position="after">
+                <field name="season_type_id"/>
+            </xpath>
+            <xpath expr="//field[@name='barcode']" position="after">
+                <field name="barcode_k"/>
+                <field name="barcode_vendor"/>
+            </xpath>
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="categ_id_level_1"/>
+                <field name="categ_id_level_2"/>
+                <field name="categ_id_level_3"/>
+                <field name="categ_id_level_4"/>
+                <field name="categ_id_level_5"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_template_inherit_list_view" model="ir.ui.view">
+        <field name="name">product.template.inherit.list.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="top_supplier_id"/>
+                <field name="top_supplier_price"/>
+                <field name="top_supplier_date_start"/>
+                <field name="top_supplier_date_end"/>
+                <field name="season_type_id"/>
+                <field name="active"/>
+                <field name="sale_ok"/>
+                <field name="purchase_ok"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_product_no_augges" model="ir.actions.act_window">
+        <field name="name">Sản phẩm chưa đồng bộ Augges</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('augges_id', '=', False)]</field>
+        <field name="context">{}</field>
+    </record>
+    <menuitem id="menu_product_no_augges"
+              name="SP chưa có Augges ID"
+              parent="purchase.menu_purchase_products"
+              action="action_product_no_augges"
+              sequence="1"/>
+</odoo>

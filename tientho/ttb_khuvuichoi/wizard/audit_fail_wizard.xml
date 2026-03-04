@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard: Hậu kiểm - Đánh giá Không đạt -->
+    <record id="view_ttb_audit_fail_wizard_form" model="ir.ui.view">
+        <field name="name">ttb.audit.fail.wizard.form</field>
+        <field name="model">ttb.audit.fail.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Đánh giá Không đạt">
+                <group>
+                    <field name="note" placeholder="VD: Sàn nhà vẫn còn vết bẩn, chưa sắp xếp gọn gàng..."/>
+                </group>
+                <footer>
+                    <button name="action_confirm_fail" string="Xác nhận" type="object" class="btn-danger"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,20 @@
+{
+    'name': 'FSApp Budget',
+    'version': '18.0.1.0.0',
+    'summary': 'Quản lý ngân sách theo phòng ban, dự án và thời gian',
+    'category': 'Accounting',
+    'author': 'Bạn',
+    'website': '',
+    'license': 'LGPL-3',
+    'depends': ['base', 'hr', 'mail', 'analytic', 'purchase'],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/budget_views.xml',
+        'views/budget_adjustment_views.xml',
+        'views/budget_report_views.xml',
+        'views/payment_request_views.xml',
+        'views/setting.xml',
+    ],
+    'installable': True,
+    'application': True,
+}

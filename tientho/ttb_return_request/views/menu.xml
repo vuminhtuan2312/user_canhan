@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem
+        id="menu_ttb_return_request_root"
+        name="Hàng trả lại"
+        sequence="30"
+        web_icon="ttb_return_request,static/description/hang-tra-lai.png"
+        >
+        <menuitem
+            id="menu_ttb_return_request"
+            name="Hàng trả lại"
+            sequence="1"
+            action="ttb_return_request.action_ttb_return_request"
+        />
+        <menuitem
+            id="menu_plan_return_request"
+            name="Dự trù hàng trả lại"
+            sequence="2"
+            action="ttb_return_request.action_plan_return_request"
+        />
+    </menuitem>
+</odoo>

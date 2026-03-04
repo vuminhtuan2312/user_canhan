@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="purchase.menu_purchase_root">
+        <menuitem
+                name="Yêu cầu mua hàng"
+                id="purchase_request_root_menu"
+                sequence="-10">
+
+            <menuitem
+                    name="Yêu cầu mua hàng"
+                    id="purchase_request_menu"
+                    action="purchase_request_action"
+                    sequence="1"
+            />
+            <menuitem
+                    name="Chọn nhà cung cấp"
+                    id="purchase_batch_menu"
+                    groups="group_purchase_expert"
+                    action="purchase_batch_action"
+                    sequence="10"
+            />
+            <menuitem
+                    name="Phân bổ sản phẩm"
+                    id="product_allocation_menu"
+                    groups="group_purchase_expert"
+                    action="product_allocation_action"
+                    sequence="20"
+            />
+
+            <menuitem
+                    name="Đặt hàng tự động"
+                    id="auto_purchase_request_menu"
+                    action="auto_purchase_request_action"
+                    sequence="30"
+            />
+        </menuitem>
+        <menuitem
+                id="purchase.menu_purchase_rfq"
+                sequence="0">
+            <menuitem
+                id="purchase.purchase_order_sale"
+                name="Đơn mua hàng kinh doanh"
+                action="purchase_order_sale_action"
+                sequence="10"
+            />
+
+            <menuitem
+                id="purchase.purchase_order_not_sale"
+                name="Đơn mua hàng không kinh doanh"
+                action="purchase_order_not_sale_action"
+                sequence="20"
+            />
+            <menuitem
+                id="purchase.purchase_order_raw_material"
+                name="Đơn mua nguyên vật liệu"
+                action="purchase_order_raw_material_action"
+                sequence="21"
+            />
+        </menuitem>
+        <menuitem
+                name="Đề nghị duyệt giá"
+                id="purchase_price_root_menu"
+                groups="purchase.group_purchase_user"
+                sequence="2"
+        >
+            <menuitem
+                    name="Đề nghị duyệt giá"
+                    id="purchase_price_menu"
+                    groups="group_purchase_expert"
+                    action="purchase_price_action"
+                    sequence="1"
+            />
+            <menuitem
+                    name="Tờ trình duyệt giá"
+                    id="purchase_approval_menu"
+                    action="purchase_approval_action"
+                    sequence="5"
+            />
+            <menuitem
+                    name="Bảng giá của nhà cung cấp"
+                    groups="group_purchase_expert"
+                    id="purchase.menu_product_pricelist_action2_purchase"
+                    sequence="10"
+            />
+        </menuitem>
+        <menuitem
+                name="Chứng từ kế toán"
+                id="purchase_order_accounting_root_menu"
+                sequence="4"
+        >
+            <menuitem
+                    name="Cơ sở"
+                    id="stock_picking_accounting_base_menu"
+                    action="stock_picking_accounting_base_act"
+                    sequence="1"
+            />
+            <menuitem
+                    name="Kế toán"
+                    id="purchase_order_accounting_account_menu"
+                    action="purchase_order_accounting_account_act"
+                    sequence="2"
+            />
+        </menuitem>
+    </menuitem>
+
+    <record id="purchase.menu_procurement_management_supplier_name" model="ir.ui.menu">
+        <field name="parent_id" ref="purchase.menu_purchase_config"/>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="product.product_supplierinfo_type_action" model="ir.actions.act_window">
+        <field name="context">{'create':0,'visible_product_tmpl_id': False, 'search_default_active_products': True}</field>
+    </record>
+
+    <menuitem id="purchase.menu_procurement_management" active="False"/>
+</odoo>

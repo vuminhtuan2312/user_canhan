@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_payment_request_selector_form" model="ir.ui.view">
+        <field name="name">ttb.payment.request.selector.form</field>
+        <field name="model">ttb.payment.request.selector</field>
+        <field name="arch" type="xml">
+            <form string="Chọn loại đề xuất thanh toán">
+                <p>Vui lòng chọn loại đề xuất thanh toán bạn muốn thực hiện cho đơn hàng này.</p>
+                <!-- Trường này chỉ để debug, có thể ẩn đi -->
+                <field name="purchase_order_id" invisible="1"/>
+                <footer>
+                    <button name="action_do_remain_payment" string="Thanh toán Tất toán" type="object" class="btn-primary"/>
+                    <button name="action_do_partial_payment" string="Thanh toán Tạm ứng" type="object" class="btn-secondary"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

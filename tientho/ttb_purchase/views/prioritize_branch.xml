@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="prioritize_branch_form" model="ir.ui.view">
+        <field name="name">prioritize.branch.form</field>
+        <field name="model">prioritize.branch</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="button_confirm" string="Xác nhận" type="object" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="po_id"/>
+                        <field name="stock_picking_id"/>
+                        <field name="goods_distribution_ticket_template_id"/>
+                        <field name="prioritize_branch_ids">
+                            <list editable="bottom">
+                                <field name="branch_id"/>
+                                <field name="proportion"/>
+                                <field name="prioritize"/>
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Hủy" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

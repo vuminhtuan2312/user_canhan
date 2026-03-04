@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_kpi_result_view_tree" model="ir.ui.view">
+        <field name="name">ttb.kpi.result.view.list</field>
+        <field name="model">ttb.kpi.result</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="name"/>
+                <field name="user_id" optional="hide"/>
+                <field name="job_id" optional="hide"/>
+                <field name="branch_id" optional="hide"/>
+                <field name="company_id" column_invisible="1"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="score"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_kpi_result_view_form" model="ir.ui.view">
+        <field name="name">ttb.kpi.result.view.form</field>
+        <field name="model">ttb.kpi.result</field>
+        <field name="arch" type="xml">
+            <form create="0" >
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="job_id"/>
+                            <field name="employee_level" />
+                            <field name="branch_id"/>
+                        </group>
+                        <group>
+                            <field name="date_from" string="Thời gian đánh giá" widget="daterange" options="{'end_date_field': 'date_to'}"/>
+                            <field name="date_to" invisible="1"/>
+                            <field name="score"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="ttb_kpi_result_line" string="Danh sách KPI">
+                            <field name="line_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="type_id"/>
+                                    <field name="weight" widget="percentage"/>
+                                    <field name="overdue_point" widget="percentage"/>
+                                    <field name="score" widget="percentpie"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="ttb_task_report_kpi" string="Chi tiết đánh giá">
+                            <field name="report_kpi_ids" nolabel="1" readonly="1">
+                                <list editable="bottom" default_order="date desc">
+                                    <field name="kpi_type"/>
+                                    <field name="number_of_item"/>
+                                    <field name="total_rate"/>
+                                    <field name="date"/>
+                                    <field name="report_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="ttb_kpi_target_line" string="Thực hiện chỉ tiêu">
+                            <field name="target_line_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="ttb_branch_id"/>
+                                    <field name="categ_id"/>
+                                    <field name="target" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="current_rate" widget="percentage"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_kpi_result_view_serch" model="ir.ui.view">
+        <field name="name">ttb.kpi.result.view.search</field>
+        <field name="model">ttb.kpi.result</field>
+        <field name="arch" type="xml">
+            <search string="Kết quả KPI">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="job_id"/>
+                <field name="branch_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Cơ sở" name="group_branch_id" domain="[]" context="{'group_by':'branch_id'}"/>
+                    <filter string="Chức vụ" name="group_job_id" domain="[]" context="{'group_by':'job_id'}"/>
+                    <filter string="Nhân sự" name="group_user_id" domain="[]" context="{'group_by':'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ttb_kpi_result_line_view_list" model="ir.ui.view">
+        <field name="name">ttb.kpi.result.line.view.list</field>
+        <field name="model">ttb.kpi.result.line</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" editable="top">
+                <field name="type_id" readonly="1" options="{'no_create': True,'no_open': True}"/>
+                <field name="user_id" readonly="1" options="{'no_create': True,'no_open': True}"/>
+                <field name="branch_id" readonly="1" options="{'no_create': True,'no_open': True}"/>
+                <field name="date_from" readonly="1"/>
+                <field name="score" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_kpi_result_line_view_search" model="ir.ui.view">
+        <field name="name">ttb.kpi.result.line.view.search</field>
+        <field name="model">ttb.kpi.result.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="branch_id"/>
+                <field name="user_id"/>
+                <filter string="Vệ sinh" name="kpi_type_vs_filter" domain="[('type_id.code', '=', 'VS')]"/>
+                <filter string="Trưng bày hàng hóa" name="kpi_type_vm_filter" domain="[('type_id.code', '=', 'VM')]"/>
+                <filter string="Chăm sóc khách hàng" name="kpi_type_cskh_filter" domain="[('type_id.code', '=', 'CSKH')]"/>
+                <group string="Group By">
+                    <filter string="Loại KPI" name="groupby_kpi_type" context="{'group_by': 'type_id'}"/>
+                    <filter string="Cơ sở" name="groupby_user_branch_id" context="{'group_by': 'branch_id'}"/>
+                    <filter string="Nhân viên" name="groupby_user_id" context="{'group_by': 'user_id'}"/>
+                    <filter string="Kỳ đánh giá" name="groupby_date_from" context="{'group_by': 'date_from'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+     <record id="ttb_kpi_result_line_action" model="ir.actions.act_window">
+        <field name="name">Kết quả KPI</field>
+        <field name="res_model">ttb.kpi.result.line</field>
+        <field name="view_mode">list,pivot</field>
+         <field name="search_view_id" ref="ttb_kpi_result_line_view_search"/>
+        <field name="context">{}</field>
+     </record>
+
+     <record id="ttb_kpi_result_action" model="ir.actions.act_window">
+        <field name="name">Kết quả KPI</field>
+        <field name="res_model">ttb.kpi.result</field>
+        <field name="view_mode">list,form</field>
+     </record>
+
+</odoo>

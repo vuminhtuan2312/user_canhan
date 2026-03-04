@@ -1,0 +1,75 @@
+/* Styles cho widget nibot_one2many search */
+.o_nibot_search_bar {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.o_nibot_search_bar .input-group {
+    max-width: 600px;
+}
+
+.o_nibot_search_bar .input-group-text {
+    background-color: white;
+    border-right: none;
+}
+
+.o_nibot_search_bar input.form-control {
+    border-left: none;
+}
+
+.o_nibot_search_bar input.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-left: none;
+}
+
+.o_nibot_search_bar input.form-control:focus + .input-group-text {
+    border-color: #0d6efd;
+}
+
+.o_nibot_search_bar button.btn-outline-secondary {
+    transition: all 0.2s ease-in-out;
+}
+
+.o_nibot_search_bar button.btn-outline-secondary:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    transform: scale(1.05);
+}
+
+.o_nibot_search_bar small {
+    font-size: 0.875rem;
+}
+
+.o_nibot_search_bar small strong {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+/* Animation cho rows khi filter */
+.o_field_nibot_one2many .o_data_row {
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Style cho thông báo không tìm thấy */
+.o_field_nibot_one2many .text-muted .fa-search {
+    opacity: 0.3;
+}
+
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="gen_bao_cao_cong_no_co_hoa_don_view" model="ir.ui.view">
+        <field name="name">cong.no.co.hoa.don.list</field>
+        <field name="model">cong.no.co.hoa.don</field>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list class="o_cong_no_co_hoa_don_list_view">
+                <field name="ttb_vendor_invoice_no" optional="show"/>
+                <field name="invoice_code" optional="show"/>
+                <field name="vat" optional="show"/>
+                <field name="invoice_date" optional="show"/>
+                <field name="partner_name" optional="show"/>
+                <field name="po_name" optional="show"/>
+                <field name="sp_name" optional="show"/>
+                <field name="ttb_price_unit" optional="show"/>
+                <field name="amount_total" optional="show"/>
+                <field name="received_amount_total" optional="show"/>
+                <field name="compare_invoice" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+     <record id="gen_bao_cao_cong_no_co_hoa_don_action" model="ir.actions.act_window">
+        <field name="name">Báo cáo công nợ có hóa đơn</field>
+        <field name="res_model">cong.no.co.hoa.don</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="gen_bao_cao_cong_no_co_hoa_don_view"/>
+    </record>
+</odoo>

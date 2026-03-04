@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="goods_distribution_ticket_form" model="ir.ui.view">
+        <field name="name">goods.distribution.ticket.form</field>
+        <field name="model">goods.distribution.ticket</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="button_confirm" string="Xác nhận" type="object" class="oe_highlight" invisible="state!='draft'"/>
+                    <button name="button_cancel" string="Hủy" type="object" class="oe_highlight" invisible="state!='draft'"/>
+                    <button type="object"
+                        name="action_view_stock_picking"
+                        class="oe_stat_button"
+                        icon="fa-truck" invisible="not has_picking"
+                        string="Phiếu vận chuyển cơ sở"/>
+                    <field name="state" widget="statusbar" readonly="1"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" invisible="1"/>
+                        <field name="po_id"/>
+                        <field name="stock_picking_id"/>
+                        <field name="user_confirm" invisible="state!='confirmed'"/>
+
+                        <field name="goods_distribution_ticket_line_ids" invisible="1" >
+                            <list editable="bottom" limit="100">
+                                <field name="product_id"/>
+                                <field name="branch_id"/>
+                                <field name="branch_code"/>
+                                <field name="po_line_id"/>
+                                <field name="prd_image"/>
+                                <field name="default_code"/>
+                                <field name="product_qty"/>
+                                <field name="actual_qty"/>
+                            </list>
+                        </field>
+                        <separator string="Chi tiết chia hàng hóa" colspan="4"/>
+                        <field name="goods_distribution_ticket_line_ids" widget="goods_distribution_widget" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="goods_distribution_ticket_template_form" model="ir.ui.view">
+        <field name="name">goods.distribution.ticket.template.form</field>
+        <field name="model">goods.distribution.ticket.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="goods_distribution_ticket_template_line_ids" nolabel="1">
+                            <list editable="bottom" limit="100">
+                                <field name="prioritize"/>
+                                <field name="branch_id" domain="[('id', 'not in', parent.branch_ids)]"/>
+                                <field name="proportion"/>
+                            </list>
+                        </field>
+                        <field name="proportion_total" style="text-align: right;" string=" "/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="goods_distribution_ticket_template_list" model="ir.ui.view">
+        <field name="name">goods.distribution.ticket.template.list</field>
+        <field name="model">goods.distribution.ticket.template</field>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="goods_distribution_ticket_template_action" model="ir.actions.act_window">
+        <field name="name">Mẫu tỷ lệ chia cơ sở</field>
+        <field name="res_model">goods.distribution.ticket.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

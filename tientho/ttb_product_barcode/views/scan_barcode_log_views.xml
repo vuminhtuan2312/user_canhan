@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="scan_barcode_view_list" model="ir.ui.view">
+            <field name="name">scan.barcode.view.list</field>
+            <field name="model">scan.barcode.log</field>
+            <field name="arch" type="xml">
+                <list string="Barcode Scanned">
+                    <field name="create_uid" string="Người quét mã"/>
+                    <field name="create_date" string="Ngày quét mã"/>
+                    <field name="barcode"/>
+                    <field name="is_found"/>
+                    <field name="product_id"/>
+                    <field name="res_id"/>
+                    <field name="model"/>
+                </list>
+            </field>
+        </record>
+        
+        <record id="scan_barcode_view_form" model="ir.ui.view">
+            <field name="name">scan.barcode.view.form</field>
+            <field name="model">scan.barcode.log</field>
+            <field name="arch" type="xml">
+                <form string="Barcode Scanned">
+                    <group>
+                        <field name="create_uid" string="Người quét mã"/>
+                        <field name="create_date" string="Ngày quét mã"/>
+                        <field name="barcode"/>
+                        <field name="is_found"/>
+                        <field name="message"/>
+                        <field name="product_id"/>
+                        <field name="res_id"/>
+                        <field name="model"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="scan_barcode_log_action_list" model="ir.actions.act_window">
+            <field name="name">Các mã barcode đã quét</field>
+            <field name="res_model">scan.barcode.log</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No barcode scaned
+                </p><p>
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_scan_barcode_log" name="Các mã barcode đã quét" action="scan_barcode_log_action_list"
+            parent="stock.menu_stock_inventory_control" sequence="1"/>
+    </data>
+</odoo>

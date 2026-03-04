@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ttb_cancel_reason_tree" model="ir.ui.view">
+        <field name="name">ttb.cancel.reason.tree</field>
+        <field name="model">ttb.cancel.reason</field>
+        <field name="arch" type="xml">
+            <list string="Lý do hủy phiếu" editable="bottom">
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ttb_cancel_reason_form" model="ir.ui.view">
+        <field name="name">ttb.cancel.reason.form</field>
+        <field name="model">ttb.cancel.reason</field>
+        <field name="arch" type="xml">
+            <form string="Lý do hủy phiếu">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ttb_cancel_reason_config" model="ir.actions.act_window">
+        <field name="name">Lý do hủy phiếu</field>
+        <field name="res_model">ttb.cancel.reason</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tạo mới lý do hủy phiếu đánh giá
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_ttb_cancel_reason_config"
+              name="Lý do hủy phiếu"
+              parent="ttb_kpi.ttb_kpi_seting_menu"
+              action="action_ttb_cancel_reason_config"
+              sequence="10"
+              groups="base.group_system"/>
+</odoo>

@@ -1,0 +1,84 @@
+<odoo noupdate="0">
+
+    <record id="ir_get_order_augges" model="ir.cron">
+        <field name="name">Lấy sale order từ augges và sinh pos order</field>
+        <field name="model_id" ref="model_ttb_sync_augges"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_orders_from_mssql_create()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_sync_orders_from_mssql_with_pos_printed_ids" model="ir.cron">
+        <field name="name">Lấy các đơn chưa in từ augges và sinh pos order</field>
+        <field name="model_id" ref="model_ttb_sync_augges"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_orders_from_mssql_with_pos_printed_ids()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">hours</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_sync_orders_from_mssql_with_pos_gau_ghe" model="ir.cron">
+        <field name="name">Đồng bộ POS: Đơn gấu, ghế</field>
+        <field name="model_id" ref="model_ttb_sync_augges"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_orders_from_mssql_gau_ghe()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <!-- <field name="active">False</field> -->
+    </record>
+
+    <record id="ir_get_tax_augges" model="ir.cron">
+        <field name="name">Lấy thuế từ augges</field>
+        <field name="model_id" ref="model_ttb_sync_augges"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_tax_from_mssql()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_get_tax_uom_uom" model="ir.cron">
+        <field name="name">Đồng bộ đơn vị tính augges</field>
+        <field name="model_id" ref="model_ttb_sync_augges"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_uom_uom()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_cron_purchase_invoiced_qty" model="ir.cron">
+        <field name="name">POS: Tính lại giá trị số lượng xuất hóa đơn</field>
+        <field name="model_id" ref="model_pos_order_line"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_purchase_invoiced_qty(date_from=False, date_to=False, order_ids=[])</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_get_qr_transaction" model="ir.cron">
+        <field name="name">Lấy danh sách giao dịch QR lên Odoo</field>
+        <field name="model_id" ref="model_log_qr_transaction"/>
+        <field name="state">code</field>
+        <field name="code">model.sync_qr_transaction()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">False</field>
+    </record>
+
+    <record id="ir_create_picking_from_synced_pos" model="ir.cron">
+        <field name="name">Xác nhận đơn POS đã đồng bộ</field>
+        <field name="model_id" ref="model_pos_order"/>
+        <field name="state">code</field>
+        <field name="code">model.confirm_pos_synced()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">False</field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_open_product_form" model="ir.actions.act_window">
+        <field name="name">Product</field>
+        <field name="res_model">product.product</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+    </record>
+
+    <!-- Main menu -->
+
+    <record id="product_barcode_action_main_menu" model="ir.actions.client">
+        <field name="name">Product Scan</field>
+        <field name="path">product_scan</field>
+        <field name="tag">product_barcode_main_menu</field>
+        <field name="target">fullscreen</field>
+    </record>
+
+
+    <menuitem
+        id="product_barcode_menu"
+        action="product_barcode_action_main_menu"
+        web_icon="ttb_product_barcode,static/description/icon.png"
+        groups="ttb_product_barcode.group_ttb_group_product_user,base.group_system"
+        sequence="156" />
+</odoo>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ttb_task_template_view_tree" model="ir.ui.view">
+        <field name="name">ttb.task.template.view.list</field>
+        <field name="model">ttb.task.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="kpi_type_id"/>
+                <field name="name"/>
+                <field name="job_ids" widget="many2many_tags"/>
+                <field name="area_ids" widget="many2many_tags"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_task_template_view_form" model="ir.ui.view">
+        <field name="name">ttb.task.template.view.form</field>
+        <field name="model">ttb.task.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="job_ids" widget="many2many_tags"/>
+                            <field name="area_ids" widget="many2many_tags"/>
+                            <field name="branch_ids" widget="many2many_tags" invisible="show_check_list_fields != False"/>
+                            <field name="categ_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="kpi_type_id" readonly="1" force_save="1"/>
+                            <field name="date_from" string="Thời gian áp dụng" widget="daterange" options="{'end_date_field': 'date_to'}"/>
+                            <field name="date_to" invisible="1"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="ttb_task_template_line" string="Danh sách công việc">
+                            <field name="line_ids" nolabel="1" context="{'default_template_id': id}">
+                                <list editable="bottom">
+                                    <field name="category_id"/>
+                                    <field name="sequence"/>
+                                    <field name="cluster"/>
+                                    <field name="criteria"/>
+                                    <field name="standard" widget="many2many_tags"/>
+                                    <field name="rate_cluster" widget="percentage"/>
+                                    <field name="name"/>
+                                    <field name="requirement"/>
+                                    <field name="frequency"/>
+                                    <field name="period"/>
+                                    <field name="applied_job_ids" widget="many2many_tags"/>
+                                    <field name="kpi_type"/>
+                                    <field name="kpi_type_id" column_invisible="True"/>
+                                    <field name="rate" widget="percentage"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_task_template_action" model="ir.actions.act_window">
+        <field name="name">Mẫu nhiệm vụ</field>
+        <field name="res_model">ttb.task.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="ttb_task_template_line_view_list" model="ir.ui.view">
+        <field name="name">ttb.task.template.line.view.list</field>
+        <field name="model">ttb.task.template.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="kpi_type_id"/>
+                <field name="template_id"/>
+                <field name="category_id"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ttb_task_template_line_view_form" model="ir.ui.view">
+        <field name="name">ttb.task.template.line.view.form</field>
+        <field name="model">ttb.task.template.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="kpi_type_id"/>
+                        <field name="template_id"/>
+                        <field name="category_id"/>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="frequency"/>
+                        <field name="period"/>
+                    </group>
+                    <group>
+                        <field name="rate"/>
+                        <field name="cluster"/>
+                        <field name="rate_cluster"/>
+                        <field name="applied_job_ids" widget="many2many_tags"/>
+                        <field name="standard" widget="many2many_tags"/>
+                        <field name="criteria"/>
+                        <field name="requirement"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttb_task_template_line_action" model="ir.actions.act_window">
+        <field name="name">Chi tiết mẫu nhiệm vụ</field>
+        <field name="res_model">ttb.task.template.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="ttb_task_template_vm_action" model="ir.actions.act_window">
+        <field name="name">Trưng bày hàng hóa</field>
+        <field name="res_model">ttb.task.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'kpi_type_id':'VM'}</field>
+        <field name="domain">[('kpi_type_id.code', '=', 'VM')]</field>
+     </record>
+
+    <record id="ttb_task_template_vs_action" model="ir.actions.act_window">
+        <field name="name">Vệ sinh</field>
+        <field name="res_model">ttb.task.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'kpi_type_id':'VS'}</field>
+        <field name="domain">[('kpi_type_id.code', '=', 'VS')]</field>
+     </record>
+
+    <record id="ttb_task_template_cskh_action" model="ir.actions.act_window">
+        <field name="name">Chăm sóc khách hàng</field>
+        <field name="res_model">ttb.task.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'kpi_type_id':'CSKH'}</field>
+        <field name="domain">[('kpi_type_id.code', '=', 'CSKH')]</field>
+     </record>
+
+    <record id="ttb_task_template_anat_action" model="ir.actions.act_window">
+        <field name="name">Check list ANAT</field>
+        <field name="res_model">ttb.task.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'kpi_type_id':'ANAT'}</field>
+        <field name="domain">[('kpi_type_id.code', '=', 'ANAT')]</field>
+    </record>
+
+    <record id="ttb_task_template_pccc_action" model="ir.actions.act_window">
+        <field name="name">Check list PCCC</field>
+        <field name="res_model">ttb.task.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'kpi_type_id':'PCCC'}</field>
+        <field name="domain">[('kpi_type_id.code', '=', 'PCCC')]</field>
+    </record>
+
+    <record id="ttb_task_template_kvc_action" model="ir.actions.act_window">
+        <field name="name">Chất lượng KVC</field>
+        <field name="res_model">ttb.task.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'kpi_type_id':'KVC'}</field>
+        <field name="domain">[('kpi_type_id.code', '=', 'KVC')]</field>
+    </record>
+
+    <record id="ttb_task_template_vs_kvc_action" model="ir.actions.act_window">
+        <field name="name">Chất lượng VS KVC</field>
+        <field name="res_model">ttb.task.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'kpi_type_id':'VSKVC'}</field>
+        <field name="domain">[('kpi_type_id.code', '=', 'VSKVC')]</field>
+    </record>
+</odoo>

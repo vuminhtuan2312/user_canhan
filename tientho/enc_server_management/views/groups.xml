@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="all_server_admin_categ" model="ir.module.category">
+        <field name="name">Phân quyền Administrator</field>
+        <field name="sequence" eval="1"/>
+    </record>
+
+    <record id="server_admin" model="res.groups">
+        <field name="name">Administrator</field>
+        <field name="category_id" ref="all_server_admin_categ"/>
+    </record>
+    <record id="server_admin_1" model="res.groups">
+        <field name="name">Administrator 123</field>
+        <field name="category_id" ref="all_server_admin_categ"/>
+    </record>
+
+</odoo>

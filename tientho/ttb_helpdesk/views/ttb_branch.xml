@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="ttb_branch_view_tree" model="ir.ui.view">
+        <field name="name">ttb_branch_view_tree</field>
+        <field name="model">ttb.branch</field>
+        <field name="inherit_id" ref="ttb_stock.branch_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="ttb_region_id"/>
+                <field name="director_id" widget="many2one_avatar_user" options="{'no_create': True}"/>
+                <field name="manager_id" widget="many2one_avatar_user" options="{'no_create': True}"/>
+                <field name="has_report"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="ttb_branch_action" model="ir.actions.act_window">
+        <field name="name">Cơ sở</field>
+        <field name="res_model">ttb.branch</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

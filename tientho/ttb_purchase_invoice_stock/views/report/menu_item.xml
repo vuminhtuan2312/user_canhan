@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem action="bao_cao_cong_no_co_hoa_don_action" id="bao_cao_cong_no_co_hoa_don_item"
+              parent="purchase.purchase_report_main"
+              sequence="0">
+    </menuitem>
+    <menuitem action="bao_cao_cong_no_khong_co_hoa_don_action" id="bao_cao_cong_no_khong_co_hoa_don_item"
+              parent="purchase.purchase_report_main"
+              sequence="0">
+    </menuitem>
+
+</odoo>

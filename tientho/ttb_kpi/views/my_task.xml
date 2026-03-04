@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="my_task_view_list" model="ir.ui.view">
+        <field name="name">my.task.view.list</field>
+        <field name="model">my.task</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="kpi_type_id" readonly="1"/>
+                <field name="task_report_id" readonly="1"/>
+                <field name="name" readonly="1"/>
+                <field name="requirement" readonly="1"/>
+                <field name="image_ids" widget="many2many_binary" readonly="1"/>
+                <field name="solution_plan" readonly="1"/>
+                <field name="urgency_level" readonly="1"/>
+                <field name="processor_id" readonly="1"/>
+                <field name="process_status" readonly="1"/>
+                <field name="processing_deadline" readonly="1"/>
+                <field name="result_image_ids" widget="many2many_binary"/>
+                <button name="action_complete_task" type="object" string="Hoàn thành" invisible="process_status not in ['approved_plan']" confirm="Bạn đã chắc chắn hoàn thành công việc chưa?"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_my_task_own" model="ir.actions.act_window">
+        <field name="name">Công việc của tôi</field>
+        <field name="res_model">my.task</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="my_task_view_list"/>
+        <field name="domain">[('process_status', 'in', ['approved_plan']), ('processor_id', '=', uid)]</field>
+        <field name="context">{'group_by': 'process_status'}</field>
+    </record>
+
+    <record id="menu_my_task_own" model="ir.ui.menu">
+        <field name="name">Công việc của tôi</field>
+        <field name="parent_id" ref="my_task_menu"/>
+        <field name="action" ref="action_my_task_own"/>
+        <field name="groups_id" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="action_all_tasks_director" model="ir.actions.act_window">
+        <field name="name">Tất cả công việc</field>
+        <field name="res_model">my.task</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="my_task_view_list"/>
+        <field name="domain">[('process_status', 'in', ['approved_plan'])]</field>
+        <field name="context">{'group_by': 'process_status'}</field>
+    </record>
+
+    <record id="menu_all_tasks_director" model="ir.ui.menu">
+        <field name="name">Tất cả công việc</field>
+        <field name="parent_id" ref="my_task_menu"/>
+        <field name="action" ref="action_all_tasks_director"/>
+        <field name="groups_id" eval="[(4, ref('ttb_kpi.group_ttb_kpi_vhkd_director'))]"/>
+    </record>
+</odoo>

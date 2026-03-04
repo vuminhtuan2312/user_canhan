@@ -1,0 +1,13 @@
+<odoo>
+<!-- views/survey_user_input_line_view.xml -->
+<record id="view_survey_user_input_line_form_inherit" model="ir.ui.view">
+    <field name="name">survey.user.input.line.form.inherit.image</field>
+    <field name="model">survey.question</field>
+    <field name="inherit_id" ref="survey.survey_question_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='comments_allowed']" position="after">
+            <field name="image_attachment_ids" widget="many2many_binary" string="Ảnh minh chứng"/>
+        </xpath>
+    </field>
+</record>
+</odoo>

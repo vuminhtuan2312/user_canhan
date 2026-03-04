@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="ttb_report_purchase_layout_header">
+        <div t-attf-class="header o_company_#{o.company_id.id}_layout">
+            <table style="border-color: white;font-size:12px;font-family:Cambria;width:100%">
+                <colgroup width="6%"></colgroup>
+                <colgroup width="27%"></colgroup>
+                <colgroup width="19%"></colgroup>
+                <colgroup width="12%"></colgroup>
+                <colgroup width="2%"></colgroup>
+                <colgroup width="9%"></colgroup>
+                <colgroup width="7%"></colgroup>
+                <colgroup width="8%"></colgroup>
+                <colgroup width="10%"></colgroup>
+                <tr>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                </tr>
+                <tr>
+                    <td rowspan="4" colspan="2" style="vertical-align:middle;">
+                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 40px;float:left;" alt="Logo"/>
+                    </td>
+                    <td colspan="5"><![CDATA[&nbsp;]]></td>
+                    <td colspan="2" style="text-align:right">
+                        <b t-out="datetime.datetime.now()" t-options="{'widget': 'datetime'}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td rowspan="3" colspan="2" style="vertical-align:middle;text-align:right">
+                        <span style="font-size:20px;font-weight:bold;">ĐƠN ĐẶT HÀNG</span>
+                    </td>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    <td colspan="4" rowspan="3" style="vertical-align:middle;">
+                        <img t-field="o.name" t-options="{'widget': 'barcode', 'width': 150, 'height': 30, 'quiet': 0, 'img_style': 'width:150px;height:30px;float:right;margin-right:5px'}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                </tr>
+                <tr>
+                    <td colspan="1"><![CDATA[&nbsp;]]></td>
+                </tr>
+            </table>
+        </div>
+    </template>
+    <template id="ttb_report_purchase_layout_footer">
+        <div t-attf-class="footer o_company_#{o.company_id.id}_layout">
+        </div>
+    </template>
+
+    <template id="ttb_report_purchase_layout">
+        <t t-call="ttb_purchase.ttb_report_purchase_layout_header"/>
+        <t t-call="web.html_container">
+            <t t-if="not o" t-set="o" t-value="doc"/>
+            <div class="article" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+                <t t-out="0"/>
+            </div>
+        </t>
+        <t t-call="ttb_purchase.ttb_report_purchase_layout_footer"/>
+    </template>
+</odoo>

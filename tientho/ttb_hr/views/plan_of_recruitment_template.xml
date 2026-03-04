@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="ke_hoach_mau_form" model="ir.ui.view">
+        <field name="name">plan.of.recruitment.template.form</field>
+        <field name="model">plan.of.recruitment.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <div>
+                            <field name="step_of_plan_ids" style="hight:30px">
+                                <list limit="80" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="detail"/>
+                                    <field name="result"/>
+                                    <field name="no_of_start_days"/>
+                                    <field name="no_of_end_days"/>
+                                </list>
+                            </field>
+                        </div>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ke_hoach_mau_list" model="ir.ui.view">
+        <field name="name">plan.of.recruitment.template.list</field>
+        <field name="model">plan.of.recruitment.template</field>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ke_hoach_mau_view_search" model="ir.ui.view">
+        <field name="name">plan.of.recruitment.template.view.search</field>
+        <field name="model">plan.of.recruitment.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ke_hoach_mau_action" model="ir.actions.act_window">
+        <field name="name">Kế hoạch mẫu</field>
+        <field name="res_model">plan.of.recruitment.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

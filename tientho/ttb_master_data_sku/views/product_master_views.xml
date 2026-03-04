@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="product_master_list" model="ir.ui.view">
+        <field name="name">product.master.list</field>
+        <field name="model">product.master</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="area"/>
+                <field name="categ_id_level_1"/>
+                <field name="categ_id_level_2"/>
+                <field name="categ_id_level_3"/>
+                <field name="categ_id_level_4"/>
+                <field name="categ_id_level_5"/>
+                <field name="product_id"/>
+                <field name="barcode"/>
+                <field name="uom_id"/>
+                <field name="list_price"/>
+                <field name="season_id"/>
+                <field name="assortment_status"/>
+                <field name="lock_purchase"/>
+                <field name="lock_sale"/>
+            </list>
+        </field>
+    </record>
+    <record id="product_master_form" model="ir.ui.view">
+        <field name="name">product.master.form</field>
+        <field name="model">product.master</field>
+        <field name="arch" type="xml">
+            <form string="Master sản phẩm">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="barcode"/>
+                            <field name="uom_id"/>
+                            <field name="season_id"/>
+                            <field name="area" />
+                        </group>
+                        <group>
+                            <field name="categ_id_level_1"/>
+                            <field name="categ_id_level_2"/>
+                            <field name="categ_id_level_3"/>
+                            <field name="categ_id_level_4"/>
+                            <field name="categ_id_level_5"/>
+                            <field name="lock_purchase"/>
+                            <field name="lock_sale"/>
+                            <field name="assortment_status"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Bán hàng">
+                            <group>
+                                <field name="list_price"/>
+                                <field name="time_start_list_price"/>
+                                <field name="time_end_list_price"/>
+                            </group>
+                        </page>
+                        <page string="Mua hàng">
+                            <field name="supplier_line_ids">
+                                <list editable="bottom">
+                                    <field name="partner_id"/>
+                                    <field name="price"/>
+                                    <field name="time_start_import_price"/>
+                                    <field name="time_end_import_price"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_product_master" model="ir.actions.act_window">
+        <field name="name">Master sản phẩm</field>
+        <field name="res_model">product.master</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

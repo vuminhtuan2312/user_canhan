@@ -1,0 +1,1 @@
+from . import move_to_shelves_template

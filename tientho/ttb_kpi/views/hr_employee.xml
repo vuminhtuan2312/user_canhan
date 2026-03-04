@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_employee_form" model="ir.ui.view">
+        <field name="name">hr.employee.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='%(hr.plan_wizard_action)d']" position="after">
+                <button name="change_category_button"
+                        string="Chuyển quầy"
+                        type="object"
+                        class="btn-primary"
+                        invisible="show_button_hr != True"
+                        />
+                <button name="change_area_button"
+                        string="Chuyển khu vực"
+                        type="object"
+                        class="btn-primary"
+                        invisible="show_button_hr != True"
+                        />
+                <button name="pause_work_button"
+                        string="Nghỉ tạm thời"
+                        type="object"
+                        class="btn-primary"
+                        invisible="show_button_hr != True"
+                        />
+                <button name="quit_job_button"
+                        string="Nghỉ việc"
+                        type="object"
+                        class="btn-primary"
+                        invisible="show_button_hr != True"
+                        />
+            </xpath>
+            <field name="job_id" position="after">
+                <field name="ttb_branch_ids" widget="many2many_tags"/>
+                <field name="ttb_area_ids" widget="many2many_tags"/>
+                <field name="ttb_categ_ids" widget="many2many_tags"/>
+            </field>
+            <field name="category_ids" position="after">
+                <field name="official_working_date" invisible="show_button_hr != True"/>
+            </field>
+            <xpath expr="//group[@name='departure']" position="before">
+                <group string="Nghỉ tạm thời" invisible="active">
+                    <field name="date_start" readonly="1"/>
+                    <field name="date_end" readonly="1"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='departure_date']" position="after">
+                <field name="quit_type" readonly="1"/>
+                <field name="reason" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_hr_employee_custom_v3" model="ir.actions.act_window">
+        <field name="name">Danh sách nhân sự</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'my_branch_only': True}</field>
+    </record>
+
+    <record id="hr_departure_wizard_view_form" model="ir.ui.view">
+        <field name="name">hr.departure.wizard.view.form</field>
+        <field name="model">hr.departure.wizard</field>
+        <field name="inherit_id" ref="hr.hr_departure_wizard_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_id']/parent::h1" position="before">
+                <h4>Lưu trữ nhân viên sẽ lưu trữ tài khoản đăng nhập và xóa toàn bộ các phiếu đánh giá chưa hoàn thành của nhân sự đó. Bạn có chắc chắn muốn lưu trữ?</h4>
+            </xpath>
+        </field>
+    </record>
+</odoo>

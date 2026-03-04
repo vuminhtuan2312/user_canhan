@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-inherit="account_reports.AccountReportHeaderCustomizable" t-inherit-mode="extension">
+        <xpath expr="//thead[@id='table_header']" position="before">
+            <thead t-if="this.controller.options?.header_parents == true">
+                <th style="text-align:center" colspan="1"></th>
+                <th style="text-align:center; border: 1px solid #d8dadd;" colspan="5">Quản lý</th>
+                <th style="text-align:center; border: 1px solid #d8dadd;" colspan="5">Giám đốc</th>
+                <th style="text-align:center; border: 1px solid #d8dadd;" colspan="5">Giám đốc vùng trực tiếp</th>
+                <th style="text-align:center; border: 1px solid #d8dadd;" colspan="5">Giám đốc vùng chấm chéo</th>
+                <th style="text-align:center; border: 1px solid #d8dadd;" colspan="4">Điểm nhà sách</th>
+            </thead>
+        </xpath>
+    </t>
+    <t t-inherit="account_reports.AccountReportFiltersCustomizable" t-inherit-mode="extension">
+        <xpath expr="//div[@id='filter_rounding_unit']" position="attributes">
+            <attribute name="t-att-class">this.controller.options?.hide_filter_rounding_unit == true ? 'd-none' : 'normal'</attribute>
+        </xpath>
+    </t>
+    <t t-inherit="account_reports.AccountReportLineCellCustomizable" t-inherit-mode="extension" name="Custom Cell Style">
+        <xpath expr="//td[@data-id='line_cell']" position="attributes">
+            <attribute name="t-att-class">
+                props.cell.expression_label == 'group_manager' || props.cell.expression_label == 'group_direction' ? 'allow-wrap': ''
+            </attribute>
+        </xpath>
+    </t>
+</templates>

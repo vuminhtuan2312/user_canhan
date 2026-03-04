@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="einvoice_service_form" model="ir.ui.view">
+        <field name="name">Dịch vụ hóa đơn điện tử</field>
+        <field name="model">ttb.einvoice.service</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. VNPT-EInvoice"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="host"/>
+                            <field name="account"/>
+                            <field name="acpass"/>
+                            <field name="username"/>
+                            <field name="password"/>
+                        </group>
+                        <group>
+                            <field name="vendor"/>
+                            <field name="active" widget="boolean_toggle" options="{'autosave': False}"/>
+                        </group>
+                    </group>
+                    <field name="errors">
+                        <list editable="bottom">
+                            <field name="name"/>
+                            <field name="description"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="einvoice_service_list" model="ir.ui.view">
+        <field name="name">Dịch vụ hóa đơn điện tử</field>
+        <field name="model">ttb.einvoice.service</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="vendor"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+    <record id="einvoice_service_search" model="ir.ui.view">
+        <field name="name">Dịch vụ hóa đơn điện tử</field>
+        <field name="model">ttb.einvoice.service</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="host"/>
+                <field name="account"/>
+                <filter name="inactive" string="Đã lưu trữ" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="einvoice_service_action" model="ir.actions.act_window">
+        <field name="name">Dịch vụ hóa đơn điện tử</field>
+        <field name="res_model">ttb.einvoice.service</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

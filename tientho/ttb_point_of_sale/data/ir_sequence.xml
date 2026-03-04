@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_ttb_report_pos_action" model="ir.sequence">
+        <field name="name">Mã dự trù mua hàng</field>
+        <field name="code">ttb.report.pos.action</field>
+        <field name="prefix">RP</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

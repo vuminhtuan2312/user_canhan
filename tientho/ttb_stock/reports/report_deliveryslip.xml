@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="report_deliveryslip_content">
+        <t t-call="ttb_stock.ttb_report_stock_layout">
+            <style>
+                table {
+                border-color: white;
+                }
+                td, th {
+                vertical-align: middle;
+                padding: 1px;
+                border-color: white;
+                }
+                table {
+                word-wrap: break-word;
+                }
+            </style>
+            <div class="page">
+                <table style="font-size:11px;font-family:Cambria;width:100%">
+                    <colgroup width="4%"></colgroup>
+                    <colgroup width="13%"></colgroup>
+                    <colgroup width="11%"></colgroup>
+                    <colgroup width="24%"></colgroup>
+                    <colgroup width="5%"></colgroup>
+                    <colgroup width="5%"></colgroup>
+                    <colgroup width="10%"></colgroup>
+                    <colgroup width="11%"></colgroup>
+                    <colgroup width="5%"></colgroup>
+                    <colgroup width="12%"></colgroup>
+                    <tr>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    </tr>
+                    <tr>
+                        <td colspan="10" style="text-align:center">
+                            <span style="font-size:16px;font-weight:bold;">PHIẾU NHẬP HÀNG</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="10" style="text-align:center">
+                            <span>Ngày lập phiếu:
+                                <span t-out="o.create_date" t-options="{'widget': 'date'}"/>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span>Nhà cung cấp:</span>
+                        </td>
+                        <td colspan="2">
+                            <span t-out="o.partner_id.name"/>
+                        </td>
+                        <td colspan="3"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1">
+                            <span>Số hóa đơn</span>
+                        </td>
+                        <td colspan="2">
+                            <span t-out="o.name"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span>Địa chỉ:</span>
+                        </td>
+                        <td colspan="2">
+                            <span t-out="o.partner_id._display_address(True)"/>
+                        </td>
+                        <td colspan="3"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1">
+                            <span>Ngày in phiếu</span>
+                        </td>
+                        <td colspan="2">
+                            <span t-out="datetime.datetime.now()" t-options="{'widget': 'datetime'}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span>Điện thoại:</span>
+                        </td>
+                        <td colspan="2">
+                            <span t-out="o.partner_id.phone"/>
+                        </td>
+                        <td colspan="6"><![CDATA[&nbsp;]]></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span>Mã số thuế:</span>
+                        </td>
+                        <td colspan="2">
+                            <span t-out="o.partner_id.vat"/>
+                        </td>
+                        <td colspan="6"><![CDATA[&nbsp;]]></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8"><![CDATA[&nbsp;]]></td>
+                        <td colspan="2">
+                            <i>ĐVT: Đồng Việt Nam</i>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th colspan="1" style="border:1px solid black;">
+                            <b>TT</b>
+                        </th>
+                        <th colspan="1" style="border:1px solid black;">
+                            <b>Mã vạch</b>
+                        </th>
+                        <th colspan="2" style="border:1px solid black;">
+                            <b>Tên hàng</b>
+                        </th>
+                        <th colspan="1" style="border:1px solid black;">
+                            <b>ĐVT</b>
+                        </th>
+                        <th colspan="1" style="border:1px solid black;">
+                            <b>SL</b>
+                        </th>
+                        <th colspan="1" style="border:1px solid black;">
+                            <b>Giá bìa</b>
+                        </th>
+                        <th colspan="1" style="border:1px solid black;">
+                            <b>Thành tiền</b>
+                        </th>
+                        <th colspan="1" style="border:1px solid black;">
+                            <b>% CK</b>
+                        </th>
+                        <th colspan="1" style="border:1px solid black;">
+                            <b>Thanh toán</b>
+                        </th>
+                    </tr>
+                    <t t-set="quantity" t-value="0"/>
+                    <t t-set="price_discount" t-value="0"/>
+                    <t t-set="price_total" t-value="0"/>
+                    <tr t-foreach="o.move_ids.filtered(lambda x:x.quantity)" t-as="line">
+                        <t t-set="line_qty" t-value="line.purchase_line_id.qty_received or line.quantity"/>
+                        <td colspan="1" style="text-align:center;border-left:1px solid black;border-right:1px solid black;">
+                            <span t-esc="line_index+1"/>
+                        </td>
+                        <td colspan="1" style="border-left:1px solid black;border-right:1px solid black;">
+                            <span t-out="line.ttb_product_code"/>
+                        </td>
+                        <td colspan="2" style="border-left:1px solid black;border-right:1px solid black;">
+                            <span t-out="line.product_id.display_name"/>
+                        </td>
+                        <td colspan="1" style="border-left:1px solid black;border-right:1px solid black;">
+                            <span t-out="line.product_uom.name"/>
+                        </td>
+                        <td colspan="1" style="text-align:right;border-left:1px solid black;border-right:1px solid black;">
+                            <span t-out="line_qty"/>
+                        </td>
+                        <td colspan="1" style="text-align:right;border-left:1px solid black;border-right:1px solid black;">
+                            <span t-out="o.currency_id.format(line.ttb_price_unit).replace('₫',' ')"/>
+                        </td>
+                        <td colspan="1" style="text-align:right;border-left:1px solid black;border-right:1px solid black;">
+                            <span t-out="o.currency_id.format(line.ttb_price_unit*line_qty).replace('₫',' ')"/>
+                        </td>
+                        <td colspan="1" style="text-align:right;border-left:1px solid black;border-right:1px solid black;">
+                            <span t-out="line.ttb_discount"/>
+                        </td>
+                        <td colspan="1" style="text-align:right;border-left:1px solid black;border-right:1px solid black;">
+                            <span t-out="o.currency_id.format(line.ttb_price_unit*line_qty*(1-line.ttb_discount/100)).replace('₫',' ')"/>
+                        </td>
+                        <t t-set="quantity" t-value="quantity+line_qty"/>
+                        <t t-set="price_discount" t-value="price_discount+line.ttb_price_unit*line_qty*line.ttb_discount/100"/>
+                        <t t-set="price_total" t-value="price_total+line.ttb_price_unit*line_qty*(1-line.ttb_discount/100)"/>
+                    </tr>
+                    <tr style="border-top:1px solid black;">
+                        <td colspan="5" style="border-left:1px solid black;">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="1" style="text-align:right;">
+                            <b t-out="quantity"/>
+                        </td>
+                        <td colspan="1">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="2">
+                            <b>Tổng tền giá bìa</b>
+                        </td>
+                        <td colspan="1" style="text-align:right;border-left:1px solid black;border-right:1px solid black;">
+                            <b t-out="o.currency_id.format(price_total).replace('₫',' ')"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" style="border-left:1px solid black;">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="2">
+                            <span>Chiết khấu</span>
+                        </td>
+                        <td colspan="1" style="text-align:right;border-left:1px solid black;border-right:1px solid black;">
+                            <span t-out="o.currency_id.format(price_discount).replace('₫',' ')"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" style="border-left:1px solid black;">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="2">
+                            <span>Thuế</span>
+                        </td>
+                        <td colspan="1" style="text-align:right;border-left:1px solid black;border-right:1px solid black;">
+                            <span t-out="o.currency_id.format(o.ttb_amount_tax).replace('₫',' ')"/>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom:1px solid black">
+                        <td colspan="7" style="border-left:1px solid black;">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="2">
+                            <b>Tổng thanh toán</b>
+                        </td>
+                        <td colspan="1" style="text-align:right;border-left:1px solid black;border-right:1px solid black;">
+                            <span t-out="o.currency_id.format(o.ttb_amount_total).replace('₫',' ')"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">
+                            <![CDATA[&nbsp;]]>
+                        </td>
+                        <td colspan="2">
+                            <b>Tổng số tiền (viết bằng chữ)</b>
+                        </td>
+                        <td colspan="7">
+                            <i t-out="o.currency_id.amount_to_text(o.ttb_amount_total).replace('Dong','Đồng')"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    </tr>
+                    <tr>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1">
+                            <b>Kế toán</b>
+                        </td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1">
+                            <b>Người kiểm hàng</b>
+                        </td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="2">
+                            <b>Người nhập hàng</b>
+                        </td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="2">
+                            <b>Người lập phiếu</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    </tr>
+                    <tr>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    </tr>
+                    <tr>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    </tr>
+                    <tr>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                    </tr>
+                    <tr>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="1"><![CDATA[&nbsp;]]></td>
+                        <td colspan="2">
+                            <b t-out="o.env.user.name"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="stock.report_deliveryslip">
+        <t t-foreach="docs" t-as="o">
+            <t t-if="o.picking_type_code == 'incoming'">
+                <t t-call="ttb_stock.report_deliveryslip_content" t-lang="o._get_report_lang()"/>
+            </t>
+            <t t-else="">
+                <t t-call="stock.report_delivery_document" t-lang="o._get_report_lang()"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_ttb_stock" model="report.paperformat">
+        <field name="name">Phiếu nhập hàng</field>
+        <field name="disable_shrinking" eval="True"/>
+        <field name="dpi">96</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">15</field>
+        <field name="header_spacing">15</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">7</field>
+    </record>
+
+    <record id="stock.action_report_delivery" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_ttb_stock"/>
+    </record>
+</odoo>

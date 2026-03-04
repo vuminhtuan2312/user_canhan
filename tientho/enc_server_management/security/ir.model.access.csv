@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_auto_backup_config,auto_backup_config,model_auto_backup_config,,1,1,1,1
+access_ftp_host,ftp_host,model_ftp_host,,1,1,1,1
+access_server_data,server_data,model_server_data,,1,1,1,1
+access_warning_box,warning_box,model_warning_box,,1,1,1,1
+access_auto_backup_history,auto_backup_history,model_auto_backup_history,,1,1,1,1
+access_action_update,action_update,model_action_update,,1,1,1,1
+access_server_action_history,server_action_history,model_server_action_history,,1,1,1,1
+access_nextcloud_host,nextcloud_host,model_nextcloud_host,,1,1,1,1

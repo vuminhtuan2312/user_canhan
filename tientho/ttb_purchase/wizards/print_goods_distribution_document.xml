@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="template_goods_distribution_form_document">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="ttb_purchase.ttb_form_layout_header"/>
+            <t t-call="web.html_container">
+                <div class="article">
+                    <style>
+                        .table {
+                        font-size: 11px;
+                        width: 100%;
+                        }
+                        .table td, .table th {
+                        padding: 3px;
+                        vertical-align: middle;
+                        border: 1px solid #000;
+                        }
+                        .table th {
+                        background-color: #f8f9fa;
+                        }
+                        img {
+                        max-width: 80px;
+                        max-height: 80px;
+                        object-fit: contain;
+                        }
+                    </style>
+                    <left>
+                        <t t-if="doc['partner_id']">
+                            <span class="text-center bold">
+                                Nhà cung cấp:
+                                <t t-esc="doc['partner_id'].name"/>
+
+                            </span>
+                        </t>
+                        <br/>
+                        <t t-if="doc['purchase_order']">
+                            <span class="text-center bold">
+                                Đơn hàng:
+                                <t t-esc="doc['purchase_order'].name"/>
+                            </span>
+                            <br/>
+                        </t>
+                        <t t-if="doc['exchange_rate']">
+                            <span class="text-center bold">
+                                Tỷ giá:
+                                <t t-esc="doc['exchange_rate']"/>
+                            </span>
+                            <br/>
+                        </t>
+                    </left>
+                    <table class="table table-bordered">
+                        <thead class="text-center">
+                            <tr>
+                                <th style="width: 2%;">No.</th>
+                                <th>Hình ảnh</th>
+                                <th>Item no</th>
+                                <th>Sản phẩm</th>
+                                <th>Chi tiết</th>
+                                <th>Số lượng</th>
+                                <th>Tổng số kiện</th>
+                                <th>Tồn</th>
+                                <t t-set="o" t-value="0"/>
+                                <t t-foreach="len(list_branch)" t-as="branch">
+                                    <th>
+                                        <t t-esc="list_branch[o].name"/>
+                                        <t t-set="o" t-value="o+1"/>
+                                    </th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="o" t-value="1"/>
+                            <t t-foreach="doc['qty'].items()" t-as="item">
+                                <tr>
+                                    <td>
+                                        <span>
+                                            <t t-esc="o"/>
+                                        </span>
+                                        <t t-set="o" t-value="o+1"/>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <img t-if="item[0][1]"
+                                                 t-att-src="'data:image/jpg;base64,%s' % str(item[0][1]).strip('b\'').strip('\'')"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <t t-esc="item[0][2]"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <t t-esc="item[0][0].name"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <t t-esc="item[0][3]"/>
+                                        </span>
+                                    </td>
+                                    <td  style="text-align: center;">
+                                        <span>
+                                            <t t-esc="int(item[0][4])"/>
+                                        </span>
+                                    </td>
+                                    <td  style="text-align: center;">
+                                        <span>
+                                            <t t-esc="item[0][5]"/>
+                                        </span>
+                                    </td>
+                                    <td  style="text-align: center;">
+                                        <span>
+                                            <t t-esc="int(item[0][6])"/>
+                                        </span>
+                                    </td>
+                                    <t t-foreach="item[1]" t-as="qty_branch">
+                                        <td style="text-align: center;">
+                                            <span>
+                                                <t t-esc="int(qty_branch)"/>
+                                            </span>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="purchase_batch_select_pr_form" model="ir.ui.view">
+        <field name="name">Chọn PR</field>
+        <field name="model">ttb.purchase.batch.select.pr.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="pr_ids" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string='Xác nhận' name="do" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_batch_select_pr_action" model="ir.actions.act_window">
+        <field name="name">Chọn PR</field>
+        <field name="res_model">ttb.purchase.batch.select.pr.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

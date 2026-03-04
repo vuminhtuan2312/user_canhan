@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+      <t t-name="ttb_kpi.CustomFilterExtraOptions" t-inherit="account_reports.AccountReportFilterExtraOptions" t-inherit-mode="extension">
+
+        <xpath expr="//DropdownItem[contains(@class, 'filter_show_all_hook')]" position="after">
+          <DropdownItem
+            class="{ 'selected': controller.options.show_all_field }"
+            onSelected="() => this.filterClicked({ optionKey: 'show_all_field', reload: true})"
+            closingMode="'none'">Hiện đầy đủ trường
+          </DropdownItem>
+        </xpath>
+      </t>
+</templates>
