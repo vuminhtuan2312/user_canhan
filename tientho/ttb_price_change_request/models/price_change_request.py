@@ -328,8 +328,8 @@ class TtbPriceChangeRequest(models.Model):
             # --- ÁP DỤNG QUY TẮC LỌC ---
 
             # TH3: Giá mới = Giá cũ => Bỏ qua
-            if abs(new_price - old_price) < 0.0001:
-                continue
+            # if abs(new_price - old_price) < 0.0001:
+            #     continue
 
             # TH2: Giá mới = 0 => Bỏ qua (Dù khác giá cũ)
             if new_price == 0:
@@ -338,23 +338,24 @@ class TtbPriceChangeRequest(models.Model):
             # TH1: Giá mới khác giá cũ và khác 0 => Xử lý tạo lệnh in
 
             # Phân loại nhóm A, B, C (truyền thêm level giá)
-            group_code = self._classify_label_group(ln, level)
+            if abs(new_price - old_price) > 0.0001 and new_price > 0:
+                group_code = self._classify_label_group(ln, level)
 
-            vals_list.append({
-                "request_line_id": ln.id,
-                "product_id": ln.product_id.id,
-                "mch1_id": ln.categ_id_level_1.id if ln.categ_id_level_1 else False,
-                "barcode": ln.barcode,
-                "default_code": ln.default_code,
-                "product_name": ln.product_id.display_name,
-                "old_price": old_price,
-                "new_price": new_price,
-                "old_kvc_price": old_price,  # tạm đồng bộ kvc = kbl
-                "new_kvc_price": new_price,  # tạm đồng bộ kvc = kbl
-                "qty": 1.0,
-                "qty_kvc": 1.0,
-                "group_code": group_code,
-            })
+                vals_list.append({
+                    "request_line_id": ln.id,
+                    "product_id": ln.product_id.id,
+                    "mch1_id": ln.categ_id_level_1.id if ln.categ_id_level_1 else False,
+                    "barcode": ln.barcode,
+                    "default_code": ln.default_code,
+                    "product_name": ln.product_id.display_name,
+                    "old_price": old_price,
+                    "new_price": new_price,
+                    "old_kvc_price": old_price,  # tạm đồng bộ kvc = kbl
+                    "new_kvc_price": new_price,  # tạm đồng bộ kvc = kbl
+                    "qty": 1.0,
+                    "qty_kvc": 1.0,
+                    "group_code": group_code,
+                })
             if level != 'bb2':
                 old_bb2 = float(getattr(ln, old_f_bb2, 0.0) or 0.0)
                 new_bb2 = float(getattr(ln, new_f_bb2, 0.0) or 0.0)

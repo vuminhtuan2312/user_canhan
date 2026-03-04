@@ -24,6 +24,7 @@
         # 'ttb_base', # Uncomment nếu có module base chứa ttb.branch/ttb.area gốc
     ],
     'data': [
+        'security/groups.xml',
         'security/ir.model.access.csv',
         'security/ir_rule.xml',
 
@@ -37,7 +38,6 @@
         'views/manager_dashboard.xml',
         'views/ttb_operational_task.xml',
         'views/ttb_shift_assignment.xml',
-        # 'views/ttb_operational_check.xml',
         'views/ttb_post_audit.xml',
         'views/resource_calendar_views.xml',
         'views/report.xml',
@@ -49,7 +49,6 @@
         'wizard/task_delay_report_wizard.xml',
         'wizard/task_delay_confirm_wizard.xml',
 
-        # 'data/ttb_work_template.xml',
     ],
     'assets': {
         'web.assets_backend': [

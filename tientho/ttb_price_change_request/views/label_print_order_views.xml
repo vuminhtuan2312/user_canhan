@@ -101,8 +101,13 @@
 
                         <page string="Tem kệ khu vui chơi" invisible="not line_b_ids">
                             <group>
-                                <button name="action_export_price_tag_group_b_xlsx" type="object" string="Xuất file"
-                                        class="btn-secondary"/>
+<!--                                <button name="action_export_price_tag_group_b_xlsx" type="object" string="Xuất file"-->
+<!--                                        class="btn-secondary"/>-->
+                                <button name="action_print_and_update_state"
+                                        type="object"
+                                        string="In tem nhãn"
+                                        class="btn-primary"
+                                        icon="fa-print"/>
                                 <button name="action_update_qty_from_augges" type="object" string="Cập nhật tồn" class="btn-secondary"
                                         invisible="print_state != 'draft'"/>
                             </group>
@@ -123,11 +128,13 @@
                         </page>
                         <page string="Tem dán sản phẩm" invisible="not line_c_ids">
                             <group>
-                                <button name="action_print_and_update_state"
-                                        type="object"
-                                        string="In tem nhãn"
-                                        class="btn-primary"
-                                        icon="fa-print"/>
+<!--                                <button name="action_print_and_update_state"-->
+<!--                                        type="object"-->
+<!--                                        string="In tem nhãn"-->
+<!--                                        class="btn-primary"-->
+<!--                                        icon="fa-print"/>-->
+                                <button name="action_export_price_tag_group_c_xlsx" type="object" string="Xuất file"
+                                        class="btn-secondary"/>
                             </group>
                             <field name="line_c_ids" nolabel="1" mode="list" readonly="print_state != 'draft'">
                                 <list editable="bottom">

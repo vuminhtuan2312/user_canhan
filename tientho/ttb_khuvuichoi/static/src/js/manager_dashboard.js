@@ -32,6 +32,7 @@ export class ManagerDashboard extends Component {
                 not_done: 0,
                 late: 0,
             },
+            shiftAssignments: [],
             employeeTasks: [],
             auditTasks: [],
             failedAuditTasks: [],
@@ -55,6 +56,7 @@ export class ManagerDashboard extends Component {
             });
             this.state.meta = data.meta || this.state.meta;
             this.state.counts = data.counts || this.state.counts;
+            this.state.shiftAssignments = data.shift_assignments || [];
             this.state.employeeTasks = data.employee_tasks || [];
             this.state.auditTasks = data.audit_tasks || [];
             this.state.failedAuditTasks = data.failed_audit_tasks || [];
@@ -259,6 +261,13 @@ export class ManagerDashboard extends Component {
         return this.action.doAction({ ...action, res_id: resId }, { viewType: "form", props: { resId } });
     };
 
+    // Phiếu phân công ca: mở form Phân công Ca
+    openShiftAssignment = async (id) => {
+        const resId = Number(id);
+        const action = await this.action.loadAction("ttb_khuvuichoi.action_shift_assignments");
+        return this.action.doAction({ ...action, res_id: resId }, { viewType: "form", props: { resId } });
+    };
+
     // Phiếu hậu kiểm: mở form Phiếu hậu kiểm
     openPostAudit = async (id) => {
         const resId = Number(id);
@@ -383,6 +392,21 @@ export class ManagerDashboard extends Component {
             return this.state.lastRefreshedAt.toLocaleString();
         } catch {
             return String(this.state.lastRefreshedAt);
+        }
+    }
+
+    assignmentStateBadgeClass(state) {
+        switch (state) {
+            case "draft":
+                return "text-bg-info";
+            case "assigning":
+                return "text-bg-warning";
+            case "done":
+                return "text-bg-success";
+            case "cancel":
+                return "text-bg-secondary";
+            default:
+                return "text-bg-light";
         }
     }
 

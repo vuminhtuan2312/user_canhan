@@ -20,6 +20,12 @@
         <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
         <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM')]</field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -36,6 +42,12 @@
         <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
         <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM'), ('user_id', '=', uid)]</field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -52,6 +64,12 @@
         <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
         <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM'), ('state', '=', 'draft'), ('picking_type_id', '!=', 2488)]</field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -68,6 +86,12 @@
         <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
         <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM'), ('inventory_scan_start_time', '!=', False), ('state', 'not in', ['draft', 'done', 'cancel'])]</field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -84,6 +108,12 @@
         <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
         <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM'), ('state', '=', 'done')]</field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -108,6 +138,12 @@
         <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
         <field name="domain">[('shelf_location', 'ilike', 'Hậu kiểm'), ('shelf_location', 'not ilike', 'Hậu kiểm lần 2'), ('picking_type_id', 'ilike', 'Kiểm kê'), ('picking_type_id', '!=', 2488)]</field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -124,6 +160,12 @@
         <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
         <field name="domain">[('shelf_location', 'ilike', 'Hậu kiểm'), ('shelf_location', 'not ilike', 'Hậu kiểm lần 2'), ('picking_type_id', 'ilike', 'Kiểm kê'), ('user_id', '=', uid)]</field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -141,6 +183,12 @@
         <field name="view_mode">kanban,list,form,calendar,map,pivot,activity</field>
         <field name="domain">[('shelf_location', 'ilike', 'Hậu kiểm'), ('shelf_location', 'not ilike', 'Hậu kiểm lần 2'), ('picking_type_id', 'ilike', 'Kiểm kê'), ('state', '=', 'draft')]</field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -165,6 +213,12 @@
             ]
         </field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -195,6 +249,12 @@
             ]
         </field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -217,6 +277,12 @@
             ]
         </field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -248,6 +314,12 @@
             ]
         </field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
 
@@ -293,6 +365,12 @@
             ]
         </field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -315,6 +393,12 @@
             ]
         </field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem
@@ -338,6 +422,12 @@
             ]
         </field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_picking_inventory_form_full')})
+        ]"/>
     </record>
 
     <menuitem

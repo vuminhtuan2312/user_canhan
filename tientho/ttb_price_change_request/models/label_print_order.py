@@ -290,6 +290,77 @@ class TtbLabelPrintOrder(models.Model):
         #     "target": "self",
         # }
 
+    def action_export_price_tag_group_c_xlsx(self):
+        """
+        Xuất file Excel tem giá dán cho Nhóm C.
+        Cột theo yêu cầu:
+        - ma_vach  : barcode (chi tiết lệnh in)
+        - ten_hang : product_name (chi tiết lệnh in)
+        - don_gia  : new_price (chi tiết lệnh in)
+        - (cột trống): blank bắt buộc
+        - so_luong : số lượng KBL (ưu tiên field qty_kbl nếu có, fallback qty)
+        """
+        self.ensure_one()
+        self.write({'print_state': 'exported'})
+        # Lấy dòng nhóm B
+        lines = self.line_ids.filtered(lambda l: l.group_code == "C")
+        if not lines:
+            # Không raise để user vẫn bấm được; tuỳ bạn muốn UserError thì đổi
+            self.message_post(body="Không có dòng Nhóm C để xuất Excel.")
+            return {"type": "ir.actions.act_window_close"}
+        self.print_state = "exported"
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Nhom C"
+
+        # Header (giữ đúng như file mẫu)
+        ws.append(["ma_vach", "ten_hang", "don_gia", "", "So_luong"])
+
+        # Rows
+        for ln in lines:
+            barcode = (ln.barcode or "").strip()
+            ten_hang = (ln.product_name or "").strip()
+            don_gia = ln.new_price or 0.0
+
+            # số lượng KBL: ưu tiên field qty_kbl nếu module bạn có, fallback qty
+            if "qty_kbl" in ln._fields:
+                so_luong = ln.qty_kbl or 0.0
+            else:
+                so_luong = ln.qty or 0.0
+
+            ws.append([barcode, ten_hang, don_gia, "", so_luong])
+
+        # (Tuỳ chọn) chỉnh độ rộng cột cho dễ nhìn
+        ws.column_dimensions["A"].width = 18
+        ws.column_dimensions["B"].width = 55
+        ws.column_dimensions["C"].width = 12
+        ws.column_dimensions["D"].width = 6
+        ws.column_dimensions["E"].width = 10
+
+        # Save to bytes
+        buff = io.BytesIO()
+        wb.save(buff)
+        buff.seek(0)
+        data = buff.read()
+
+        filename = f"tem_gia_nhom_C_{(self.name or 'LENH_IN').replace('/', '_')}.xlsx"
+        attachment = self.env["ir.attachment"].sudo().create({
+            "name": filename,
+            "type": "binary",
+            "datas": base64.b64encode(data),
+            "res_model": self._name,
+            "res_id": self.id,
+            "mimetype": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        })
+        self.env.cr.commit()
+        return {
+            "type": "ir.actions.client",
+            "tag": "action_download_and_reload",
+            "params": {
+                "url": f"/web/content/{attachment.id}?download=true",
+            },
+        }
+
     def _get_realtime_stock_from_augges(self, branch_warehouse_ids, product_augges_ids):
         """
         Lấy tồn kho realtime từ Augges

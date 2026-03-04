@@ -15,6 +15,10 @@ class StockBarcodeIncomingController(StockBarcodeController):
                         move_id = line.get("move_id")
                         if move_id:
                             move = request.env['stock.move'].browse(move_id)
+                            if not move.picking_id.inventory_origin_id:
+                                line['is_inventory_kk'] = True
+                            else:
+                                line['is_inventory_kk'] = False
                             picking_name = move.picking_id.name
                             if 'kcl' in picking_name:
                                 line['kcl'] = True

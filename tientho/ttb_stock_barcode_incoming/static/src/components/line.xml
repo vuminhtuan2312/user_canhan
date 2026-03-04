@@ -29,7 +29,7 @@
 
         </xpath>
         <xpath expr="//div[hasclass('o_product_label')]" position="after">
-            <div class="o_product_label small">
+            <div class="o_product_label small" t-if="line.is_inventory_kk === true">
                 <span class="text-muted">Lệch tồn Augges: </span>
                 <span t-esc="line.diff_qty" class="fw-bold"/>
             </div>

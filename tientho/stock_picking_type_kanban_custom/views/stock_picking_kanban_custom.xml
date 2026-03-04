@@ -15,12 +15,6 @@
                     <t t-if="record.origin and record.origin.value">
                         Mã PO: <t t-esc="record.origin.value"/>
                     </t>
-                    <t t-if="record.quantity and record.quantity.value">
-                        <br/>Số dòng sản phẩm: <t t-esc="record.quantity.value"/>
-                    </t>
-                    <t t-if="record.amount_total and record.amount_total.value">
-                        <br/>Tổng tiền: <t t-esc="(record.amount_total.value).toLocaleString()"/>
-                    </t>
                 </div>
             </xpath>
         </field>

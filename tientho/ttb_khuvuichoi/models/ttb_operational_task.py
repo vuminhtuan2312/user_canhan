@@ -725,6 +725,7 @@ class TtbOperationalTask(models.Model):
                 'employee_tasks': [],
                 'audit_tasks': [],
                 'failed_audit_tasks': [],
+                'shift_assignments': [],
             }
 
         # Task thuộc cơ sở mình quản lý HOẶC thuộc phiếu phân công mình làm quản lý ca
@@ -812,6 +813,38 @@ class TtbOperationalTask(models.Model):
             visible_branch_ids, range_key=range_key or 'today', limit=limit or 50
         )
 
+        # Phiếu phân công ca: lọc theo cơ sở và theo ngày (range_key)
+        now_utc = fields.Datetime.now()
+        now_vn = now_utc + timedelta(hours=7)
+        today_vn = now_vn.date()
+        key = (range_key or 'today').strip().lower()
+        if key in ('all', 'toan_bo', 'toanbo'):
+            assignment_date_domain = []
+        elif key in ('before', 'truoc'):
+            assignment_date_domain = [('date', '<', fields.Date.to_string(today_vn))]
+        elif key in ('tomorrow', 'ngay_mai', 'ngaymai'):
+            assignment_date_domain = [('date', '=', fields.Date.to_string(today_vn + timedelta(days=1)))]
+        else:
+            assignment_date_domain = [('date', '=', fields.Date.to_string(today_vn))]
+        assignment_domain = [('branch_id', 'in', visible_branch_ids)] + assignment_date_domain
+        assignment_rs = Assignment.search(
+            assignment_domain,
+            order='date desc, id desc',
+            limit=int(limit or 50),
+        )
+        assignment_state_labels = dict(Assignment._fields['state'].selection)
+        shift_assignments = [
+            {
+                'id': a.id,
+                'name': a.name,
+                'shift_id': a.shift_id.id if a.shift_id else False,
+                'shift_name': a.shift_id.name if a.shift_id else '-',
+                'state': a.state,
+                'state_label': assignment_state_labels.get(a.state, a.state),
+            }
+            for a in assignment_rs
+        ]
+
         return {
             'meta': {'uid': uid, 'branch_ids': visible_branch_ids},
             'range': {'key': (range_key or 'today'), 'label': range_label, 'domain': range_domain},
@@ -821,6 +854,7 @@ class TtbOperationalTask(models.Model):
                 'not_done': total_not_done,
                 'late': total_late,
             },
+            'shift_assignments': shift_assignments,
             'employee_tasks': result_employee_tasks,
             'audit_tasks': result_audit_tasks,
             'failed_audit_tasks': result_failed_audit,
