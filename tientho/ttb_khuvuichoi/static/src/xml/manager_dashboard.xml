@@ -67,6 +67,53 @@
 
             <div class="card mb-4">
                 <div class="card-header d-flex align-items-center justify-content-between">
+                    <strong>Phiếu phân công ca</strong>
+                    <span class="text-muted small" t-if="state.loading">Đang tải…</span>
+                </div>
+                <div class="table-responsive o_ttb_table_scroll">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th style="min-width: 200px;">Phiếu phân công ca</th>
+                                <th style="min-width: 160px;">Ca làm việc</th>
+                                <th style="min-width: 140px;">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="state.loading">
+                                <tr>
+                                    <td colspan="3" class="text-muted">Đang tải dữ liệu…</td>
+                                </tr>
+                            </t>
+                            <t t-elif="!state.shiftAssignments.length">
+                                <tr>
+                                    <td colspan="3" class="text-muted">Chưa có phiếu phân công ca nào.</td>
+                                </tr>
+                            </t>
+                            <t t-else="">
+                                <t t-foreach="state.shiftAssignments" t-as="sa" t-key="'sa_' + sa.id">
+                                    <tr>
+                                        <td>
+                                            <a href="#" t-on-click.prevent="() => this.openShiftAssignment(sa.id)">
+                                                <t t-esc="sa.name"/>
+                                            </a>
+                                        </td>
+                                        <td t-esc="sa.shift_name"/>
+                                        <td>
+                                            <span class="badge" t-att-class="assignmentStateBadgeClass(sa.state)">
+                                                <t t-esc="sa.state_label"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header d-flex align-items-center justify-content-between">
                     <strong>Công việc của nhân viên</strong>
                     <span class="text-muted small" t-if="state.loading">Đang tải…</span>
                 </div>

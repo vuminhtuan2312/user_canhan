@@ -83,16 +83,6 @@
                         <br/>Thời gian bắt đầu quét:
                         <t t-esc="(record.inventory_scan_start_time and record.inventory_scan_start_time.value) or 0"/>
                     </t>
-                    <t>
-                        <br/>Số lượng sản phẩm cần kiểm kê tối thiểu:
-                        <t t-esc="(record.min_products_to_check and record.min_products_to_check.value) or 0"/>
-                    </t>
-                    <t t-if="record.diff_product_rate and record.diff_product_rate.value">
-                        <br/>Tỉ lệ lệch: <t t-esc="record.diff_product_rate.value"/>%
-                    </t>
-                    <t t-if="record.total_diff_qty and record.total_diff_qty.value">
-                        <br/>Tổng số lượng lệch: <t t-esc="record.total_diff_qty.value"/>
-                    </t>
                 </div>
             </xpath>
         </field>
@@ -196,21 +186,6 @@
         <field name="domain">[('picking_type_id.code', '=', 'inventory_counting'), ('shelf_location', 'not ilike', 'HẬU KIỂM')]</field>
         <field name="context">{}</field>
     </record>
-<!--    <menuitem-->
-<!--    id="inventory_picking_menu_root"-->
-<!--    name="Kiểm kê"-->
-
-<!--    sequence="2"-->
-<!--    action="inventory_picking_action"-->
-<!--    parent="stock.menu_stock_root"/>-->
-
-<!--    <menuitem-->
-<!--    id="inventory_picking_menu"-->
-<!--    name="Kiểm kê"-->
-<!--    sequence="1"-->
-<!--    action="inventory_picking_action"-->
-<!--    parent="inventory_picking_menu_root"/>-->
-
 
     <record id="inventory_result_search_view" model="ir.ui.view">
         <field name="name">inventory.result.search</field>
@@ -262,15 +237,121 @@
     </record>
 
     <record id="view_product_template_form_require_scan" model="ir.ui.view">
-    <field name="name">product.template.form.require.scan</field>
-    <field name="model">product.template</field>
-    <field name="inherit_id" ref="product.product_template_only_form_view"/>
-    <field name="arch" type="xml">
-         <xpath expr="//field[@name='barcode_k']" position="after">
-            <field name="require_scan"/>
-        </xpath>
-    </field>
-</record>
+        <field name="name">product.template.form.require.scan</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+             <xpath expr="//field[@name='barcode_k']" position="after">
+                <field name="require_scan"/>
+            </xpath>
+        </field>
+    </record>
 
+    <record id="view_picking_inventory_form_full" model="ir.ui.view">
+        <field name="name">stock.picking.inventory.form.full</field>
+        <field name="model">stock.picking</field>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+
+            <form string="Inventory Transfer">
+                <header>
+                    <button name="action_create_recheck"
+                        type="object"
+                        string="Sinh phiếu kiểm kê lại"
+                        class="btn-primary"
+                        invisible="state != 'done'"/>
+                    <button name="action_cancel" invisible="state not in ('assigned', 'confirmed', 'draft', 'waiting')" string="Hủy" groups="base.group_user" type="object" confirm="Are you sure you want to cancel this transfer?" data-hotkey="x"/>
+                    <button name="button_validate" invisible="state in ('confirmed', 'done', 'cancel')" string="Xác nhận" type="object" class="oe_highlight" data-hotkey="v"/>
+
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,confirmed,assigned,done"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_detailed_operations"
+                            class="oe_stat_button"
+                            icon="fa-bars"
+                            type="object"
+                            help="List view of detailed operations">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">Đều chuyển</span>
+                            </div>
+                        </button>
+                        <button name="action_go_to_scanbarcode"
+                                type="object"
+                                string="ScanBarcode"
+                                class="oe_stat_button"
+                                icon="fa-barcode"
+                                invisible="state == 'done'">
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+
+                            <!-- ẨN partner_id hoàn toàn -->
+                            <field name="partner_id" invisible="1"/>
+                            <field name="picking_type_id"/>
+                            <field name="location_id"/>
+                            <field name="location_dest_id"/>
+                            <field name="shelf_location"/>
+                            <field name="mch_category_id"/>
+                            <field name="period_inventory_id"/>
+                        </group>
+                        <group>
+                            <field name="scheduled_date"/>
+                            <field name="date_done"/>
+                            <field name="inventory_time_minutes"/>
+                            <field name="create_inventory_picking" invisible="not create_inventory_picking"/>
+                            <field name="percent_products_to_check" readonly="state == 'done'"/>
+                            <field name="min_products_to_check"/>
+                            <field name="inventory_origin_id" invisible="not inventory_origin_id"/>
+                            <field name="is_recheck_inventory_origin" readonly="1" invisible="not is_recheck_inventory_origin"/>
+                            <field name="recheck_inventory_id" invisible="not is_recheck_inventory_origin" readonly="1"/>
+                            <field name="diff_product_rate"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Hoạt động">
+                            <field name="move_ids_without_package">
+                                <list>
+                                    <field name="ttb_product_code"/>
+                                    <field name="ttb_barcode_k"/>
+                                    <field name="ttb_barcode_vendor"/>
+                                    <field name="ttb_default_code"/>
+                                    <field name="product_id"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="quantity"/>
+                                    <field name="diff_qty" string="Lệch tồn augges"/>
+                                    <field name="product_uom"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Thông tin bổ sung">
+                            <group>
+                                <group string="Thông tin vận chuyển">
+                                    <field name="id_augges"/>
+                                    <field name="sp_augges"/>
+                                </group>
+                                <group string="Thông tin khác">
+                                    <field name="user_id"/>
+                                    <field name="support_user_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
 <!--    <menuitem id="inventory_result_menu_stock_warehouse" name="Hậu kiểm" sequence="2" action="inventory_result_action" parent="inventory_picking_menu_root"/>-->
 </odoo>

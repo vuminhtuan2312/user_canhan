@@ -5,5 +5,5 @@
         <field name="name">Tổng quan quản lý</field>
         <field name="tag">ttb_manager_dashboard</field>
     </record>
-    <menuitem id="ttb_menu_manager_dashboard" name="Tổng quan quản lý" parent="ttb_menu_root" action="action_manager_dashboard_client" sequence="7"/>
+    <menuitem id="ttb_menu_manager_dashboard" name="Tổng quan quản lý" parent="ttb_menu_root" action="action_manager_dashboard_client" sequence="7" groups="group_ttb_manager_branch,group_ttb_director_branch"/>
 </odoo>

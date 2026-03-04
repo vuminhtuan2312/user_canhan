@@ -5,5 +5,5 @@
         <field name="name">Tổng quan</field>
         <field name="tag">ttb_employee_dashboard</field>
     </record>
-    <menuitem id="ttb_menu_employee_dashboard" name="Tổng quan" parent="ttb_menu_root" action="action_employee_dashboard_client" sequence="5"/>
+    <menuitem id="ttb_menu_employee_dashboard" name="Tổng quan" parent="ttb_menu_root" action="action_employee_dashboard_client" sequence="5" groups="group_ttb_employee_branch"/>
 </odoo>

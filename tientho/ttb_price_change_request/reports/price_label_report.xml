@@ -55,7 +55,7 @@
                                                 <span style="font-size: 11px; vertical-align: top; margin-left: 5px; position: relative; top: 2px;">VND</span>
                                             </div>
 
-                                            <t t-set="barcode_val" t-value="line.get_barcode_to_print(product)"/>
+                                            <t t-set="barcode_val" t-value="line.get_barcode_to_print()"/>
 
                                             <div style="width: 100%; text-align: center; margin-bottom: 5px;">
                                                 <t t-if="barcode_val">

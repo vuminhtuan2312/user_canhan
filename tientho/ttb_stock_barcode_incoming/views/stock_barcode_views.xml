@@ -85,4 +85,93 @@
         <field name="view_id" ref="stock_barcode_kanban_inventory_recheck"/>
         <field name="target">fullscreen</field>
     </record>
+
+
+    <record id="stock_picking_kanban_inventory_only" model="ir.ui.view">
+        <field name="name">stock.picking.kanban.inventory.only</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" quick_create="false" create="false">
+
+                <!-- Khai báo field dùng trong template -->
+                <field name="name"/>
+                <field name="state"/>
+                <field name="inventory_scan_start_time"/>
+                <field name="scheduled_date"/>
+                <templates>
+                    <t t-name="card">
+
+                        <!-- Header -->
+                        <div class="d-flex align-items-start mb-2">
+                            <field name="priority" widget="priority" class="me-1"/>
+
+                            <div class="fw-bold fs-5">
+                                <field name="name"/>
+                            </div>
+
+                            <field name="state"
+                                   widget="label_selection"
+                                   options="{
+                                       'classes': {
+                                           'draft': 'default',
+                                           'cancel': 'danger',
+                                           'waiting': 'warning',
+                                           'confirmed': 'warning',
+                                           'assigned': 'primary',
+                                           'done': 'success'
+                                       }
+                                   }"
+                                   class="ms-auto"/>
+                        </div>
+
+                        <!-- Nội dung -->
+                        <div class="text-muted small">
+
+                            <div>
+                                Thời gian bắt đầu quét:
+                                <field name="inventory_scan_start_time"/>
+                            </div>
+                        </div>
+
+                        <!-- Footer giống ảnh -->
+                        <footer class="mt-2 d-flex justify-content-between align-items-center">
+
+                            <!-- icon check nếu done -->
+                            <div>
+                                <i class="fa fa-check text-success"
+                                   t-if="record.state.raw_value == 'done'"/>
+                            </div>
+
+                            <div class="text-muted">
+                                <field name="scheduled_date"
+                                       options="{'show_time': false}"/>
+                            </div>
+
+                        </footer>
+
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="inventory_stock_picking_action_kanban" model="ir.actions.act_window">
+        <field name="name">Operations</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_id" ref="ttb_stock_barcode_incoming.stock_picking_kanban_inventory_only"/>
+        <field name="target">fullscreen</field>
+        <field name="context">{
+            'contact_display': 'partner_address',
+            'search_default_available': 1,
+            'search_default_to_do_transfers': 1,
+            'create': False,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new transfer
+            </p><p>
+                Transfers allow you to move products from one location to another.
+            </p>
+        </field>
+    </record>
 </odoo>

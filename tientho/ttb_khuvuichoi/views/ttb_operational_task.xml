@@ -217,5 +217,5 @@
             (0, 0, {'view_mode': 'form', 'view_id': ref('view_ttb_operational_task_form')})]"/>
     </record>
 
-    <menuitem id="ttb_menu_my_tasks" name="Công việc của tôi" parent="ttb_menu_root" action="action_my_tasks" sequence="10"/>
+    <menuitem id="ttb_menu_my_tasks" name="Công việc của tôi" parent="ttb_menu_root" action="action_my_tasks" sequence="10" groups="group_ttb_employee_branch,group_ttb_manager_branch"/>
 </odoo>
