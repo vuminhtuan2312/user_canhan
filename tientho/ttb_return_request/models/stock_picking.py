@@ -622,6 +622,12 @@ class StockPicking(models.Model):
 
     @api.model
     def create(self, vals):
+        if 'pickup_status' in vals and vals['pickup_status'] and not vals.get('ttb_return_request_id'):
+            origin = vals.get('origin')
+            if origin:
+                request = self.env['ttb.return.request'].search([('name', '=', origin)], limit=1)
+                if request:
+                    vals['ttb_return_request_id'] = request.id
         pickings = super(StockPicking, self).create(vals)
 
         for picking in pickings:
@@ -1079,3 +1085,20 @@ class StockPicking(models.Model):
             conn.commit()
             cursor.close()
             conn.close()
+
+    @api.model
+    def _cron_fix_missing_return_request_id(self):
+        pickings = self.search([
+            ('pickup_status', 'in', ['picking', 'waiting_packing', 'packing', 'dc', 'dc_received', 'back_to_supplier']),
+            ('ttb_return_request_id', '=', False)
+        ])
+        for p in pickings:
+            if p.origin:
+                request = self.env['ttb.return.request'].search([('name', '=', p.origin)], limit=1)
+                if request:
+                    p.ttb_return_request_id = request.id
+                    continue
+            for move in p.move_ids:
+                if move.ttb_return_request_line_id and move.ttb_return_request_line_id.request_id:
+                    p.ttb_return_request_id = move.ttb_return_request_line_id.request_id.id
+                    break

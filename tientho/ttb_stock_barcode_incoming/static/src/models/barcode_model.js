@@ -2,10 +2,11 @@ import { _t } from "@web/core/l10n/translation";
 import { escape } from "@web/core/utils/strings";
 import BarcodeModel from "@stock_barcode/models/barcode_model";
 import BarcodePickingModel from '@stock_barcode/models/barcode_picking_model';
-import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
+import { ConfirmationDialog, AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { patch } from "@web/core/utils/patch";
 import { markup } from "@odoo/owl";
 import { user } from '@web/core/user';
+import { logStockBarcode } from "../barcode_logger_utils";
 
 patch(BarcodeModel.prototype, {
 
@@ -29,14 +30,17 @@ patch(BarcodeModel.prototype, {
     },
     async deleteLine(line) {
         // Hiển thị popup thông báo thay vì xóa dòng
-        this.dialogService.add(ConfirmationDialog, {
+        this.dialogService.add(AlertDialog, {
             title: _t("Không cho phép xóa"),
             body: _t("Không thể xóa dòng sản phẩm. Chỉ có thể đặt số lượng về 0."),
             confirmLabel: _t("Đã hiểu"),
-            cancel: () => {},
-            confirm: () => {},
         });
-    }
+    },
+
+    async processBarcode(barcode, options={}) {
+        await logStockBarcode('scan', barcode, this.record.id);
+        return await super.processBarcode(...arguments)
+    },
 });
 
 patch(BarcodePickingModel.prototype, {
@@ -123,12 +127,10 @@ patch(BarcodePickingModel.prototype, {
     async deleteLine(line) {
         if (this.isRestrictedMode) {
             // Thay thế this.notification bằng Dialog để tránh lỗi
-            this.dialogService.add(ConfirmationDialog, {
+            this.dialogService.add(AlertDialog, {
                 title: _t("Cảnh báo"),
                 body: _t("Không cho phép xóa sản phẩm trong phiếu này!"),
                 confirmLabel: _t("Đóng"),
-                cancel: () => {},
-                confirm: () => {},
             });
             return;
         }
@@ -151,30 +153,6 @@ patch(BarcodePickingModel.prototype, {
 
                 targetModel = 'inventory.counting';
             }
-        }
-
-        if (this.orm) {
-            this.orm.call('product.product', 'search_read', [
-                ['|', '|', '|',
-                 ['barcode', '=', barcode],
-                 ['barcode_vendor', '=', barcode],
-                 ['barcode_k', '=', barcode],
-                 ['default_code', '=', barcode]
-                ],
-                ['id']
-            ], { limit: 1 }).then((products) => {
-                const isFound = products && products.length > 0;
-                const productId = isFound ? products[0].id : false;
-
-                this.orm.call('scan.barcode.log', 'create', [{
-                    barcode: barcode,
-                    is_found: isFound,
-                    product_id: productId,
-                    res_id: targetResId,
-                    model: targetModel,
-                    message: 'Quét từ giao diện xử lý mã vạch'
-                }]);
-            }).catch(err => console.error("⚠️ [TTB Log Error] Lỗi lưu log scan:", err));
         }
 
         if (this.isReturnPicking || (this.isRestrictedMode && this.isPickOrPack)) {
@@ -207,12 +185,10 @@ patch(BarcodePickingModel.prototype, {
 
                 if (isMoveExist === 0) {
 
-                    this.dialogService.add(ConfirmationDialog, {
+                    this.dialogService.add(AlertDialog, {
                         title: _t("Sai sản phẩm"),
                         body: _t(`Sản phẩm '${product.display_name}' không có trong danh sách cần xử lý!`),
                         confirmLabel: _t("Đã hiểu"),
-//                        cancel: () => {},
-//                        confirm: () => {},
                     });
                     return;
                 }
@@ -246,7 +222,7 @@ patch(BarcodePickingModel.prototype, {
                 });
 
                 // Tải lại bản ghi để xác minh rằng dữ liệu đã được lưu
-                await this.reload();
+                // await this.reload();
             }
 
             await super._processBarcode(barcode);

@@ -51,11 +51,22 @@ class StockBarcodeProductController(StockBarcodeController):
 
         if not result:
             message += ' Không tìm thấy.'
-            request.env['scan.barcode.log'].create({'barcode': barcode, 'is_found': False, 'message': message})
+            request.env['scan.barcode.log'].create({
+                'log_type': 'open', 
+                'barcode': barcode, 
+                'message': 'Quét mã tìm sản phẩm ' + message
+            })
             return {'warning': _('Không tìm thấy sản phẩm có mã barcode: %s', barcode)}
         
         message += f' Found. augges_id: {result.augges_id}, name: {result.name}'
-        request.env['scan.barcode.log'].create({'barcode': barcode, 'is_found': True, 'message': message or False, 'product_id': result.id if result else False, 'res_id': result.id if result else False, 'model': 'product.product',})
+        request.env['scan.barcode.log'].create({
+            'log_type': 'open',
+            'barcode': barcode, 
+            'message': 'Quét mã tìm sản phẩm ' + message or False, 
+            'product_id': result.id if result else False, 
+            'res_id': result.id if result else False, 
+            'model': 'product.product'}
+        )
         
         action = request.env.ref('ttb_product_barcode.action_product_product_form_custom').sudo().read()[0]
         action['res_id'] = result.product_tmpl_id.id
