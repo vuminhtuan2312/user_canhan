@@ -63,7 +63,7 @@ class StockPickingType(models.Model):
 
     def get_action_inventory_counting_tree_ready_kanban(self):
         self.ensure_one()
-        action = self.env.ref('ttb_stock_barcode_incoming.inventory_stock_picking_action_kanban').sudo().read()[0]
+        action = self.env.ref('stock_barcode.stock_picking_action_kanban').sudo().read()[0]
         # Lọc phiếu sẵn sàng của loại chứng từ và kho tương ứng
         action['domain'] = [
             ('picking_type_id', '=', self.id),
@@ -77,7 +77,6 @@ class StockPickingType(models.Model):
             self.env.ref('ttb_stock_barcode_incoming.stock_barcode_action_search_inventory_counting').id,
             'search'
         ]
-        action['kanban_view_id'] = self.env.ref('ttb_stock_barcode_incoming.stock_picking_kanban_inventory_only').id
         return action
 
     def get_action_inventory_recheck_tree_ready_kanban(self):

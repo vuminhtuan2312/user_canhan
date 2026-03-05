@@ -12,5 +12,11 @@
             <field name="model_id" ref="model_ttb_post_audit"/>
             <field name="domain_force">['|', ('branch_id', 'in', user.ttb_visible_branch_ids.ids), ('line_ids.employee_ids', 'in', [user.employee_id.id] if user.employee_id else [0])]</field>
         </record>
+
+        <record id="rule_ttb_operational_task_branch" model="ir.rule">
+            <field name="name">Công việc vận hành: theo cơ sở của user</field>
+            <field name="model_id" ref="model_ttb_operational_task"/>
+            <field name="domain_force">[('branch_id', 'in', user.ttb_visible_branch_ids.ids)]</field>
+        </record>
     </data>
 </odoo>

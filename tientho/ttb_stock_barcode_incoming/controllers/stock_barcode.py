@@ -16,9 +16,9 @@ class StockBarcodeIncomingController(StockBarcodeController):
                         if move_id:
                             move = request.env['stock.move'].browse(move_id)
                             if not move.picking_id.inventory_origin_id:
-                                line['is_inventory_kk'] = True
-                            else:
                                 line['is_inventory_kk'] = False
+                            else:
+                                line['is_inventory_kk'] = True
                             picking_name = move.picking_id.name
                             if 'kcl' in picking_name:
                                 line['kcl'] = True
@@ -38,3 +38,23 @@ class StockBarcodeIncomingController(StockBarcodeController):
                                 for move_line in line.move_line_ids:
                                     move_line.write({'picking_id': stock.id})
         return result
+
+
+    @http.route('/stock_barcode/log_barcode_data', type='json', auth='user')
+    def log_barcode_data(self, **kwargs):
+        vals = {
+            'barcode': kwargs.get('barcode', False),
+            'res_id': kwargs.get('res_id', False),
+            'log_type': kwargs.get('log_type', False),
+        }
+        extra = kwargs.get('extra', {})
+        if 'model' in extra:
+            vals['model'] = extra['model']
+
+        if 'product_id' in extra:
+            vals['product_id'] = extra['product_id']
+
+        if 'message' in extra:
+            vals['message'] = str(extra['message'])
+
+        request.env['scan.barcode.log'].create(vals)

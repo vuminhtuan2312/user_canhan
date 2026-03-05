@@ -276,7 +276,7 @@
                             type="object"
                             help="List view of detailed operations">
                             <div class="o_form_field o_stat_info">
-                                <span class="o_stat_text">Đều chuyển</span>
+                                <span class="o_stat_text">Điều chuyển</span>
                             </div>
                         </button>
                         <button name="action_go_to_scanbarcode"
@@ -301,7 +301,7 @@
                             <field name="picking_type_id"/>
                             <field name="location_id"/>
                             <field name="location_dest_id"/>
-                            <field name="shelf_location"/>
+                            <field name="shelf_location" string="Quầy/Kệ"/>
                             <field name="mch_category_id"/>
                             <field name="period_inventory_id"/>
                         </group>
@@ -310,19 +310,18 @@
                             <field name="date_done"/>
                             <field name="inventory_time_minutes"/>
                             <field name="create_inventory_picking" invisible="not create_inventory_picking"/>
-                            <field name="percent_products_to_check" readonly="state == 'done'"/>
-                            <field name="min_products_to_check"/>
                             <field name="inventory_origin_id" invisible="not inventory_origin_id"/>
                             <field name="is_recheck_inventory_origin" readonly="1" invisible="not is_recheck_inventory_origin"/>
                             <field name="recheck_inventory_id" invisible="not is_recheck_inventory_origin" readonly="1"/>
-                            <field name="diff_product_rate"/>
+                            <field name="user_id"/>
+                            <field name="support_user_ids" widget="many2many_tags"/>
                         </group>
                     </group>
 
                     <notebook>
                         <page string="Hoạt động">
                             <field name="move_ids_without_package">
-                                <list>
+                                <list editable="bottom">
                                     <field name="ttb_product_code"/>
                                     <field name="ttb_barcode_k"/>
                                     <field name="ttb_barcode_vendor"/>

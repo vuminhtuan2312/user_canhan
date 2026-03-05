@@ -43,7 +43,8 @@
         'views/report.xml',
         'views/ttb_work_template.xml',
         'views/ttb_pause_reason.xml',
-
+        'views/ttb_task_proof_image.xml',
+        
         'wizard/audit_fail_wizard.xml',
         'wizard/task_delay_wizard.xml',
         'wizard/task_delay_report_wizard.xml',

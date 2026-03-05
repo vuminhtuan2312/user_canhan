@@ -76,6 +76,10 @@ class TtbOperationalTask(models.Model):
     )
     is_rework = fields.Boolean(string='Làm lại', default=False)
     rework_task_id = fields.Many2one('ttb.operational.task', string='Công việc bổ sung', readonly=True)
+    
+    rework_source_audit_line_id = fields.Many2one('ttb.post.audit.line', string='Dòng hậu kiểm gốc', compute='_compute_rework_source_audit_line_id', store=True)
+    rework_source_note = fields.Text(string='Ghi chú từ phiếu hậu kiểm gốc', related='rework_source_audit_line_id.note')
+    rework_source_proof_image = fields.Binary(string='Hình ảnh từ phiếu hậu kiểm gốc', related='rework_source_audit_line_id.proof_image')
 
     # Hậu kiểm
     is_audit_required = fields.Boolean(string='Cần hậu kiểm', default=False)
@@ -146,6 +150,19 @@ class TtbOperationalTask(models.Model):
     def _compute_proof_image_count(self):
         for task in self:
             task.proof_image_count = len(task.proof_image_ids)
+
+    @api.depends('is_rework')
+    def _compute_rework_source_audit_line_id(self):
+        Line = self.env['ttb.post.audit.line']
+        for task in self:
+            if not task.is_rework:
+                task.rework_source_audit_line_id = False
+                continue
+            if not task.id:
+                task.rework_source_audit_line_id = False
+                continue
+            line = Line.search([('task_id.rework_task_id', '=', task.id)], limit=1)
+            task.rework_source_audit_line_id = line
 
     def write(self, vals):
         if 'state' in vals and vals.get('state') == 'delayed':

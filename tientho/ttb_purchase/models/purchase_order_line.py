@@ -33,7 +33,13 @@ class PurchaseOrderLine(models.Model):
     ttb_discount_amount = fields.Float(string='CK tiền', compute='_compute_ttb_discount_amount', inverse='_inverse_ttb_discount_amount', store=True, readonly=False)
     discount_type = fields.Selection(selection=[('percent', 'Phần trăm'), ('money', 'Tiền')], string='Loại chiết khấu')
 
-    @api.depends('discount', 'price_unit')
+    @api.onchange('discount')
+    def _onchange_discount_set_type(self):
+        for line in self:
+            if line.discount:
+                line.discount_type = 'percent'
+
+    @api.depends('discount', 'price_unit', 'discount_type')
     def _compute_ttb_discount_amount(self):
         for rec in self:
             if rec.discount_type == 'percent':
@@ -92,6 +98,10 @@ class PurchaseOrderLine(models.Model):
                 update['price_unit'] = manual['price_unit']
             if manual.get('discount') is not None:
                 update['discount'] = manual['discount']
+                if manual['discount']:
+                    update['discount_type'] = 'percent'
+                else:
+                    update['discount_type'] = False
             elif rec.product_id and rec.order_id and rec.order_id.partner_id:
                 seller = rec.product_id._select_seller(
                     partner_id=rec.order_id.partner_id,
@@ -101,8 +111,10 @@ class PurchaseOrderLine(models.Model):
                 )
                 if seller and seller.discount:
                     update['discount'] = seller.discount
+                    update['discount_type'] = 'percent'
                 else:
                     update['discount'] = 0.0
+                    update['discount_type'] = False
 
             if update:
                 rec.write(update)

@@ -106,10 +106,10 @@
                         <group string="Hình ảnh minh chứng">
                             <field name="proof_image" widget="capture_image" nolabel="1" invisible="proof_image_count >= 5 or state != 'ready'"/>
                             <field name="proof_image_count" invisible="1"/>
-                            <field name="proof_image_ids" nolabel="1" readonly="state != 'ready' or proof_image_count &lt; 5" invisible="not proof_image_ids">
-                                <list editable="bottom" create="false" delete="false" default_order="sequence asc">
+                            <field name="proof_image_ids" nolabel="1" readonly="state != 'ready'" invisible="not proof_image_ids">
+                                <list create="false" delete="false" default_order="sequence asc">
                                     <field name="sequence" column_invisible="1"/>
-                                    <field name="image" widget="capture_image" options="{'size': [300, 300]}"/>
+                                    <field name="image" widget="image" options="{'size': [300, 300]}"/>
                                 </list>
                             </field>
                         </group>
@@ -157,6 +157,17 @@
                                 Công việc này không gắn mẫu hướng dẫn (việc phát sinh).
                             </div>
                         </page>
+                        <page string="Tình trạng hậu kiểm" invisible="not is_rework">
+                            <group>
+                                <group string="Ghi chú từ phiếu hậu kiểm gốc">
+                                    <field name="rework_source_note" readonly="1" nolabel="1" placeholder="Chưa có ghi chú"/>
+                                </group>
+                                <group string="Hình ảnh từ phiếu hậu kiểm gốc">
+                                    <field name="rework_source_proof_image" widget="image" nolabel="1" class="mb-3"/>
+                                    <div class="text-muted" invisible="rework_source_proof_image">Chưa có hình ảnh được ghi nhận.</div>
+                                </group>
+                            </group>
+                        </page>
                         <page string="Thông tin Sự cố" invisible="not delay_reason_id">
                             <group>
                                 <group string="Báo cáo của Nhân viên">
@@ -194,7 +205,7 @@
                 <separator/>
                 <filter string="Đã phân công (tổng quan)" name="dashboard_assigned" domain="[('state', '!=', 'cancel')]"/>
                 <filter string="Đã hoàn thành (tổng quan)" name="dashboard_done" domain="[('state', '=', 'done')]"/>
-                <filter string="Chưa hoàn thành (tổng quan)" name="dashboard_not_done" domain="[('state', 'in', ['waiting', 'ready', 'delayed']), ('state', '!=', 'cancel')]"/>
+                <filter string="Chưa hoàn thành (tổng quan)" name="dashboard_not_done" domain="[('state', 'in', ['waiting', 'ready', 'suspended', 'delayed']), ('state', '!=', 'cancel')]"/>
                 <filter string="Trễ hạn (tổng quan)" name="dashboard_late" domain="[('is_late', '=', True), ('state', '!=', 'done'), ('state', '!=', 'cancel')]"/>
                 <group expand="0" string="Group By">
                     <filter string="Trạng thái" name="group_state" context="{'group_by': 'state'}"/>
@@ -217,5 +228,18 @@
             (0, 0, {'view_mode': 'form', 'view_id': ref('view_ttb_operational_task_form')})]"/>
     </record>
 
-    <menuitem id="ttb_menu_my_tasks" name="Công việc của tôi" parent="ttb_menu_root" action="action_my_tasks" sequence="10" groups="group_ttb_employee_branch,group_ttb_manager_branch"/>
+    <record id="action_all_tasks_manager" model="ir.actions.act_window">
+        <field name="name">Tất cả công việc</field>
+        <field name="res_model">ttb.operational.task</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_ttb_operational_task_kanban')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_ttb_operational_task_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_ttb_operational_task_form')})]"/>
+    </record>
+
+    <menuitem id="ttb_menu_my_tasks" name="Công việc của tôi" parent="ttb_menu_root" action="action_my_tasks" sequence="10" groups="group_ttb_employee_branch"/>
+    <menuitem id="ttb_menu_all_tasks" name="Tất cả công việc" parent="ttb_menu_root" action="action_all_tasks_manager" sequence="11" groups="group_ttb_manager_branch,group_ttb_director_branch"/>
 </odoo>

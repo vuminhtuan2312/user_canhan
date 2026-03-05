@@ -109,6 +109,12 @@ class ReportCustomerIdentification(models.Model):
     def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals=None, warnings=None):
         lines = []
 
+        date_from = options['date']['date_from']
+        date_to = options['date']['date_to']
+
+        if not date_from and not date_to:
+            return lines
+
         conn = self.env['ttb.tools'].get_mssql_connection_send()
 
         query = f"""
@@ -147,8 +153,10 @@ class ReportCustomerIdentification(models.Model):
                     INNER JOIN dmkho k ON m.id_kho = k.id -- Join để lấy id_nkho
                     WHERE m.id_dv = 0 
                       AND m.printed = 1 
-                      AND m.sngay LIKE '25%'
-                      AND (ISNULL(m.Tien_Hang, 0) - ISNULL(m.Tien_Giam, 0)) >= 50000
+                      -- AND m.sngay LIKE '25%'
+                      -- AND (ISNULL(m.Tien_Hang, 0) - ISNULL(m.Tien_Giam, 0)) >= 50000
+                      AND m.InsertDate >= '{date_from}'
+                      AND m.InsertDate < DATEADD(DAY, 1, '{date_to}')
                     GROUP BY k.id_nkho, m.userid, SUBSTRING(CAST(m.sngay AS VARCHAR), 3, 2)
                 ) s
                 INNER JOIN dmuser u ON s.userid = u.id

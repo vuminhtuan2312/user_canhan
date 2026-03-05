@@ -247,10 +247,10 @@ export class ManagerDashboard extends Component {
         }
     }
 
-    // Công việc của nhân viên: mở form Công việc của tôi (action_my_tasks)
+    // Công việc của nhân viên: mở form Tất cả công việc (action_all_tasks_manager)
     openTask = async (id) => {
         const resId = Number(id);
-        const action = await this.action.loadAction("ttb_khuvuichoi.action_my_tasks");
+        const action = await this.action.loadAction("ttb_khuvuichoi.action_all_tasks_manager");
         return this.action.doAction({ ...action, res_id: resId }, { viewType: "form", props: { resId } });
     };
 
@@ -278,7 +278,7 @@ export class ManagerDashboard extends Component {
     openReworkTask = async (id) => {
         if (!id) return;
         const resId = Number(id);
-        const action = await this.action.loadAction("ttb_khuvuichoi.action_my_tasks");
+        const action = await this.action.loadAction("ttb_khuvuichoi.action_all_tasks_manager");
         return this.action.doAction({ ...action, res_id: resId }, { viewType: "form", props: { resId } });
     };
 
@@ -301,7 +301,7 @@ export class ManagerDashboard extends Component {
                 break;
             case "not_done":
                 extraDomain = [
-                    ["state", "in", ["waiting", "ready", "delayed"]],
+                    ["state", "in", ["waiting", "ready", "suspended", "delayed"]],
                     ["state", "!=", "cancel"],
                 ];
                 break;
@@ -327,7 +327,7 @@ export class ManagerDashboard extends Component {
             not_done: "dashboard_not_done",
             late: "dashboard_late",
         }[kpiKey] || "audit_pending";
-        const action = await this.action.loadAction("ttb_khuvuichoi.action_my_tasks");
+        const action = await this.action.loadAction("ttb_khuvuichoi.action_all_tasks_manager");
         return this.action.doAction(
             {
                 ...action,

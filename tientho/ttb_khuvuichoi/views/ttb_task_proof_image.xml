@@ -1,0 +1,13 @@
+<odoo>
+    <record id="view_ttb_task_proof_image_form" model="ir.ui.view">
+        <field name="name">ttb.task.proof.image.form</field>
+        <field name="model">ttb.task.proof.image</field>
+        <field name="arch" type="xml">
+            <form string="Hình ảnh minh chứng">
+                <div class="d-flex justify-content-center">
+                    <field name="image" widget="capture_image" nolabel="1" class="img-fluid"/>
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>
