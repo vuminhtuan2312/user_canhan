@@ -56,7 +56,11 @@ class PurchaseRequestLine(models.Model):
         for vals in vals_list:
             if not vals.get('request_id') and self._context.get('default_request_id'):
                 vals['request_id'] = self._context.get('default_request_id')
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        for rec in records:
+            if rec.product_id:
+                rec.request_id.update_stock_system()
+        return records
 
     def action_add_to_purchase_approval(self):
         approval = self.env['ttb.purchase.approval'].browse(self.env.context.get('active_approval_id'))

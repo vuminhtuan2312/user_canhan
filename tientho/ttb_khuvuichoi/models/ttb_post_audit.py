@@ -103,29 +103,37 @@ class TtbPostAudit(models.Model):
 
     def _fill_audit_lines_from_tasks(self):
         self.ensure_one()
-        if not self.area_id:
+        if not self.area_id or not self.assignment_id:
+            return
+
+        line = self.assignment_id.line_ids.filtered(lambda l: l.area_id == self.area_id)
+        assigned_employees = line.employee_ids if line else self.env['hr.employee']
+        if not assigned_employees:
             return
         Template = self.env['ttb.work.template']
         templates = Template.search([
             ('area_ids', 'in', self.area_id.id),
             ('is_active', '=', True),
-        ], order='name')
+        ])
+        if not templates:
+            return
         Line = self.env['ttb.post.audit.line']
         Task = self.env['ttb.operational.task']
         for template in templates:
-            task = Task.search([
-                ('assignment_id', '=', self.assignment_id.id),
-                ('area_id', '=', self.area_id.id),
-                ('template_id', '=', template.id),
-                ('state', '!=', 'cancel'),
-            ], limit=1)
-            employee_ids = [(6, 0, [task.employee_id.id])] if task and task.employee_id else []
-            Line.create({
-                'post_audit_id': self.id,
-                'template_line_id': template.id,
-                'task_id': task.id if task else False,
-                'employee_ids': employee_ids,
-            })
+            for employee in assigned_employees:
+                task = Task.search([
+                    ('assignment_id', '=', self.assignment_id.id),
+                    ('area_id', '=', self.area_id.id),
+                    ('template_id', '=', template.id),
+                    ('employee_id', '=', employee.id),
+                    ('state', '!=', 'cancel'),
+                ], order='planned_date_start', limit=1)
+                Line.create({
+                    'post_audit_id': self.id,
+                    'template_line_id': template.id,
+                    'task_id': task.id if task else False,
+                    'employee_ids': [(6, 0, [employee.id])],
+                })
 
     def _create_rework_tasks_for_failed_lines(self, inspection_time):
         self.ensure_one()
@@ -169,6 +177,7 @@ class TtbPostAudit(models.Model):
         if self.state != 'pending':
             raise ValidationError(_('Phiếu hậu kiểm này không ở trạng thái chờ hậu kiểm.'))
 
+        now_dt = fields.Datetime.now()
         for line in self.line_ids:
             if not line.is_pass and not line.is_fail:
                 label = (line.template_line_id.name if line.template_line_id else None) or (line.task_id.name if line.task_id else '')
@@ -177,7 +186,15 @@ class TtbPostAudit(models.Model):
                 label = (line.template_line_id.name if line.template_line_id else None) or (line.task_id.name if line.task_id else '')
                 raise ValidationError(_('Công việc không đạt "%s": cần tối thiểu 1 ảnh minh chứng.') % label)
 
-        now_dt = fields.Datetime.now()
+            # Cập nhật trạng thái hậu kiểm lên công việc vận hành (nếu có task)
+            if not line.task_id:
+                continue
+            vals = {
+                'is_audit_required': True,
+                'audit_state': 'pass' if line.is_pass else 'fail',
+            }
+            line.task_id.write(vals)
+
         self.write({
             'state': 'done',
             'inspection_time': now_dt,
@@ -215,11 +232,14 @@ class TtbPostAudit(models.Model):
         return [('assignment_id.date', '=', today_vn)]
 
     @api.model
-    def get_manager_post_audit_dashboard(self, branch_ids, range_key='today', limit=50):
+    def get_manager_post_audit_dashboard(self, branch_ids, range_key='today', limit=None):
         """Dữ liệu dashboard quản lý: phiếu hậu kiểm theo khu vực + công việc không đạt (từ phiếu hậu kiểm)."""
         domain = [('branch_id', 'in', branch_ids)] if branch_ids else []
         domain += self._post_audit_date_domain(range_key)
-        audits = self.search(domain, order='area_id, inspection_time desc, id desc', limit=int(limit or 50) * 2)
+        search_kw = {'domain': domain, 'order': 'area_id, inspection_time desc, id desc'}
+        if limit is not None and limit > 0:
+            search_kw['limit'] = int(limit) * 2
+        audits = self.search(**search_kw)
         state_labels = dict(self._fields['state'].selection)
         by_area = {}
         for a in audits:
@@ -247,7 +267,10 @@ class TtbPostAudit(models.Model):
         for term in self._post_audit_date_domain(range_key):
             if term and len(term) == 3:
                 line_domain.append(('post_audit_id.' + term[0], term[1], term[2]))
-        failed_lines = Line.search(line_domain, order='id desc', limit=int(limit or 50))
+        line_search_kw = {'domain': line_domain, 'order': 'id desc'}
+        if limit is not None and limit > 0:
+            line_search_kw['limit'] = int(limit)
+        failed_lines = Line.search(**line_search_kw)
         failed_audit_lines = []
         for line in failed_lines:
             audit = line.post_audit_id
@@ -272,7 +295,7 @@ class TtbPostAudit(models.Model):
         return {'post_audits_by_area': post_audits_by_area, 'failed_audit_lines': failed_audit_lines}
 
     @api.model
-    def get_employee_failed_audit_lines(self, range_key='today', limit=50):
+    def get_employee_failed_audit_lines(self, range_key='today', limit=None):
         """Công việc không đạt từ phiếu hậu kiểm mà nhân viên hiện tại phụ trách."""
         emp = self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1)
         if not emp:
@@ -282,7 +305,10 @@ class TtbPostAudit(models.Model):
         for term in self._post_audit_date_domain(range_key):
             if term and len(term) == 3:
                 domain.append(('post_audit_id.' + term[0], term[1], term[2]))
-        lines = Line.search(domain, order='id desc', limit=int(limit or 50))
+        search_kw = {'domain': domain, 'order': 'id desc'}
+        if limit is not None and limit > 0:
+            search_kw['limit'] = int(limit)
+        lines = Line.search(**search_kw)
         result = []
         for line in lines:
             audit = line.post_audit_id

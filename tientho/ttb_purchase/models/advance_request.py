@@ -5,6 +5,7 @@ import io
 import os
 from docxtpl import DocxTemplate
 from odoo.modules import get_module_path
+from datetime import timedelta
 
 def convert_number_to_words(amount):
     """Chuyển đổi số tiền thành chữ tiếng Việt"""
@@ -79,7 +80,7 @@ class AdvanceRequest(models.Model):
         string='Trạng thái', default='draft', tracking=True)
 
     amount_total = fields.Float(string='Tổng số tiền', currency_field='currency_id', compute='_compute_amount_total', store=True, readonly=True)
-    advance_amount = fields.Float(string='Số tiền tạm ứng', currency_field='currency_id', default=0.0)
+    advance_amount = fields.Float(string='Số tiền tạm ứng', currency_field='currency_id', compute='_compute_advance_amount', store=True, readonly=False)
     payment_date = fields.Date(string='Ngày tạm ứng')
 
     actual_amount = fields.Float(string='Số tiền thực tế', compute='_compute_actual_amount', store=True, readonly=True)
@@ -92,6 +93,7 @@ class AdvanceRequest(models.Model):
     account_holder = fields.Text(string='Chủ tài khoản', compute='_compute_party', store=True, readonly=False)
     bank_id = fields.Many2one('res.bank', string='Ngân hàng', compute='_compute_party', store=True, readonly=False)
     attachment_ids = fields.Binary(string='Phiếu tạm ứng đã duyệt')
+    wire_transfer_bill = fields.Binary(string='Bill chuyển tiền')
     attachment_back_ids = fields.Binary(string='Phiếu hoàn ứng đã duyệt')
 
     # Các trường One2many cho file đính kèm
@@ -119,12 +121,26 @@ class AdvanceRequest(models.Model):
 
     request_lines = fields.One2many(comodel_name='advance.request.line', inverse_name='advance_request_id', string='Chi tiết yêu cầu tạm ứng')
 
+    @api.depends('amount_total')
+    def _compute_advance_amount(self):
+        for rec in self:
+            rec.advance_amount = rec.amount_total
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', 'Mới') == 'Mới':
                 vals['name'] = self.env['ir.sequence'].next_by_code('advance.request') or 'Mới'
-        return super(AdvanceRequest, self).create(vals_list)
+
+        # Tạo bản ghi
+        records = super(AdvanceRequest, self).create(vals_list)
+
+        # Tính toán payment_date = create_date + 2 ngày
+        for rec in records:
+            if rec.create_date:
+                rec.payment_date = (rec.create_date + timedelta(days=2)).date()
+
+        return records
 
     def _check_state_transition_conditions(self, next_state):
         for rec in self:
@@ -146,6 +162,7 @@ class AdvanceRequest(models.Model):
             if next_state == 'done':
                 if not rec.payment_date: missing_fields.append('Ngày thanh toán')
                 if not rec.advance_amount: missing_fields.append('Số tiền tạm ứng')
+                if not rec.wire_transfer_bill: missing_fields.append('Bill chuyển tiền')
 
             if missing_fields:
                 raise ValidationError(f"Vui lòng nhập đầy đủ các trường sau trước khi chuyển sang trạng thái {dict(self._fields['state'].selection).get(next_state)}: {', '.join(missing_fields)}")
@@ -384,10 +401,10 @@ class AdvanceRequest(models.Model):
         for rec in self:
             rec.amount_total = sum(rec.request_lines.mapped('amount_total'))
 
-    @api.depends('request_lines.total_actual_amount')
+    @api.depends('request_lines.actual_amount')
     def _compute_actual_amount(self):
         for rec in self:
-            rec.actual_amount = sum(rec.request_lines.mapped('total_actual_amount'))
+            rec.actual_amount = sum(rec.request_lines.mapped('actual_amount'))
 
     @api.depends('advance_amount', 'actual_amount')
     def _compute_refund_amount(self):
@@ -566,7 +583,7 @@ class AdvanceRequestLine(models.Model):
     product_category_id = fields.Many2one(string='Nhóm hàng', comodel_name='product.category', domain="[('category_level', 'in', [1,2,3])]")
     currency_rate = fields.Float(string='Tỷ giá', compute='_compute_po_fields', store=True, readonly=True)
     amount = fields.Float(string='Số tiền', currency_field='currency_id')
-    amount_total = fields.Float(string='Thành tiền', currency_field='currency_id')
+    amount_total = fields.Float(string='Thành tiền', currency_field='currency_id', compute='_compute_amount_total_line', store=True, readonly=True)
     po_qty = fields.Float(string='Số lượng đặt PO', compute='_compute_po_fields', store=True, readonly=True)
     po_value = fields.Float(string='Giá trị hàng PO', compute='_compute_po_fields', store=True, readonly=True)
     po_value_vnd = fields.Float(string='Giá trị hàng PO (VNĐ)', compute='_compute_po_fields', store=True, readonly=True)
@@ -593,6 +610,26 @@ class AdvanceRequestLine(models.Model):
     def _compute_total_shipping_cost(self):
         for rec in self:
             rec.total_shipping_cost = rec.pvc_tq + rec.pvc_intl
+
+    @api.depends('po_id', 'po_id.order_line.purchase_price',
+                 'po_id.order_line.ttb_discount_amount', 'po_id.order_line.product_qty',
+                 'po_id.cost_inland_china')
+    def _compute_amount_total_line(self):
+        for rec in self:
+            if rec.po_id:
+                total_amount = 0.0
+
+                # Tính tổng: (đơn giá VNĐ - CK tiền) × số lượng cho tất cả các dòng
+                for line in rec.po_id.order_line:
+                    discount_amount = line.ttb_discount_amount or 0.0
+                    quantity = line.product_qty or 0.0
+                    total_amount += (line.purchase_price - discount_amount) * quantity
+
+                total_amount += rec.po_id.cost_inland_china or 0.0
+
+                rec.amount_total = total_amount
+            else:
+                rec.amount_total = 0.0
 
     @api.depends('po_id', 'po_id.exchange_rate', 'po_id.order_line.product_qty', 'po_id.order_line.product_qty', 'po_id.price_amount_cn',
                  'po_id.cost_inland_china', 'po_id.cost_international_shipping', 'po_id.cost_vat',
@@ -671,10 +708,10 @@ class AdvanceRequestLine(models.Model):
                 rec.actual_value = 0.0
                 rec.actual_value_vnd = 0.0
 
-    @api.depends('actual_value_vnd', 'tax_amount', 'partner_discount')
+    @api.depends('actual_value_vnd', 'pvc_tq', 'partner_discount')
     def _compute_actual_amount(self):
         for rec in self:
-            rec.actual_amount = rec.actual_value_vnd + rec.tax_amount - rec.partner_discount
+            rec.actual_amount = rec.actual_value_vnd + rec.pvc_tq - rec.partner_discount
 
     @api.depends('vat_amount', 'inspection_fee', 'fumigration_fee', 'customs_inspection_fee',
                  'outside_customs_fee', 'lifting_fee', 'other_fee')
@@ -696,7 +733,6 @@ class AdvanceRequestLine(models.Model):
             self.description = self.po_id.description
             self.product_category_id = self.po_id.product_category_id
             self.amount = self.po_id.amount_untaxed
-            self.amount_total = self.po_id.amount_total
 
     def unlink(self):
         for rec in self:

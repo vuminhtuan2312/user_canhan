@@ -8,6 +8,7 @@ import base64
 from odoo.fields import Date, Datetime
 from collections import defaultdict
 from bs4 import BeautifulSoup
+import pandas as pd
 
 class PurchaseOrder(models.Model):
     _name = 'purchase.order'
@@ -767,4 +768,31 @@ class PurchaseOrder(models.Model):
             self.purchase_order_status = 'done'
         else:
             raise UserError('Trạng thái không hợp lệ')
+
+    def update_stock_system(self):
+        for rec in self:
+            stock_warehouse_id = self.env['stock.warehouse'].search([('ttb_branch_id', '=', self.ttb_branch_id.id)], limit=1)
+            if not stock_warehouse_id.id_augges:
+                raise UserError('Kho bạn chọn chưa được cấu hình ID Augges')
+            stock_cache = {}
+
+            for line in rec.order_line:
+                if not line.product_id or not line.product_id.augges_id:
+                    continue
+                id_kho = stock_warehouse_id.id_augges
+                id_hang = line.product_id.augges_id
+
+                key = (id_kho, id_hang)
+                if key not in stock_cache:
+                    try:
+                        stock_cache[key] = self.env['ttb.augges'].get_augges_quantity(id_kho, id_hang)
+                    except Exception:
+                        stock_cache[key] = 0.0
+
+
+                line.ttb_stock_qty = stock_cache[key]
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
 

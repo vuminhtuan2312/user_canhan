@@ -15,6 +15,8 @@ export class EmployeeDashboard extends Component {
 
         this.state = useState({
             loading: true,
+            currentTimeVNDate: "",
+            currentTimeVNTime: "",
             meta: {
                 uid: null,
             },
@@ -40,16 +42,46 @@ export class EmployeeDashboard extends Component {
             expandedAreasFailed: {},
         });
 
-        onWillStart(async () => await this.load());
-        onMounted(() => this._startTickers());
-        onWillUnmount(() => this._stopTickers());
+        onWillStart(async () => {
+            await this.load();
+            this._updateVietnamClock();
+        });
+        onMounted(() => {
+            this._startTickers();
+            this._clockInterval = setInterval(() => this._updateVietnamClock(), 1000);
+        });
+        onWillUnmount(() => {
+            this._stopTickers();
+            if (this._clockInterval) {
+                clearInterval(this._clockInterval);
+                this._clockInterval = null;
+            }
+        });
+    }
+
+    /**
+     * Cập nhật thời gian realtime theo giờ Việt Nam (UTC+7).
+     */
+    _updateVietnamClock() {
+        const VN_OFFSET_MS = 7 * 60 * 60 * 1000;
+        const now = new Date();
+        const vnNow = new Date(now.getTime() + VN_OFFSET_MS);
+        const dayNames = ["Chủ Nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+        const d = vnNow.getUTCDate();
+        const m = vnNow.getUTCMonth() + 1;
+        const y = vnNow.getUTCFullYear();
+        const h = vnNow.getUTCHours();
+        const min = vnNow.getUTCMinutes();
+        const sec = vnNow.getUTCSeconds();
+        const dayOfWeek = dayNames[vnNow.getUTCDay()];
+        this.state.currentTimeVNDate = `${dayOfWeek}, ${d}/${m}/${y}`;
+        this.state.currentTimeVNTime = [h, min, sec].map((n) => String(n).padStart(2, "0")).join(":");
     }
 
     async load() {
         this.state.loading = true;
         try {
             const data = await this.orm.call("ttb.operational.task", "get_employee_dashboard_data", [], {
-                limit: 50,
                 range_key: this.state.rangeKey,
             });
             this.state.meta = data.meta || this.state.meta;
@@ -114,6 +146,52 @@ export class EmployeeDashboard extends Component {
         return Boolean(this.state.expandedAreasFailed[areaKey]);
     }
 
+    _taskStateRank(state) {
+        const order = {
+            suspended: 0, // Tạm hoãn
+            ready: 1, // Sẵn sàng
+            done: 2, // Hoàn thành
+            undone: 3, // Chưa hoàn thành
+            waiting: 4, // Chờ thực hiện
+            delayed: 5, // Hoãn
+        };
+        return order[state] ?? 999;
+    }
+
+    _taskSortTimeMs(task) {
+        const dt = task?.actual_date_end || task?.planned_date_start || task?.planned_date_end;
+        if (dt) {
+            try {
+                return deserializeDateTime(dt).getTime();
+            } catch {
+                // ignore
+            }
+        }
+        const d = task?.assignment_date;
+        if (d) {
+            try {
+                return deserializeDate(d).getTime();
+            } catch {
+                // ignore
+            }
+        }
+        return Number.POSITIVE_INFINITY;
+    }
+
+    _compareTasksForDashboard(a, b) {
+        const ra = this._taskStateRank(a?.state);
+        const rb = this._taskStateRank(b?.state);
+        if (ra !== rb) return ra - rb;
+
+        const ta = this._taskSortTimeMs(a);
+        const tb = this._taskSortTimeMs(b);
+        if (ta !== tb) return ta - tb;
+
+        const na = (a?.name || "").toString();
+        const nb = (b?.name || "").toString();
+        return na.localeCompare(nb);
+    }
+
     getAreaGroupsFailed() {
         const tasks = this.state.failedAuditTasks || [];
         const byArea = {};
@@ -164,8 +242,9 @@ export class EmployeeDashboard extends Component {
         }
         return Object.values(byArea).map((g) => ({
             ...g,
+            tasks: [...g.tasks].sort((a, b) => this._compareTasksForDashboard(a, b)),
             total: g.tasks.length,
-            percent: g.tasks.length ? Math.round((g.doneCount / g.tasks.length) * 100) : 0,
+            percent: g.tasks.length ? Math.round((g.doneCount / g.tasks.length) * 10000) / 100 : 0,
         }));
     }
 
@@ -331,6 +410,17 @@ export class EmployeeDashboard extends Component {
         }
     }
 
+    getAvatarUrl() {
+        const meta = this.state.meta || {};
+        if (meta.employee_id) {
+            return `/web/image/hr.employee/${meta.employee_id}/image_128`;
+        }
+        if (meta.uid) {
+            return `/web/image/res.users/${meta.uid}/image_128`;
+        }
+        return null;
+    }
+
     stateBadgeClass(state) {
         switch (state) {
             case "waiting":
@@ -355,6 +445,13 @@ export class EmployeeDashboard extends Component {
     taskRowClass(task) {
         if (task?.is_late) return "table-danger";
         if (task?.state === "delayed" || task?.state === "suspended") return "table-warning";
+        return "";
+    }
+
+    /** Class viền thẻ công việc (kanban) theo trễ hạn / trạng thái */
+    getTaskCardBorderClass(task) {
+        if (task?.is_late) return "border-danger";
+        if (task?.state === "delayed" || task?.state === "suspended") return "border-warning";
         return "";
     }
 }

@@ -33,7 +33,17 @@ class PeriodInventory(models.Model):
         "period_inventory_id",
         string="Đợt kiểm kê theo cơ sở",
     )
-
+    date_start_sync_augges = fields.Date(string="Thời điểm bắt đầu đồng bộ tồn kho AUGGES", copy=False)
+    inventory_augges_stock_sync_ids = fields.One2many(
+        "inventory.augges.stock.sync",
+        "inventory_id",
+        string="Đồng bộ tồn kho AUGGES",
+    )
+    inventory_mch2_session_ids = fields.One2many(
+        "inventory.mch2.session",
+        "inventory_id",
+        string="Phiên kiểm kê MCH2",
+    )
     @api.constrains('start_date', 'end_date')
     def _check_date_range(self):
         for rec in self:
@@ -56,6 +66,7 @@ class PeriodInventory(models.Model):
             if rec.end_date < now:
                 raise UserError("Đã qua 'Ngày kết thúc'. Không thể bắt đầu kiểm kê.")
             rec.state = 'in_progress'
+            rec.augges_stock_sync()
             rec.branch_line_ids.filtered(lambda b: b.state == 'draft').write({'state': 'in_progress'})
 
     def action_done(self):
@@ -267,3 +278,105 @@ class PeriodInventory(models.Model):
         records = super().create(vals_list)
         records._create_branch_lines()
         return records
+
+
+    def augges_stock_sync(self):
+        """Đồng bộ tồn kho thực tế vào kho ảo 'AUGGES' để phục vụ kiểm kê."""
+        conn = self.env['ttb.tools'].get_mssql_connection()
+        cursor = conn.cursor()
+        if self.date_start_sync_augges:
+            day = self.date_start_sync_augges
+        else:
+            day = fields.Date.today()
+        nam = day.strftime("%y")
+        thang = day.strftime("%m")
+        sngay = day.strftime("%y%m%d")
+        dau_thang = day.strftime("%y%m01")
+        query = f"""
+        SELECT ID_Kho, ID_Hang, Ma_Hang, Ma_Tong, SUM(Sl_Cky) AS SL_Ton, SUM(So_Luong) AS So_Luong,
+            {nam} as nam,
+            {thang} as mm,
+            {sngay} as sngay
+        FROM 
+        ( 
+
+        SELECT Htk.ID_Kho, Htk.ID_Hang, DmH.Ma_Hang, ISNULL(DmH.Ma_Tong,SPACE(25)) AS Ma_Tong, SUM(Htk.So_Luong) AS Sl_Cky, CAST(0 AS money) AS So_Luong 
+        FROM Htk 
+        LEFT JOIN DmKho ON Htk.ID_Kho  = DmKho.ID 
+        LEFT JOIN DmH   ON Htk.ID_Hang = DmH.ID 
+        LEFT JOIN DmNh  ON DmH.ID_Nhom = DmNh.ID 
+        WHERE HTK.Nam = {nam} AND HtK.ID_Dv = 0 AND Htk.Mm = {thang} AND Htk.ID_Kho IS NOT NULL 
+        GROUP BY Htk.ID_Kho, Htk.ID_Hang, DmH.Ma_Hang, DmH.Ma_Tong 
+
+        UNION ALL 
+        SELECT SlNxM.ID_Kho, SlNxD.ID_Hang, DmH.Ma_Hang, ISNULL(DmH.Ma_Tong,SPACE(25)) AS Ma_Tong, 
+        SUM(CASE WHEN DmNx.Ma_Ct IN ('NK','NM','PN','NS','NL') THEN SlNxD.So_Luong ELSE -SlNxD.So_Luong END) AS Sl_Cky, 
+        SUM(CASE WHEN SlNxD.SNgay >='{sngay}' AND DmNx.Ma_Ct IN ('XK','XB','NL') THEN (CASE WHEN DmNx.Ma_Ct IN ('XK','XB') THEN SlNxD.So_Luong ELSE -SlNxD.So_Luong END) ELSE CAST(0 AS money) END) AS So_Luong 
+        FROM SlNxD 
+        LEFT JOIN SlNxM ON SlNxD.ID      = SlNxM.ID 
+        LEFT JOIN DmNx  ON SlNxM.ID_Nx   = DmNx.ID 
+        LEFT JOIN DmH   ON SlNxD.ID_Hang = DmH.ID 
+        LEFT JOIN DmNh  ON DmH.ID_Nhom   = DmNh.ID 
+        WHERE SlNxM.Sngay >= '{dau_thang}' AND SlNxM.Sngay <= '{sngay}' AND SlNxM.ID_Dv = 0 AND SlNxD.ID_Kho IS NOT NULL  AND SlNxD.ID_Hang IS NOT NULL  
+        GROUP BY SlNxM.ID_Kho, SlNxD.ID_Hang, DmH.Ma_Hang, DmH.Ma_Tong 
+
+        UNION ALL 
+        SELECT SlBlM.ID_Kho, SlBlD.ID_Hang, DmH.Ma_Hang, ISNULL(DmH.Ma_Tong,SPACE(25)) AS Ma_Tong, SUM(- SlBlD.So_Luong) AS Sl_Cky, 
+        SUM(CASE WHEN SlBlD.SNgay >='{sngay}' THEN SlBlD.So_Luong ELSE CAST(0 AS money) END) AS So_Luong 
+        FROM SlBlD 
+        LEFT JOIN SlBlM ON SlBlD.ID      = SlBlM.ID 
+        LEFT JOIN DmH   ON SlBlD.ID_Hang = DmH.ID 
+        LEFT JOIN DmNh  ON DmH.ID_Nhom   = DmNh.ID 
+        WHERE SlBlM.Sngay >= '{dau_thang}' AND SlBlM.Sngay <= '{sngay}' AND SlBlM.ID_Dv = 0 AND ISNULL(SlBlD.ID_Kho,SlBlM.ID_Kho) IS NOT NULL  AND SlBlD.ID_Hang IS NOT NULL  
+        GROUP BY SlBlM.ID_Kho, SlBlD.ID_Hang, DmH.Ma_Hang, DmH.Ma_Tong 
+
+        UNION ALL 
+        SELECT SlDcD.ID_KhoX AS ID_Kho, SlDcD.ID_Hang, DmH.Ma_Hang, ISNULL(DmH.Ma_Tong,SPACE(25)) AS Ma_Tong, SUM(- SlDcD.So_Luong) AS Sl_Cky, 
+        CAST(0 AS money) AS So_Luong 
+        FROM SlDcD 
+        LEFT JOIN SlDcM ON SlDcD.ID      = SlDcM.ID 
+        LEFT JOIN DmKho ON SlDcD.ID_KhoX = DmKho.ID 
+        LEFT JOIN DmH   ON SlDcD.ID_Hang = DmH.ID 
+        LEFT JOIN DmNh  ON DmH.ID_Nhom   = DmNh.ID 
+        WHERE SlDcM.Sngay >= '{dau_thang}' AND SlDcM.Sngay <= '{sngay}' AND SlDcM.ID_Dv = 0 AND SlDcD.ID_KhoX IS NOT NULL 
+        GROUP BY SlDcD.ID_KhoX, SlDcD.ID_Hang, DmH.Ma_Hang, DmH.Ma_Tong 
+
+        UNION ALL 
+        SELECT SlDcD.ID_KhoN AS ID_Kho, SlDcD.ID_Hang, DmH.Ma_Hang, ISNULL(DmH.Ma_Tong,SPACE(25)) AS Ma_Tong, 
+        SUM(SlDcD.So_Luong) AS Sl_Cky, CAST(0 AS money) AS So_Luong 
+        FROM SlDcD 
+        LEFT JOIN SlDcM ON SlDcD.ID      = SlDcM.ID 
+        LEFT JOIN DmKho ON SlDcD.ID_KhoN = DmKho.ID 
+        LEFT JOIN DmH   ON SlDcD.ID_Hang = DmH.ID 
+        LEFT JOIN DmNh  ON DmH.ID_Nhom   = DmNh.ID 
+        WHERE SlDcM.Sngay >= '{dau_thang}' AND SlDcM.Sngay <= '{sngay}' AND SlDcM.ID_Dv = 0 AND SlDcD.ID_KhoN IS NOT NULL 
+        GROUP BY SlDcD.ID_KhoN, SlDcD.ID_Hang, DmH.Ma_Hang, DmH.Ma_Tong 
+
+        ) AS Dt_Hang 
+        WHERE Sl_Cky<>0 OR So_Luong<>0 
+        GROUP BY ID_Kho, ID_Hang, Ma_Hang, Ma_Tong 
+        """
+
+        cursor.execute(query)
+        columns = [col[0] for col in cursor.description]
+        results = cursor.fetchall()
+        data = [dict(zip(columns, row)) for row in results]
+        for line in data:
+            warehouse = self.env['stock.warehouse'].search([('id_augges', '=', line['ID_Kho'])], limit=1)
+            mch2 = self.env['product.template'].search([('augges_id', '=', line['ID_Hang'])], limit=1).categ_id_level_2.name
+            try:
+                if warehouse and mch2:
+                    if self.env['inventory.augges.stock.sync'].search_count([
+                        ('inventory_id', '=', self.id),
+                        ('product_aug_id', '=', line['ID_Hang']),
+                        ('kho_id', '=', self.env['stock.picking.type'].search([('warehouse_id', '=', warehouse.id), ('code', '=', 'inventory_counting')], limit=1).id),
+                    ]) == 0:
+                        self.env['inventory.augges.stock.sync'].create({
+                            'inventory_id': self.id,
+                            'product_aug_id': line['ID_Hang'],
+                            'kho_id': self.env['stock.picking.type'].search([('warehouse_id', '=', warehouse.id), ('code', '=', 'inventory_counting')], limit=1).id,
+                            'qty': line['SL_Ton'],
+                            'mch2': mch2 if mch2 else '',
+                        })
+            except Exception:
+                _logger.exception('Failed to create inventory.augges.stock.sync for line: %s', line)

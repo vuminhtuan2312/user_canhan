@@ -76,21 +76,21 @@
                                     <field name="actual_qty" readonly="1" force_save="1" optional="hide"/>
                                     <field name="actual_value" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
                                     <field name="actual_value_vnd" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
-                                    <field name="tax_amount" readonly="1" force_save="1" column_invisible="parent.state not in ('done', 'refunding', 'refunded')" optional="show"/>
+                                    <field name="tax_amount" readonly="1" force_save="1" column_invisible="1"/>
                                     <field name="partner_discount" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
-                                    <field name="actual_amount" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
-                                    <field name="pvc_intl" readonly="1" force_save="1" optional="hide"/>
                                     <field name="pvc_tq" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')" optional="hide"/>
-                                    <field name="total_shipping_cost" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')" optional="show"/>
-                                    <field name="vat_amount" readonly="1" force_save="1" optional="hide"/>
-                                    <field name="inspection_fee" readonly="1" force_save="1" optional="hide"/>
-                                    <field name="fumigration_fee" readonly="1" force_save="1" optional="hide"/>
-                                    <field name="customs_inspection_fee" readonly="1" force_save="1" optional="hide"/>
-                                    <field name="outside_customs_fee" readonly="1" force_save="1" optional="hide"/>
-                                    <field name="lifting_fee" readonly="1" force_save="1" optional="hide"/>
-                                    <field name="other_fee" readonly="1" force_save="1" optional="hide"/>
-                                    <field name="total_other_fee" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
-                                    <field name="total_actual_amount" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                    <field name="actual_amount" readonly="1" force_save="1" column_invisible="parent.state not in ('refunding', 'refunded')"/>
+                                    <field name="pvc_intl" readonly="1" force_save="1" column_invisible="1"/>
+                                    <field name="total_shipping_cost" readonly="1" force_save="1" column_invisible="1"/>
+                                    <field name="vat_amount" readonly="1" force_save="1" column_invisible="1"/>
+                                    <field name="inspection_fee" readonly="1" force_save="1" column_invisible="1"/>
+                                    <field name="fumigration_fee" readonly="1" force_save="1" column_invisible="1"/>
+                                    <field name="customs_inspection_fee" readonly="1" force_save="1" column_invisible="1"/>
+                                    <field name="outside_customs_fee" readonly="1" force_save="1" column_invisible="1"/>
+                                    <field name="lifting_fee" readonly="1" force_save="1" column_invisible="1"/>
+                                    <field name="other_fee" readonly="1" force_save="1" column_invisible="1"/>
+                                    <field name="total_other_fee" readonly="1" force_save="1" column_invisible="1"/>
+                                    <field name="total_actual_amount" readonly="1" force_save="1" column_invisible="1"/>
                                 </list>
                             </field>
                         </page>
@@ -112,6 +112,7 @@
                         <page string="Chứng từ kế toán" name="accounting_info">
                             <group>
                                 <field name="attachment_ids" widget="pdf_viewer"/>
+                                <field name="wire_transfer_bill" widget="pdf_viewer"/>
                                 <field name="attachment_back_ids" widget="pdf_viewer" invisible="state not in ('refunding', 'refunded')"/>
                             </group>
                         </page>

@@ -48,6 +48,26 @@
                                 </list>
                             </field>
                         </page>
+                        <page string="Đồng bộ tồn kho Augges">
+                            <field name="inventory_augges_stock_sync_ids">
+                                <list editable="bottom">
+                                    <field name="product_aug_id"/>
+                                    <field name="kho_id"/>
+                                    <field name="mch2"/>
+                                    <field name="has_mch2"/>
+                                    <field name="is_inventoried"/>
+                                </list>
+                            </field>
+                        </page><page string="Phiên kiểm kê MCH2">
+                            <field name="inventory_mch2_session_ids">
+                                <list editable="bottom">
+                                    <field name="mch2"/>
+                                    <field name="state"/>
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                </list>
+                            </field>
+                        </page>
                     </notebook>
                 </sheet>
             </form>

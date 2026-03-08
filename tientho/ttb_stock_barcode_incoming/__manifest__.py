@@ -28,6 +28,8 @@
         'views/period_inventory_views.xml',
         'views/kvc_inventory_report_views.xml',
         'views/kvc_inventory_pivot_views.xml',
+        'views/inventory_augges_stock_sync_views.xml',
+        'views/inventory_mch2_session_views.xml',
         'views/menu_items.xml',
         # wizard
         'wizard/create_recheck_inventory_wizard_views.xml',

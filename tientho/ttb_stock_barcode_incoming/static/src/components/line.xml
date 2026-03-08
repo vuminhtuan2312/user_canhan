@@ -33,6 +33,15 @@
                 <span class="text-muted">Lệch tồn Augges: </span>
                 <span t-esc="line.diff_qty" class="fw-bold"/>
             </div>
+            <!-- Cảnh báo MCH2 -->
+            <div t-if="line.mch2_wrong"
+                 class="text-danger fw-bold small">
+                SP <t t-esc="line.product_id.default_code"/>
+                thuộc MCH2 <t t-esc="line.mch2_real"/>,
+                không khớp phiếu MCH2
+                <t t-esc="line.mch2_expected"/>.
+                Vui lòng xóa dòng.
+            </div>
         </xpath>
 <!--        <xpath expr="//div[hasclass('o_product_ref')]" position="inside">-->
 <!--            <div t-if="line.product_id.barcode"-->

@@ -71,7 +71,6 @@
                 <field name="planned_date_start"/>
                 <field name="planned_date_end"/>
                 <field name="state" widget="badge" decoration-warning="state == 'waiting'" decoration-info="state == 'ready'" decoration-success="state == 'done'" decoration-muted="state == 'delayed'"/>
-                <field name="audit_state" widget="badge" decoration-warning="audit_state == 'pending'" decoration-success="audit_state == 'pass'" decoration-danger="audit_state == 'fail'" invisible="not is_audit_required"/>
                 <field name="is_late" column_invisible="True"/>
                 <field name="is_rework" column_invisible="True"/>
                 <field name="is_audit_required" column_invisible="True"/>
@@ -202,6 +201,8 @@
                 <filter string="Trễ hạn" name="late" domain="[('is_late', '=', True)]"/>
                 <separator/>
                 <filter string="Hôm nay" name="today" domain="[('planned_date_start', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')), ('planned_date_start', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                <separator/>
+                <filter string="Đã hậu kiểm" name="audit_done" domain="[('is_audit_required', '=', True), ('audit_state', 'in', ['pass', 'fail'])]"/>
                 <separator/>
                 <filter string="Đã phân công (tổng quan)" name="dashboard_assigned" domain="[('state', '!=', 'cancel')]"/>
                 <filter string="Đã hoàn thành (tổng quan)" name="dashboard_done" domain="[('state', '=', 'done')]"/>

@@ -143,6 +143,8 @@
                 <button name="%(ttb_purchase.action_discount_by_money)d" type="action" string="Chiết khấu theo số tền (Tệ)"
                         class="btn-primary m-2" invisible="state != 'draft'" context="{'money': True}"/>
                 <button name="%(ttb_purchase.purchase_order_add_tax_action)d" context="{'default_tax_country_id':tax_country_id,'default_company_id':company_id}" type="action" string="Thuế" class="btn-primary m-2" invisible="state != 'draft'"/>
+                <button name="update_stock_system" string="Tính lại tồn" type="object"  class="btn btn-primary export-product"/>
+
             </field>
             <field name="fiscal_position_id" position="before">
                 <field name="ttb_company_partner_id" invisible="1"/>

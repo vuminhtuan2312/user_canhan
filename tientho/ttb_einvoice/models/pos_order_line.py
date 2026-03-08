@@ -53,9 +53,26 @@
     #         'uom_id': line.product_uom_id,
     #         'name': product_name,
     #     }
-from odoo import models, fields
+from odoo import models, fields, api
 
 class PosOrderLine(models.Model):
     _inherit = 'pos.order.line'
 
     promotion_program_name = fields.Char('CTKM')
+    khu_vuc = fields.Selection([
+        ('kbl', 'KBL'),
+        ('kvc', 'KVC'),
+        ('khac', 'Khác'),
+    ], string='Khu vực', compute='_compute_khu_vuc', store=True)
+
+    @api.depends('order_id.name')
+    def _compute_khu_vuc(self):
+        for line in self:
+            order_name = (line.order_id.name or '').lower()
+
+            if 'kvc' in order_name:
+                line.khu_vuc = 'kvc'
+            elif 'bl' in order_name:
+                line.khu_vuc = 'kbl'
+            else:
+                line.khu_vuc = 'khac'
