@@ -2,28 +2,58 @@
 <templates xml:space="preserve">
     <t t-name="ttb_khuvuichoi.EmployeeDashboard" owl="1">
         <div class="o_ttb_employee_dashboard o_ttb_dashboard_scroll p-3">
-            <div class="d-flex align-items-start align-items-md-center justify-content-between mb-3 flex-column flex-md-row gap-2">
-                <div>
-                    <h2 class="m-0">Tổng quan</h2>
-                    <div class="text-muted small">
-                        Dành cho nhân viên
-                        <span class="mx-1">•</span>
-                        <span>Thời gian: <strong t-esc="state.rangeLabel"/></span>
-                        <span class="mx-1">•</span>
-                        <span>Lần cập nhật: <t t-esc="formatLastRefreshedAt()"/></span>
-                    </div>
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h2 class="m-0">Tổng quan</h2>
+                <div class="o_ttb_clock_vn text-end">
+                    <div class="o_ttb_clock_date text-muted small" t-esc="state.currentTimeVNDate"/>
+                    <div class="o_ttb_clock_time fw-semibold" t-esc="state.currentTimeVNTime"/>
                 </div>
-                <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <div class="w-100 w-md-auto order-1">
-                        <div class="btn-group w-100" role="group" aria-label="Time range">
+            </div>
+
+            <!-- Bảng chào: vàng nhạt, bo viền; chứa ảnh + lời chào + dòng thông tin + filter -->
+            <div class="o_ttb_employee_greeting mb-4">
+                <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-4">
+                    <div class="d-flex align-items-center gap-4 flex-shrink-0">
+                        <div class="o_ttb_employee_avatar-wrap">
+                            <t t-if="getAvatarUrl()">
+                                <img t-att-src="getAvatarUrl()" class="o_ttb_employee_avatar" alt="Avatar" />
+                            </t>
+                            <t t-else="">
+                                <div class="o_ttb_employee_avatar o_ttb_employee_avatar_placeholder">
+                                    <i class="fa fa-user"/>
+                                </div>
+                            </t>
+                        </div>
+                        <div>
+                            <h3 class="mb-0 fw-bold">
+                                Chào, <span t-esc="state.meta.employee_name || 'Nhân viên'"/>
+                            </h3>
+                            <div class="o_ttb_employee_role_branch text-muted small mt-1" t-if="state.meta.role_label || state.meta.branch_names">
+                                <t t-if="state.meta.role_label">
+                                    <span t-esc="state.meta.role_label"/>
+                                </t>
+                                <t t-if="state.meta.role_label and state.meta.branch_names">
+                                    <span class="mx-1">•</span>
+                                </t>
+                                <t t-if="state.meta.branch_names">
+                                    <span t-esc="state.meta.branch_names"/>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column gap-2 flex-grow-1 flex-md-grow-0 justify-content-md-end align-items-stretch align-items-md-end">
+                        <div class="text-muted small">
+                            <span>Bộ lọc: <strong t-esc="state.rangeLabel"/></span>
+                            <span class="mx-1">•</span>
+                            <span>Thời gian cập nhật: <t t-esc="formatLastRefreshedAt()"/></span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <div class="btn-group" role="group" aria-label="Time range">
                             <button class="btn btn-sm" t-att-class="state.rangeKey === 'before' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('before')">Trước</button>
                             <button class="btn btn-sm" t-att-class="state.rangeKey === 'today' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('today')">Hôm nay</button>
                             <button class="btn btn-sm" t-att-class="state.rangeKey === 'tomorrow' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('tomorrow')">Ngày mai</button>
-                            <!-- <button class="btn btn-sm" t-att-class="state.rangeKey === 'day2' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('day2')">Ngày kia</button> -->
                             <button class="btn btn-sm" t-att-class="state.rangeKey === 'all' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('all')">Toàn bộ</button>
                         </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-2 order-2">
                         <button type="button" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
                             t-att-title="state.notificationEnabled ? 'Thông báo: Bật' : 'Thông báo: Tắt'"
                             t-on-click="onNotificationSwitchClick">
@@ -36,6 +66,7 @@
                         <span class="text-muted small" t-if="state.autoRefreshEnabled">
                             Refresh sau: <strong t-esc="state.nextRefreshInSec"/>s
                         </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -77,174 +108,145 @@
 
             <div class="card mb-4">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <strong>Chi tiết</strong>
+                    <strong class="w-100 w-md-auto text-center">Chi tiết</strong>
                     <span class="text-muted small" t-if="state.loading">Đang tải…</span>
                 </div>
-                <div class="table-responsive o_ttb_table_scroll">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th style="min-width: 280px;">Tên công việc</th>
-                                <th style="min-width: 160px;">Thời gian phân công</th>
-                                <th style="min-width: 260px;">Thời gian thực hiện</th>
-                                <th style="min-width: 140px;">Trạng thái</th>
-                                <th style="min-width: 250px;">Ghi chú</th>
-                                <t t-if="state.isAdmin"><th style="min-width: 100px;">Thông báo</th></t>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-if="state.loading">
-                                <tr>
-                                    <td t-att-colspan="state.isAdmin ? 6 : 5" class="text-muted">Đang tải dữ liệu…</td>
-                                </tr>
-                            </t>
-                            <t t-elif="!state.tasks.length">
-                                <tr>
-                                    <td t-att-colspan="state.isAdmin ? 6 : 5" class="text-muted">Chưa có công việc nào.</td>
-                                </tr>
-                            </t>
-                            <t t-else="">
-                                <t t-foreach="getAreaGroups()" t-as="areaGroup" t-key="areaGroup.areaKey">
-                                    <tr class="o_ttb_area_header align-middle" role="button" tabindex="0" t-on-click="() => this.toggleAreaExpand(areaGroup.areaKey)" t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; this.toggleAreaExpand(areaGroup.areaKey)">
-                                        <td t-att-colspan="state.isAdmin ? 6 : 5" class="py-2">
-                                            <span class="me-2 o_ttb_area_chevron" t-att-class="this.isAreaExpanded(areaGroup.areaKey) ? 'fa fa-chevron-down' : 'fa fa-chevron-right'"/>
-                                            <strong t-esc="areaGroup.areaName"/>
-                                            <span class="text-muted ms-1">[ <t t-esc="areaGroup.percent"/>% hoàn thành ]</span>
-                                        </td>
-                                    </tr>
-                                    <t t-if="this.isAreaExpanded(areaGroup.areaKey)">
+                <div class="card-body">
+                    <t t-if="state.loading">
+                        <p class="text-muted mb-0">Đang tải dữ liệu…</p>
+                    </t>
+                    <t t-elif="!state.tasks.length">
+                        <p class="text-muted mb-0">Chưa có công việc nào.</p>
+                    </t>
+                    <t t-else="">
+                        <t t-foreach="getAreaGroups()" t-as="areaGroup" t-key="areaGroup.areaKey">
+                            <div class="mb-3">
+                                <div class="o_ttb_area_header align-middle py-2 px-3 rounded mb-2 d-flex align-items-center" role="button" tabindex="0" t-on-click="() => this.toggleAreaExpand(areaGroup.areaKey)" t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; this.toggleAreaExpand(areaGroup.areaKey)">
+                                    <span class="me-2 o_ttb_area_chevron" t-att-class="this.isAreaExpanded(areaGroup.areaKey) ? 'fa fa-chevron-down' : 'fa fa-chevron-right'"/>
+                                    <strong t-esc="areaGroup.areaName"/>
+                                    <span class="text-muted ms-1">[ <t t-esc="areaGroup.percent"/>% hoàn thành ]</span>
+                                </div>
+                                <t t-if="this.isAreaExpanded(areaGroup.areaKey)">
+                                    <div class="row g-2 g-md-3">
                                         <t t-foreach="areaGroup.tasks" t-as="task" t-key="task.id">
-                                            <tr t-att-class="this.taskRowClass(task)">
-                                                <td>
-                                                    <a href="#" t-on-click.prevent="() => openTask(task.id)">
-                                                        <t t-esc="task.name"/>
-                                                    </a>
-                                                </td>
-                                                <td t-esc="formatDate(task.assignment_date)"/>
-                                                <td t-esc="formatExecutionTime(task)"/>
-                                                <td>
-                                                    <span class="badge" t-att-class="stateBadgeClass(task.state)">
-                                                        <t t-esc="task.state_label"/>
-                                                    </span>
-                                                </td>
-                                                <td class="text-truncate" style="max-width: 520px;" t-esc="task.note"/>
-                                                <t t-if="state.isAdmin">
-                                                    <td class="text-center">
-                                                        <i t-if="task.notification_sent" class="fa fa-check text-success" title="Đã gửi thông báo"/>
-                                                        <span t-else="" class="text-muted">-</span>
-                                                    </td>
-                                                </t>
-                                            </tr>
+                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                <div class="card h-100 o_ttb_task_card border-start border-3 o_ttb_task_card_clickable" role="button" tabindex="0" t-att-class="'border-3 ' + (this.getTaskCardBorderClass(task) || 'border-secondary')" t-on-click="() => this.openTask(task.id)" t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; this.openTask(task.id)">
+                                                    <div class="card-body py-2 px-3">
+                                                        <div class="d-flex flex-wrap gap-1 mb-1">
+                                                            <span t-if="task.is_late" class="badge text-bg-danger">Trễ hạn</span>
+                                                            <span class="badge" t-att-class="stateBadgeClass(task.state)">
+                                                                <t t-esc="task.state_label"/>
+                                                            </span>
+                                                            <t t-if="state.isAdmin">
+                                                                <i t-if="task.notification_sent" class="fa fa-check text-success small" title="Đã gửi thông báo"/>
+                                                            </t>
+                                                        </div>
+                                                        <h6 class="card-title mb-1 text-break" style="font-size: 0.95rem;">
+                                                            <t t-esc="task.name"/>
+                                                        </h6>
+                                                        <div class="text-muted small mb-1">
+                                                            <i class="fa fa-clock-o me-1"/>
+                                                            <t t-esc="formatExecutionTime(task)"/>
+                                                        </div>
+                                                        <p t-if="task.note" class="card-text small text-secondary mb-0 text-truncate" style="max-height: 2.5em;" t-esc="task.note"/>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </t>
-                                    </t>
+                                    </div>
                                 </t>
-                            </t>
-                        </tbody>
-                    </table>
+                            </div>
+                        </t>
+                    </t>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <strong>Công việc không đạt</strong>
+                    <strong class="w-100 w-md-auto text-center">Công việc không đạt</strong>
                     <span class="text-muted small" t-if="state.loading">Đang tải…</span>
                 </div>
-                <div class="table-responsive o_ttb_table_scroll">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th style="min-width: 160px;">Khu vực</th>
-                                <th style="min-width: 220px;">Tên công việc</th>
-                                <th style="min-width: 200px;">Nhân viên phụ trách</th>
-                                <th style="min-width: 180px;">Thời gian thực hiện</th>
-                                <th style="min-width: 120px;">Trạng thái</th>
-                                <th style="min-width: 280px;">Ghi chú</th>
-                                <th style="min-width: 220px;">Công việc bổ sung</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-if="state.loading">
-                                <tr>
-                                    <td colspan="7" class="text-muted">Đang tải dữ liệu…</td>
-                                </tr>
-                            </t>
-                            <t t-elif="!state.failedAuditLines.length &amp;&amp; !state.failedAuditTasks.length">
-                                <tr>
-                                    <td colspan="7" class="text-muted">Không có công việc nào không đạt.</td>
-                                </tr>
-                            </t>
-                            <t t-elif="state.failedAuditLines.length">
-                                <t t-foreach="getAreaGroupsFailedLines()" t-as="areaGroup" t-key="'failed_lines_' + areaGroup.areaKey">
-                                    <tr class="o_ttb_area_header align-middle" role="button" tabindex="0" t-on-click="() => this.toggleAreaExpandFailed(areaGroup.areaKey)" t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; this.toggleAreaExpandFailed(areaGroup.areaKey)">
-                                        <td colspan="7" class="py-2">
-                                            <span class="me-2 o_ttb_area_chevron" t-att-class="this.isAreaExpandedFailed(areaGroup.areaKey) ? 'fa fa-chevron-down' : 'fa fa-chevron-right'"/>
-                                            <strong t-esc="areaGroup.areaName"/>
-                                        </td>
-                                    </tr>
-                                    <t t-if="this.isAreaExpandedFailed(areaGroup.areaKey)">
+                <div class="card-body">
+                    <t t-if="state.loading">
+                        <p class="text-muted mb-0">Đang tải dữ liệu…</p>
+                    </t>
+                    <t t-elif="!state.failedAuditLines.length &amp;&amp; !state.failedAuditTasks.length">
+                        <p class="text-muted mb-0">Không có công việc nào không đạt.</p>
+                    </t>
+                    <t t-elif="state.failedAuditLines.length">
+                        <t t-foreach="getAreaGroupsFailedLines()" t-as="areaGroup" t-key="'failed_lines_' + areaGroup.areaKey">
+                            <div class="mb-3">
+                                <div class="o_ttb_area_header align-middle py-2 px-3 rounded mb-2 d-flex align-items-center" role="button" tabindex="0" t-on-click="() => this.toggleAreaExpandFailed(areaGroup.areaKey)" t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; this.toggleAreaExpandFailed(areaGroup.areaKey)">
+                                    <span class="me-2 o_ttb_area_chevron" t-att-class="this.isAreaExpandedFailed(areaGroup.areaKey) ? 'fa fa-chevron-down' : 'fa fa-chevron-right'"/>
+                                    <strong t-esc="areaGroup.areaName"/>
+                                </div>
+                                <t t-if="this.isAreaExpandedFailed(areaGroup.areaKey)">
+                                    <div class="row g-2 g-md-3 mt-2 mb-2">
                                         <t t-foreach="areaGroup.lines" t-as="line" t-key="'fail_' + line.id">
-                                            <tr class="table-danger">
-                                                <td t-esc="line.area_name"/>
-                                                <td t-esc="line.template_line_name"/>
-                                                <td t-esc="line.employee_names"/>
-                                                <td t-esc="formatDateTime(line.actual_date_end)"/>
-                                                <td>
-                                                    <span class="badge text-bg-danger">Không đạt</span>
-                                                </td>
-                                                <td class="text-truncate" style="max-width: 280px;" t-esc="line.note"/>
-                                                <td>
-                                                    <t t-if="line.rework_task_id">
-                                                        <a href="#" t-on-click.prevent="() => openTask(line.rework_task_id)">
-                                                            <t t-esc="line.rework_task_name"/>
-                                                        </a>
-                                                    </t>
-                                                    <t t-else="">-</t>
-                                                </td>
-                                            </tr>
+                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                <div class="card h-100 o_ttb_task_card border-start border-3 border-danger">
+                                                    <div class="card-body py-2 px-3">
+                                                        <span class="badge text-bg-danger mb-1">Không đạt</span>
+                                                        <h6 class="card-title mb-1 text-break" style="font-size: 0.95rem;" t-esc="line.template_line_name"/>
+                                                        <div class="text-muted small mb-1" t-esc="line.area_name"/>
+                                                        <div class="text-muted small mb-1" t-esc="line.employee_names"/>
+                                                        <div class="text-muted small mb-1">
+                                                            <i class="fa fa-clock-o me-1"/>
+                                                            <t t-esc="formatDateTime(line.actual_date_end)"/>
+                                                        </div>
+                                                        <p t-if="line.note" class="card-text small text-secondary mb-1 text-truncate" style="max-height: 2.5em;" t-esc="line.note"/>
+                                                        <t t-if="line.rework_task_id">
+                                                            <a href="#" class="small" t-on-click.prevent="() => this.openTask(line.rework_task_id)">
+                                                                <i class="fa fa-external-link me-1"/> <t t-esc="line.rework_task_name"/>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </t>
-                                    </t>
+                                    </div>
                                 </t>
-                            </t>
-                            <t t-else="">
-                                <t t-foreach="getAreaGroupsFailed()" t-as="areaGroup" t-key="'failed_' + areaGroup.areaKey">
-                                    <tr class="o_ttb_area_header align-middle" role="button" tabindex="0" t-on-click="() => this.toggleAreaExpandFailed(areaGroup.areaKey)" t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; this.toggleAreaExpandFailed(areaGroup.areaKey)">
-                                        <td colspan="7" class="py-2">
-                                            <span class="me-2 o_ttb_area_chevron" t-att-class="this.isAreaExpandedFailed(areaGroup.areaKey) ? 'fa fa-chevron-down' : 'fa fa-chevron-right'"/>
-                                            <strong t-esc="areaGroup.areaName"/>
-                                        </td>
-                                    </tr>
-                                    <t t-if="this.isAreaExpandedFailed(areaGroup.areaKey)">
+                            </div>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <t t-foreach="getAreaGroupsFailed()" t-as="areaGroup" t-key="'failed_' + areaGroup.areaKey">
+                            <div class="mb-3">
+                                <div class="o_ttb_area_header align-middle py-2 px-3 rounded mb-2 d-flex align-items-center" role="button" tabindex="0" t-on-click="() => this.toggleAreaExpandFailed(areaGroup.areaKey)" t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; this.toggleAreaExpandFailed(areaGroup.areaKey)">
+                                    <span class="me-2 o_ttb_area_chevron" t-att-class="this.isAreaExpandedFailed(areaGroup.areaKey) ? 'fa fa-chevron-down' : 'fa fa-chevron-right'"/>
+                                    <strong t-esc="areaGroup.areaName"/>
+                                </div>
+                                <t t-if="this.isAreaExpandedFailed(areaGroup.areaKey)">
+                                    <div class="row g-2 g-md-3">
                                         <t t-foreach="areaGroup.tasks" t-as="task" t-key="'failed_' + task.id">
-                                            <tr class="table-danger">
-                                                <td t-esc="task.area_name || '-'"/>
-                                                <td>
-                                                    <a href="#" t-on-click.prevent="() => openTaskAudit(task.id)">
-                                                        <t t-esc="task.name"/>
-                                                    </a>
-                                                </td>
-                                                <td t-esc="task.employee_name || '-'"/>
-                                                <td t-esc="formatDateTime(task.actual_date_end)"/>
-                                                <td>
-                                                    <span class="badge text-bg-danger">
-                                                        <t t-esc="task.status_label"/>
-                                                    </span>
-                                                </td>
-                                                <td class="text-truncate" style="max-width: 280px;" t-esc="task.note"/>
-                                                <td>
-                                                    <t t-if="task.rework_task_id">
-                                                        <a href="#" t-on-click.prevent="() => openTask(task.rework_task_id)">
-                                                            <t t-esc="task.rework_task_name"/>
-                                                        </a>
-                                                    </t>
-                                                    <t t-else="">-</t>
-                                                </td>
-                                            </tr>
+                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                <div class="card h-100 o_ttb_task_card border-start border-3 border-danger o_ttb_task_card_clickable" role="button" tabindex="0" t-on-click="() => this.openTaskAudit(task.id)" t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; this.openTaskAudit(task.id)">
+                                                    <div class="card-body py-2 px-3">
+                                                        <span class="badge text-bg-danger mb-1" t-esc="task.status_label"/>
+                                                        <h6 class="card-title mb-1 text-break" style="font-size: 0.95rem;">
+                                                            <t t-esc="task.name"/>
+                                                        </h6>
+                                                        <div class="text-muted small mb-1" t-esc="task.area_name || '-'"/>
+                                                        <div class="text-muted small mb-1" t-esc="task.employee_name || '-'"/>
+                                                        <div class="text-muted small mb-1">
+                                                            <i class="fa fa-clock-o me-1"/>
+                                                            <t t-esc="formatDateTime(task.actual_date_end)"/>
+                                                        </div>
+                                                        <p t-if="task.note" class="card-text small text-secondary mb-1 text-truncate" style="max-height: 2.5em;" t-esc="task.note"/>
+                                                        <t t-if="task.rework_task_id">
+                                                            <a href="#" class="small" t-on-click.prevent="(ev) => { ev.stopPropagation(); this.openTask(task.rework_task_id); }">
+                                                                <i class="fa fa-external-link me-1"/> <t t-esc="task.rework_task_name"/>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </t>
-                                    </t>
+                                    </div>
                                 </t>
-                            </t>
-                        </tbody>
-                    </table>
+                            </div>
+                        </t>
+                    </t>
                 </div>
             </div>
         </div>

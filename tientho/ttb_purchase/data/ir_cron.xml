@@ -25,4 +25,15 @@ for company in env['res.company'].search([]):
         <field name="interval_type">days</field>
         <field name="active">False</field>
     </record>
+
+    <record id="ttb_update_product_classification_cron" model="ir.cron">
+        <field name="name">Cập nhật phân loại sản phẩm theo doanh thu lũy kế</field>
+        <field name="model_id" ref="ttb_purchase.model_product_classification"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_update_classification()</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+    </record>
 </odoo>

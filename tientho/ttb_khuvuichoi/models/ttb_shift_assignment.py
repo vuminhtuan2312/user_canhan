@@ -147,6 +147,7 @@ class TtbShiftAssignment(models.Model):
     def _generate_automatic_tasks(self):
         TaskObj = self.env['ttb.operational.task']
         start_dt, end_dt = self._get_shift_time_range()
+        cutoff_end = end_dt - timedelta(hours=1)
         tasks_to_create = []
 
         existing_kept_keys = set()
@@ -169,62 +170,52 @@ class TtbShiftAssignment(models.Model):
         for line in self.line_ids:
             area = line.area_id
             assigned_employees = line.employee_ids
-            if not assigned_employees:
+            if not area or not assigned_employees:
                 continue
 
             templates = self.env['ttb.work.template'].search([
                 ('area_ids', 'in', area.id),
-                ('is_active', '=', True)
+                ('is_active', '=', True),
             ])
 
             for template in templates:
+                freq = template.frequency_minutes or 60
+                if freq <= 0:
+                    continue
+
                 active_delays = TaskObj.search([
                     ('area_id', '=', area.id),
                     ('template_id', '=', template.id),
                     ('state', '=', 'delayed'),
-                    ('delay_until', '>', start_dt)
+                    ('delay_until', '>', start_dt),
                 ])
 
-                freq = template.frequency_minutes or 60
-                duration = template.duration_minutes or 15
-                current_time = start_dt
-                emp_idx = 0
+                slots = []
+                slot_start = start_dt
+                while True:
+                    slot_end = slot_start + timedelta(minutes=freq)
+                    if slot_end > cutoff_end:
+                        break
+                    is_blocked = any(slot_start < d.delay_until for d in active_delays)
+                    key = (template.id, area.id, fields.Datetime.to_string(slot_start))
+                    if not is_blocked and key not in existing_kept_keys:
+                        slots.append((slot_start, slot_end))
+                    slot_start = slot_end
 
-                while current_time < end_dt:
-                    planned_end = current_time + timedelta(minutes=freq)
-
-                    is_blocked = False
-                    for delay in active_delays:
-                        if current_time < delay.delay_until:
-                            is_blocked = True
-                            break
-
-                    if is_blocked:
-                        current_time += timedelta(minutes=freq)
-                        continue
-
-                    key = (template.id, area.id, fields.Datetime.to_string(current_time))
-                    if key in existing_kept_keys:
-                        current_time += timedelta(minutes=freq)
-                        continue
-
-                    employee = assigned_employees[emp_idx % len(assigned_employees)]
-                    emp_idx += 1
-
-                    display_time = (current_time + timedelta(hours=7)).strftime('%H:%M')
-                    tasks_to_create.append({
-                        'name': f"{template.name} ({display_time})",
-                        'assignment_id': self.id,
-                        'template_id': template.id,
-                        'area_id': area.id,
-                        'employee_id': employee.id,
-                        'planned_date_start': current_time,
-                        'planned_date_end': planned_end,
-                        'state': 'waiting',
-                        'is_adhoc': False,
-                    })
-
-                    current_time += timedelta(minutes=freq)
+                for employee in assigned_employees:
+                    for slot_start, slot_end in slots:
+                        display_time = (slot_start + timedelta(hours=7)).strftime('%H:%M')
+                        tasks_to_create.append({
+                            'name': f"{template.name} ({display_time})",
+                            'assignment_id': self.id,
+                            'template_id': template.id,
+                            'area_id': area.id,
+                            'employee_id': employee.id,
+                            'planned_date_start': slot_start,
+                            'planned_date_end': slot_end,
+                            'state': 'waiting',
+                            'is_adhoc': False,
+                        })
 
         if tasks_to_create:
             TaskObj.create(tasks_to_create)

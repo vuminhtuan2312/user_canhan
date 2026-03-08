@@ -63,6 +63,8 @@
         'views/delivery_order.xml',
         'views/ttb_purchase_request_line.xml',
         'views/advance_request.xml',
+        'views/product_classification_views.xml',
+        'views/product_template.xml',
 
         # menu always last
         'views/menu.xml',

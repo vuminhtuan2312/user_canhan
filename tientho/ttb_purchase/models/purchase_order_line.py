@@ -118,6 +118,8 @@ class PurchaseOrderLine(models.Model):
 
             if update:
                 rec.write(update)
+            if rec.product_id:
+                rec.order_id.update_stock_system()
 
         return records
 

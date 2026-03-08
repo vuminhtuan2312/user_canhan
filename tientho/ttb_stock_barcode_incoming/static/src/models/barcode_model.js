@@ -142,7 +142,11 @@ patch(BarcodePickingModel.prototype, {
         let targetResId = this.resId || false;
 
         if (this.record) {
-
+            await this.orm.call(
+                'stock.picking',
+                'update_inventory_start_time',
+                [this.resId]
+            );
             if (this.isReturnPicking && this.record.ttb_return_request_id) {
                 targetModel = 'ttb.return.request';
                 targetResId = Array.isArray(this.record.ttb_return_request_id)

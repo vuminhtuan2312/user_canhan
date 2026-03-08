@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_inventory_augges_stock_sync_form" model="ir.ui.view">
+        <field name="name">inventory.augges.stock.sync.form</field>
+        <field name="model">inventory.augges.stock.sync</field>
+        <field name="arch" type="xml">
+            <form string="Đồng bộ tồn kho Augges">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="inventory_id"/>
+                            <field name="product_aug_id" readonly="1"/>
+                            <field name="kho_id" readonly="1"/>
+                            <field name="qty"/>
+                            <field name="mch2"/>
+                            <field name="has_mch2"/>
+                        </group>
+                        <group>
+                            <field name="is_inventoried"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_inventory_augges_stock_sync_tree" model="ir.ui.view">
+        <field name="name">inventory.augges.stock.sync.tree</field>
+        <field name="model">inventory.augges.stock.sync</field>
+        <field name="arch" type="xml">
+            <list string="Đồng bộ tồn kho Augges">
+                <field name="inventory_id"/>
+                <field name="product_aug_id"/>
+                <field name="kho_id"/>
+                <field name="qty"/>
+                <field name="mch2"/>
+                <field name="has_mch2"/>
+                <field name="is_inventoried"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_inventory_augges_stock_sync" model="ir.actions.act_window">
+        <field name="name">Đồng bộ tồn kho Augges</field>
+        <field name="res_model">inventory.augges.stock.sync</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_inventory_augges_stock_sync_tree"/>
+    </record>
+</odoo>

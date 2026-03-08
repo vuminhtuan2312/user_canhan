@@ -70,6 +70,7 @@
                             <button name="action_import_product" type="object" string="Nhập sản phẩm" class="btn-primary m-2" invisible="state != 'new'"/>
                             <button name="action_matching_product" type="object" string="Khớp sản phẩm" class="btn-primary m-2" invisible="state != 'approved' or type != 'imported_goods'"/>
                             <button name="action_import_code" type="object" string="Import mã NCC" class="btn-primary m-2" invisible="state != 'approved' or type != 'imported_goods'"/>
+                            <button name="update_stock_system" string="Tính lại tồn" type="object"  class="btn btn-primary export-product"/>
                             <field name="line_ids" context="{'disable_column_sort': True}">
                                 <list editable="bottom" create="parent.state == 'new'" delete="parent.state == 'new'">
                                     <field name="separate_prd" string="Tách mã" invisible="parent.type != 'imported_goods'"/>

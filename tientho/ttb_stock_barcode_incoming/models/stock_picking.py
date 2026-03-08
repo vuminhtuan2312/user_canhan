@@ -75,6 +75,9 @@ class StockPicking(models.Model):
         help='Thời gian từ scheduled_date đến date_done (phút)',
         store=True
     )
+    phieu_kk_id = fields.Many2one('inventory.mch2.session', string='Phiếu KK')
+    hk1_id = fields.Many2one('inventory.mch2.session', string='Phiếu HK1')
+    hk_a_id = fields.Many2one('inventory.mch2_session', string='Phiếu HK-A')
 
     @api.depends('inventory_scan_start_time', 'date_done')
     def _compute_inventory_time_minutes(self):
@@ -389,7 +392,8 @@ class StockPicking(models.Model):
         #     other_product_ids = remain_lines[:7 - len(priority_product_ids)].product_id
         #     priority_product_ids = priority_product_ids | other_product_ids
         moves = self.move_ids_without_package.filtered(lambda line: line.diff_qty != 0)
-
+        if not moves:
+            return
         # Tạo danh sách move mới từ những move có chênh lệch
         move_vals = []
         for move in moves:
@@ -1410,3 +1414,8 @@ class StockPicking(models.Model):
                 })
 
         return result
+    def update_inventory_start_time(self):
+        """Cập nhật thời gian bắt đầu kiểm kê vào trường inventory_start_time"""
+        self.ensure_one()
+        if not self.inventory_scan_start_time:
+            self.inventory_scan_start_time = fields.Datetime.now()

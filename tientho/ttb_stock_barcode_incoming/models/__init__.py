@@ -11,3 +11,5 @@ from . import kvc_inventory_report
 from . import period_inventory
 from . import period_inventory_branch
 from . import recreate_augges
+from . import inventory_augges_stock_sync
+from . import inventory_mch2_session

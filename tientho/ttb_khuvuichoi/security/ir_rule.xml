@@ -4,7 +4,7 @@
         <record id="rule_ttb_shift_assignment_branch" model="ir.rule">
             <field name="name">Phiếu phân công: theo cơ sở của user</field>
             <field name="model_id" ref="model_ttb_shift_assignment"/>
-            <field name="domain_force">[('branch_id', 'in', user.ttb_visible_branch_ids.ids)]</field>
+            <field name="domain_force">['|', ('branch_id', 'in', user.ttb_visible_branch_ids.ids), ('line_ids.employee_ids', 'in', [user.employee_id.id] if user.employee_id else [0])]</field>
         </record>
 
         <record id="rule_ttb_post_audit_branch" model="ir.rule">
@@ -16,7 +16,7 @@
         <record id="rule_ttb_operational_task_branch" model="ir.rule">
             <field name="name">Công việc vận hành: theo cơ sở của user</field>
             <field name="model_id" ref="model_ttb_operational_task"/>
-            <field name="domain_force">[('branch_id', 'in', user.ttb_visible_branch_ids.ids)]</field>
+            <field name="domain_force">[('branch_id', 'in', user.employee_id.ttb_branch_ids.ids)]</field>
         </record>
     </data>
 </odoo>

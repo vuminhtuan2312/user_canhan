@@ -95,6 +95,21 @@ class TtbOperationalTask(models.Model):
     audit_user_id = fields.Many2one('res.users', string='Người kiểm tra')
     audit_date = fields.Datetime(string='Thời gian kiểm tra')
     audit_note = fields.Text(string='Ghi chú kiểm tra')
+    
+    completion_rate = fields.Float(string='Tỉ lệ hoàn thành (%)', compute='_compute_completion_rate', store=True, group_operator='avg')
+    audit_score_percent = fields.Float(string='Điểm hậu kiểm (%)', compute='_compute_audit_score_percent', store=True, group_operator='avg')
+
+    @api.depends('audit_state', 'is_audit_required')
+    def _compute_audit_score_percent(self):
+        for task in self:
+            if not task.is_audit_required:
+                task.audit_score_percent = None
+            elif task.audit_state == 'pass':
+                task.audit_score_percent = 100.0
+            elif task.audit_state == 'fail':
+                task.audit_score_percent = 0.0
+            else:
+                task.audit_score_percent = None
 
     # Related / Tạm hoãn (hiển thị Cơ sở, thông tin hoãn)
     branch_id = fields.Many2one(
@@ -163,6 +178,11 @@ class TtbOperationalTask(models.Model):
                 continue
             line = Line.search([('task_id.rework_task_id', '=', task.id)], limit=1)
             task.rework_source_audit_line_id = line
+
+    @api.depends('state')
+    def _compute_completion_rate(self):
+        for task in self:
+            task.completion_rate = 100.0 if task.state == 'done' else 0.0
 
     def write(self, vals):
         if 'state' in vals and vals.get('state') == 'delayed':
@@ -628,13 +648,32 @@ class TtbOperationalTask(models.Model):
         tasks = Task.search(
             domain,
             order='is_late desc, state asc, planned_date_start asc, id desc',
-            limit=int(limit or 50),
         )
 
         User = self.env['res.users'].sudo()
         current_user = User.browse(uid)
         notification_enabled = getattr(current_user, 'ttb_notification_enabled', True)
         is_admin = self.env.user.has_group('base.group_system')
+
+        employee = self._get_current_user_employee()
+        employee_name = employee.name if employee else (current_user.name or current_user.login or '')
+
+        # Phân quyền hiển thị: ưu tiên Giám đốc > Quản lý > Nhân viên (theo groups.xml)
+        role_label = ''
+        if self.env.user.has_group('ttb_khuvuichoi.group_ttb_director_branch'):
+            role_label = 'Giám đốc nhà sách'
+        elif self.env.user.has_group('ttb_khuvuichoi.group_ttb_manager_branch'):
+            role_label = 'Quản lý nhà sách'
+        elif self.env.user.has_group('ttb_khuvuichoi.group_ttb_employee_branch'):
+            role_label = 'Nhân viên nhà sách'
+
+        # Cơ sở của user (employee có thể thuộc nhiều cơ sở)
+        branch_names = []
+        if employee:
+            branch_ids_rel = getattr(employee, 'ttb_branch_ids', None)
+            if branch_ids_rel and hasattr(branch_ids_rel, 'mapped'):
+                branch_names = branch_ids_rel.mapped('name')
+        branch_names_str = ', '.join(branch_names) if branch_names else ''
 
         state_labels = dict(Task._fields['state'].selection)
         result_tasks = []
@@ -658,6 +697,10 @@ class TtbOperationalTask(models.Model):
         meta_extra = {
             'notification_enabled': notification_enabled,
             'is_admin': is_admin,
+            'employee_name': employee_name,
+            'employee_id': employee.id if employee else False,
+            'role_label': role_label,
+            'branch_names': branch_names_str,
         }
 
         # Công việc không đạt (chỉ nhân viên đăng nhập)
@@ -665,7 +708,6 @@ class TtbOperationalTask(models.Model):
         failed_tasks_rs = Task.search(
             failed_domain,
             order='actual_date_end desc, id desc',
-            limit=int(limit or 50),
         )
         audit_state_labels = dict(Task._fields['audit_state'].selection)
         result_failed = []
@@ -687,7 +729,7 @@ class TtbOperationalTask(models.Model):
             })
 
         PostAudit = self.env['ttb.post.audit']
-        failed_audit_lines = PostAudit.get_employee_failed_audit_lines(range_key=range_key or 'today', limit=limit or 50)
+        failed_audit_lines = PostAudit.get_employee_failed_audit_lines(range_key=range_key or 'today', limit=None)
 
         return {
             'meta': {'uid': uid, **meta_extra},
@@ -730,13 +772,37 @@ class TtbOperationalTask(models.Model):
         assignments_managed = Assignment.search([('manager_id.user_id', '=', uid)])
         managed_assignment_branch_ids = assignments_managed.mapped('branch_id').ids
 
-        # Gộp branch_ids để dùng cho filter KPI: quản lý cơ sở thấy hết cơ sở; quản lý ca thấy cơ sở của các ca mình quản lý
-        visible_branch_ids = list(set(managed_branch_ids) | set(managed_assignment_branch_ids))
+        # Quản lý / Giám đốc nhà sách: cơ sở từ ttb_visible_branch_ids (job_id = Giám đốc nhà sách hoặc Quản lý nhà sách)
+        current_user = self.env['res.users'].browse(uid)
+        visible_branch_ids_from_job = (current_user.ttb_visible_branch_ids or Branch.browse()).ids if hasattr(current_user, 'ttb_visible_branch_ids') else []
 
-        # Chỉ trả về rỗng khi vừa không phải quản lý cơ sở vừa không phải quản lý ca
-        if not managed_branch_ids and not assignments_managed:
+        visible_branch_ids = list(set(managed_branch_ids) | set(managed_assignment_branch_ids) | set(visible_branch_ids_from_job))
+
+        employee = self._get_current_user_employee()
+        employee_name = employee.name if employee else (current_user.name or current_user.login or '')
+        role_label = ''
+        if self.env.user.has_group('ttb_khuvuichoi.group_ttb_director_branch'):
+            role_label = 'Giám đốc nhà sách'
+        elif self.env.user.has_group('ttb_khuvuichoi.group_ttb_manager_branch'):
+            role_label = 'Quản lý nhà sách'
+        elif self.env.user.has_group('ttb_khuvuichoi.group_ttb_employee_branch'):
+            role_label = 'Nhân viên nhà sách'
+        branch_names = []
+        if employee:
+            branch_ids_rel = getattr(employee, 'ttb_branch_ids', None)
+            if branch_ids_rel and hasattr(branch_ids_rel, 'mapped'):
+                branch_names = branch_ids_rel.mapped('name')
+        branch_names_str = ', '.join(branch_names) if branch_names else ''
+        meta_extra = {
+            'employee_name': employee_name,
+            'employee_id': employee.id if employee else False,
+            'role_label': role_label,
+            'branch_names': branch_names_str,
+        }
+
+        if not visible_branch_ids:
             return {
-                'meta': {'uid': uid, 'branch_ids': []},
+                'meta': {'uid': uid, 'branch_ids': [], **meta_extra},
                 'range': {'key': (range_key or 'today'), 'label': "Toàn bộ", 'domain': []},
                 'counts': {'assigned': 0, 'done': 0, 'not_done': 0, 'late': 0},
                 'employee_tasks': [],
@@ -745,11 +811,10 @@ class TtbOperationalTask(models.Model):
                 'shift_assignments': [],
             }
 
-        # Task thuộc cơ sở mình quản lý HOẶC thuộc phiếu phân công mình làm quản lý ca
         domain_base = [
             ('state', '!=', 'cancel'),
             '|',
-            ('branch_id', 'in', managed_branch_ids),
+            ('branch_id', 'in', visible_branch_ids),
             ('assignment_id.manager_id.user_id', '=', uid),
         ]
         range_domain, range_label = self._employee_dashboard_range_domain_utc7(range_key)
@@ -781,10 +846,10 @@ class TtbOperationalTask(models.Model):
         state_labels = dict(Task._fields['state'].selection)
         audit_state_labels = dict(Task._fields['audit_state'].selection)
 
+        # Công việc của nhân viên: hiển thị toàn bộ theo filter ngày (không giới hạn)
         employee_tasks_rs = Task.search(
-            domain + [('is_audit_required', '=', False)],
+            domain,
             order='is_late desc, state asc, planned_date_start asc, id desc',
-            limit=int(limit or 50),
         )
         result_employee_tasks = [
             _serialize_task(t, t.state, state_labels.get(t.state, t.state))
@@ -794,7 +859,6 @@ class TtbOperationalTask(models.Model):
         audit_tasks_rs = Task.search(
             domain + [('is_audit_required', '=', True)],
             order='audit_state asc, actual_date_end desc, id desc',
-            limit=int(limit or 50),
         )
         result_audit_tasks = [
             _serialize_task(t, t.audit_state, audit_state_labels.get(t.audit_state, t.audit_state))
@@ -805,7 +869,6 @@ class TtbOperationalTask(models.Model):
         failed_audit_rs = Task.search(
             domain + [('is_audit_required', '=', True), ('audit_state', '=', 'fail')],
             order='actual_date_end desc, id desc',
-            limit=int(limit or 50),
         )
         result_failed_audit = []
         for t in failed_audit_rs:
@@ -827,7 +890,7 @@ class TtbOperationalTask(models.Model):
 
         PostAudit = self.env['ttb.post.audit']
         post_audit_data = PostAudit.get_manager_post_audit_dashboard(
-            visible_branch_ids, range_key=range_key or 'today', limit=limit or 50
+            visible_branch_ids, range_key=range_key or 'today', limit=None
         )
 
         # Phiếu phân công ca: lọc theo cơ sở và theo ngày (range_key)
@@ -847,7 +910,6 @@ class TtbOperationalTask(models.Model):
         assignment_rs = Assignment.search(
             assignment_domain,
             order='date desc, id desc',
-            limit=int(limit or 50),
         )
         assignment_state_labels = dict(Assignment._fields['state'].selection)
         shift_assignments = [
@@ -863,7 +925,7 @@ class TtbOperationalTask(models.Model):
         ]
 
         return {
-            'meta': {'uid': uid, 'branch_ids': visible_branch_ids},
+            'meta': {'uid': uid, 'branch_ids': visible_branch_ids, **meta_extra},
             'range': {'key': (range_key or 'today'), 'label': range_label, 'domain': range_domain},
             'counts': {
                 'assigned': total_assigned,

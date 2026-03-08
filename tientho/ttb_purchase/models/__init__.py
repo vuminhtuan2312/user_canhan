@@ -26,3 +26,5 @@ from . import goods_distribution_ticket
 from . import complaint_ticket
 from . import advance_request
 from . import advance_request_attachment
+from . import product_classification
+from . import product_template
