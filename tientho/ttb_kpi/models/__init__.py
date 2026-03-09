@@ -30,3 +30,6 @@ from . import ttb_tnkhkpi_t2_report
 from . import ttb_task_report_delayed
 from . import ttb_task_report_mismatch_line
 from . import ttb_cancel_reason
+from . import ttb_task_report_line_qa_old
+from . import ttb_task_report_line_qc_old
+from . import ttb_task_report_mismatch_old

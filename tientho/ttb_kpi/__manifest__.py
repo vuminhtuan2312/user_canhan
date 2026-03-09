@@ -40,12 +40,18 @@
         'views/approval_task.xml',
         'views/ttb_tnkhkpi_t2_report.xml',
         'views/ttb_cancel_reason.xml',
+        'wizard/recheck_qa_wizard.xml',
+        'wizard/recheck_qc_wizard.xml',
+        'wizard/choose_result_wizard.xml',
         'views/menu.xml',
     ],
     'assets': {
         'web.assets_backend': [
             'ttb_kpi/static/src/components/**/*',
             'ttb_kpi/static/src/js/branch_checklist_dashboard_graph_field.js',
+            'ttb_kpi/static/src/css/index.css',
+            'ttb_kpi/static/src/js/quality_action_tag.js',
+
         ],
     },
     'license': 'LGPL-3',

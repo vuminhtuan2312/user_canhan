@@ -54,6 +54,7 @@ class TtbTaskReportLine(models.Model):
     standard = fields.Many2many(string='Tiêu chuẩn', comodel_name='ttb.task.template.line.standard')
     rate_cluster = fields.Float(string='Tỉ trọng của cụm')
     criteria = fields.Char(string='Tiêu chí')
+    note = fields.Text(string='Ghi chú')
     @api.depends('kpi_type_id.code')
     def _compute_show_approve_solution(self):
         for rec in self:

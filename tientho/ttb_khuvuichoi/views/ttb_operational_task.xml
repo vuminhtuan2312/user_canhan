@@ -108,7 +108,7 @@
                             <field name="proof_image_ids" nolabel="1" readonly="state != 'ready'" invisible="not proof_image_ids">
                                 <list create="false" delete="false" default_order="sequence asc">
                                     <field name="sequence" column_invisible="1"/>
-                                    <field name="image" widget="image" options="{'size': [300, 300]}"/>
+                                    <field name="image" widget="image"/>
                                 </list>
                             </field>
                         </group>

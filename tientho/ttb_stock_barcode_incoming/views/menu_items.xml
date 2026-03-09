@@ -293,13 +293,13 @@
         action="stock_barcode_action_was_create_hau_kiem_l1"
     />
 
-<!--    Hậu kiểm lần 2-->
-    <menuitem
-        id="menu_hau_kiem_lan2_root"
-        name="Hậu kiểm lần 2"
-        sequence="3"
-        parent="menu_kiem_ke_root"
-    />
+<!--&lt;!&ndash;    Hậu kiểm lần 2&ndash;&gt;-->
+<!--    <menuitem-->
+<!--        id="menu_hau_kiem_lan2_root"-->
+<!--        name="Hậu kiểm lần 2"-->
+<!--        sequence="3"-->
+<!--        parent="menu_kiem_ke_root"-->
+<!--    />-->
 
     <record id="stock_barcode_action_all_hau_kiem_lan_2" model="ir.actions.act_window">
         <field name="name">Tất cả phiếu hậu kiểm lần 2</field>
@@ -323,13 +323,13 @@
     </record>
 
 
-    <menuitem
-        id="menu_hau_kiem_lan2_all"
-        parent="menu_hau_kiem_lan2_root"
-        name="Tất cả phiếu hậu kiểm lần 2"
-        action="stock_barcode_action_all_hau_kiem_lan_2"
-        sequence="1"
-    />
+<!--    <menuitem-->
+<!--        id="menu_hau_kiem_lan2_all"-->
+<!--        parent="menu_hau_kiem_lan2_root"-->
+<!--        name="Tất cả phiếu hậu kiểm lần 2"-->
+<!--        action="stock_barcode_action_all_hau_kiem_lan_2"-->
+<!--        sequence="1"-->
+<!--    />-->
 
     <record id="stock_barcode_action_hau_kiem_lan_2_not_yet" model="ir.actions.act_window">
         <field name="name">Phiếu chưa hậu kiểm lần 2</field>
@@ -345,13 +345,13 @@
         <field name="context">{}</field>
     </record>
 
-    <menuitem
-        id="menu_hau_kiem_lan2_not_yet"
-        parent="menu_hau_kiem_lan2_root"
-        name="Phiếu chưa hậu kiểm lần 2"
-        action="stock_barcode_action_hau_kiem_lan_2_not_yet"
-        sequence="2"
-    />
+<!--    <menuitem-->
+<!--        id="menu_hau_kiem_lan2_not_yet"-->
+<!--        parent="menu_hau_kiem_lan2_root"-->
+<!--        name="Phiếu chưa hậu kiểm lần 2"-->
+<!--        action="stock_barcode_action_hau_kiem_lan_2_not_yet"-->
+<!--        sequence="2"-->
+<!--    />-->
 
     <record id="stock_barcode_action_hau_kiem_lan_2_going" model="ir.actions.act_window">
         <field name="name">Phiếu đang hậu kiểm lần 2</field>
@@ -373,13 +373,13 @@
         ]"/>
     </record>
 
-    <menuitem
-        id="menu_going_hau_kiem_lan2"
-        parent="menu_hau_kiem_lan2_root"
-        name="Phiếu đang hậu kiểm lần 2"
-        action="stock_barcode_action_hau_kiem_lan_2_going"
-        sequence="3"
-    />
+<!--    <menuitem-->
+<!--        id="menu_going_hau_kiem_lan2"-->
+<!--        parent="menu_hau_kiem_lan2_root"-->
+<!--        name="Phiếu đang hậu kiểm lần 2"-->
+<!--        action="stock_barcode_action_hau_kiem_lan_2_going"-->
+<!--        sequence="3"-->
+<!--    />-->
 
     <record id="stock_barcode_action_hau_kiem_lan_2_done" model="ir.actions.act_window">
         <field name="name">Phiếu đã hậu kiểm lần 2</field>
@@ -401,13 +401,13 @@
         ]"/>
     </record>
 
-    <menuitem
-        id="menu_was_hau_kiem_lan2"
-        parent="menu_hau_kiem_lan2_root"
-        name="Phiếu đã hậu kiểm lần 2"
-        action="stock_barcode_action_hau_kiem_lan_2_done"
-        sequence="4"
-    />
+<!--    <menuitem-->
+<!--        id="menu_was_hau_kiem_lan2"-->
+<!--        parent="menu_hau_kiem_lan2_root"-->
+<!--        name="Phiếu đã hậu kiểm lần 2"-->
+<!--        action="stock_barcode_action_hau_kiem_lan_2_done"-->
+<!--        sequence="4"-->
+<!--    />-->
     <record id="stock_barcode_action_hau_kiem_done_filter" model="ir.actions.act_window">
         <field name="name">Phiếu đã hoàn thành</field>
         <field name="res_model">stock.picking</field>
@@ -430,13 +430,13 @@
         ]"/>
     </record>
 
-    <menuitem
-        id="menu_kiem_ke_done_root"
-        parent="menu_kiem_ke_root"
-        name="Phiếu đã hoàn thành"
-        action="stock_barcode_action_hau_kiem_done_filter"
-        sequence="4"
-    />
+<!--    <menuitem-->
+<!--        id="menu_kiem_ke_done_root"-->
+<!--        parent="menu_kiem_ke_root"-->
+<!--        name="Phiếu đã hoàn thành"-->
+<!--        action="stock_barcode_action_hau_kiem_done_filter"-->
+<!--        sequence="4"-->
+<!--    />-->
 
     <menuitem
         id="menu_kiem_ke_configuration_root"

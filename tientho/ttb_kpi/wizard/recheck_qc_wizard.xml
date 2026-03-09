@@ -1,0 +1,22 @@
+<odoo>
+    <record id="view_recheck_qc_wizard_form" model="ir.ui.view">
+        <field name="name">recheck.qc.wizard.form</field>
+        <field name="model">recheck.qc.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Chấm lại QC">
+                <group>
+                    <field name="reason_qc"/>
+                </group>
+                <footer>
+                    <button name="action_confirm"
+                            string="Xác nhận"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Đóng"
+                            special="cancel"
+                            class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -7,8 +7,11 @@
             <list create="0">
                 <header>
                     <button string="" title="Lọc theo ngày" icon="fa-calendar" type="object" name="button_filter_date" class="btn" display="always"/>
+                    <button string="Chọn kết quả" name="action_open_choose_result" type="object" class="oe_highlight"/>
+
                 </header>
                 <field name="name"/>
+                <field name="form_url" widget="url" text="Chi tiết"/>
                 <field name="date"/>
                 <field name="reviewer_id"/>
                 <field name="user_id"/>
@@ -26,14 +29,17 @@
         <field name="arch" type="xml">
             <form create="0">
                 <header>
-                    <button type="object" name="button_start" string="Bắt đầu đánh giá" class="oe_highlight" invisible="state != 'new'"/>
-                    <button type="object" name="button_done" string="Hoàn thành" class="oe_highlight" invisible="state != 'reviewing'"/>
+                    <button type="object" name="button_start" string="Bắt đầu đánh giá" class="oe_highlight" invisible="state != 'new' or group == 'quality_control'"/>
+                    <button type="object" name="action_start_qc" string="Bắt đầu chấm" class="oe_highlight" invisible="reviewer_id != False or group != 'quality_control' or state not in ['new','reviewing','done_qa']"/>
+                    <button type="object" name="action_start_qa" string="Bắt đầu chấm chéo" class="oe_highlight" invisible="qa_user_id != False or state not in ['new','reviewing','done_qc'] or group != 'quality_control'"/>
+                    <button type="object" name="action_cancel" string="Hủy phiếu (QA/QC)" class="oe_highlight" invisible="state != 'new' or group != 'quality_control'" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tn_qa_qc"/>
+                    <button type="object" name="button_done" string="Hoàn thành" class="oe_highlight" invisible="state != 'reviewing' or group == 'quality_control'"/>
                     <button type="object" name="button_cancel" string="Hủy" class="oe_highlight" invisible="state != 'done' or hide_button_cancel == False" confirm="Bạn có chắc chẳn muốn hủy đánh giá? Hành động này không thể quay lại được"/>
                     <button type="object" name="reopen_approval" string="Đề xuất mở lại" class="oe_highlight" invisible="show_button_request_approval != True"/>
                     <button type="object" name="button_approved" string="Duyệt" class="oe_highlight" invisible="show_button_approval_reject != True"/>
-                    <button type="object" name="action_reset_review" string="Chấm lại" class="oe_highlight" invisible="state != 'done'" groups="ttb_kpi.group_ttb_kpi_tnkh_manager, ttb_kpi.group_ttb_kpi_tn_cskh"/>
-                    <button type="object" name="action_agree" string="Đồng thuận" class="oe_highlight" invisible="state != 'waiting' or show_agree_button == False" />
-                    <button name="action_open_cancel_wizard" string="Hủy phiếu" type="object" class="btn-danger" invisible="state in ('done', 'cancel')" groups="ttb_kpi.group_ttb_kpi_warehouse_director,ttb_kpi.group_ttb_kpi_vhkd_director"/>
+                    <button type="object" name="action_reset_review" string="Chấm lại" class="oe_highlight" invisible="state != 'done' or group == 'quality_control'" groups="ttb_kpi.group_ttb_kpi_tnkh_manager, ttb_kpi.group_ttb_kpi_tn_cskh"/>
+                    <button type="object" name="action_agree" string="Đồng thuận" class="oe_highlight" invisible="state != 'waiting' or show_agree_button == False or group == 'quality_control'" />
+                    <button name="action_open_cancel_wizard" string="Hủy phiếu" type="object" class="btn-danger" invisible="state in ('done', 'cancel') or group == 'quality_control'" groups="ttb_kpi.group_ttb_kpi_warehouse_director,ttb_kpi.group_ttb_kpi_vhkd_director"/>
                     <button name="action_transfer_upper_level" type="object" string="Chuyển cấp trên xử lý" class="btn-warning" invisible="state != 'waiting' or upper_level_process == True or cs_agreement != 'disagree'" groups="ttb_kpi.group_ttb_kpi_nv_cskh, ttb_kpi.group_ttb_kpi_tn_cskh"/>
                     <field name="hide_button_cancel" invisible="1"/>
                     <field name="state" widget="statusbar"/>
@@ -50,18 +56,44 @@
                             decoration-success="sla_status == 'on_time'" invisible="group != 'cs'"/>
                     </div>
                     <group>
-                        <group string="THÔNG TIN NGƯỜI ĐÁNH GIÁ">
+                        <group string="THÔNG TIN NGƯỜI ĐÁNH GIÁ" invisible="group != 'quality_control'">
+                            <field name="reviewer_id" readonly="1" force_save="1"/>
+                            <field name="reviewer_job_id" readonly="1"/>
+                            <field name="qc_start_time" readonly="1"/>
+                            <field name="qc_done_time" readonly="1"/>
+                            <field name="qc_retry_count" readonly="1"/>
+                            <field name="qc_retry_time" readonly="1"/>
+                            <field name="qc_retry_confirm_time" readonly="1"/>
+                        </group>
+                        <group string="THÔNG TIN NGƯỜI ĐÁNH GIÁ" invisible="group == 'quality_control'">
                             <field name="group" readonly="state != 'new' " force_save="1" invisible="show_check_list_fields"/>
                             <field name="date" readonly="1" force_save="1"/>
                             <field name="deadline" readonly="1"/>
                             <field name="reviewer_id" readonly="1" force_save="1"/>
                             <field name="reviewer_job_id"/>
-<!--                            <field name="origin_report_id" invisible="group != 'cs'" domain="domain_origin"/>-->
                             <field name="note"/>
-                            <field name="domain_origin" invisible="1"/>
-<!--                            <field name="date_origin" invisible="group != 'cs'" readonly="1" force_save="1"/>-->
                             <field name="image_identification" widget="many2many_binary" invisible="group != 'cs'" readonly="state != 'new'"/>
                             <field name="image_vote" widget="many2many_binary" invisible="not (group in ['manager', 'cs'] and code == 'CSKH')" required="group == 'manager'" readonly="check_permission_image != False"/>
+                        </group>
+                        <group string="THÔNG TIN CHUNG" invisible="group != 'quality_control'">
+                            <field name="group" readonly="state != 'new' " force_save="1" invisible="show_check_list_fields"/>
+                            <field name="start_time" invisible="group == 'cs'"/>
+<!--                            <field name="date" readonly="1" force_save="1"/>-->
+                            <field name="deadline" readonly="1"/>
+                            <field name="done_time" readonly="1"/>
+                            <field name="note"/>
+                            <field name="reason_qc"/>
+                            <field name="reason_qa"/>
+                        </group>
+                        <group string="THÔNG TIN NGƯỜI CHẤM CHÉO" invisible="group != 'quality_control'">
+                            <field name="qa_user_id" readonly="1"/>
+                            <field name="qa_user_job_id"/>
+<!--                            <field name="qa_date" readonly="1"/>-->
+                            <field name="qa_start_time" readonly="1"/>
+                            <field name="qa_done_time" readonly="1"/>
+                            <field name="qa_retry_count" readonly="1"/>
+                            <field name="qa_retry_time" readonly="1"/>
+                            <field name="qa_retry_confirm_time" readonly="1"/>
                         </group>
                         <group string="THÔNG TIN NGƯỜI ĐƯỢC ĐÁNH GIÁ">
                             <field name="kpi_type_id" readonly="state != 'new' " force_save="1"/>
@@ -79,9 +111,8 @@
                         </group>
                     </group>
                     <notebook>
-                        <page name="ttb_task_template_line" string="Danh sách công việc">
-                            <button type="object" name="button_start" string="Bắt đầu đánh giá" class="oe_highlight d-md-none" invisible="state != 'new'"/>
-                            <button name="action_confirm_comparison" type="object" string="Xác nhận" class="btn-primary" invisible="group != 'region_manager' or state != 'reviewing'"/>
+                        <page name="ttb_task_template_line" string="Danh sách công việc" invisible="group == 'quality_control' or state_qa == 'draft'">
+                            <button type="object" name="button_start" string="Bắt đầu đánh giá" class="oe_highlight d-md-none" invisible="state != 'new' or group == 'quality_control'"/>
                             <field name="line_ids" nolabel="1" mode="list,kanban"
                                        context="{
                                         'kanban_view_ref': 'ttb_kpi.ttb_task_report_line_view_kanban',
@@ -100,13 +131,44 @@
                                     <field name="fail" readonly="check_permission_image != False"/>
                                     <field name="rate" widget="percentage"/>
                                     <field name="image_ids" widget="many2many_binary" readonly="check_permission_image != False"/>
+                                    <field name="note"/>
                                     <button name="action_open_form" type="object" string="Chế độ xem"/>
                                 </list>
                             </field>
                             <button type="object" name="button_done" string="Hoàn thành" class="oe_highlight d-md-none" invisible="state != 'reviewing'"/>
                         </page>
-                        <page string="Danh sách công việc chấm chéo" invisible="group != 'region_manager'">
-                            <button name="action_confirm_comparison" type="object" string="Xác nhận" class="btn-primary" invisible="state != 'reviewing'"/>
+                        <page name="ttb_task_template_line" string="Danh sách công việc" invisible="group != 'quality_control' or (reviewer_id != uid and is_done == False)">
+                            <button type="object" name="action_start_qc" string="Bắt đầu chấm" class="oe_highlight d-md-none" invisible="reviewer_id != False or group != 'quality_control' or state not in ['new','reviewing','done_qa']"/>
+                            <button type="object" name="action_start_qa" string="Bắt đầu chấm chéo" class="oe_highlight d-md-none button_mismatch" invisible="qa_user_id != False or state not in ['new','reviewing','done_qc'] or group != 'quality_control'"/>
+                            <button name="action_confirm_qc" type="object" string="Xác nhận" class="btn-primary" invisible="reviewer_id == False or state not in ['reviewing','done_qa']"/>
+                            <button name="action_open_recheck_qc" type="object" string="Chấm lại QC" class="btn-warning" invisible="qc_retry_count &gt;= 1 or qc_done_time == False" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tn_qa_qc"/>
+                            <field name="line_ids" nolabel="1" mode="list,kanban"
+                                       context="{
+                                        'kanban_view_ref': 'ttb_kpi.ttb_task_report_line_view_kanban',
+                                       }"  readonly="state == 'done' ">
+                                <list create="0" delete="0" editable="bottom" limit="2000">
+                                    <field name="category_id"/>
+                                    <field name="sequence"/>
+                                    <field name="cluster"/>
+                                    <field name="criteria"/>
+                                    <field name="standard" widget="many2many_tags"/>
+                                    <field name="rate_cluster" widget="percentage"/>
+                                    <field name="template_line_id"/>
+                                    <field name="requirement"/>
+                                    <field name="kpi_type"/>
+                                    <field name="x_pass" readonly="check_permission_image != False"/>
+                                    <field name="fail" readonly="check_permission_image != False"/>
+                                    <field name="rate" widget="percentage"/>
+                                    <field name="image_ids" widget="many2many_binary" readonly="check_permission_image != False"/>
+                                    <field name="note"/>
+                                    <button name="action_open_form" type="object" string="Chế độ xem"/>
+                                </list>
+                            </field>
+                            <button type="object" name="button_done" string="Hoàn thành" class="oe_highlight d-md-none" invisible="state != 'reviewing'"/>
+                        </page>
+                        <page string="Danh sách công việc chấm chéo" invisible="group != 'quality_control' or (qa_user_id != uid and is_done == False)">
+                            <button name="action_confirm_qa" type="object" string="Xác nhận" class="btn-primary" invisible="qa_user_id == False or state not in ['reviewing', 'done_qc']"/>
+                            <button name="action_open_recheck_qa" type="object" string="Chấm lại QA" class="btn-warning" invisible="qa_retry_count &gt;= 1 or qa_done_time == False" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tn_qa_qc"/>
                             <field name="line_id_cross_dot" nolabel="1" mode="list,kanban"
                                        context="{
                                         'kanban_view_ref': 'ttb_kpi.ttb_task_report_line_view_kanban',
@@ -121,29 +183,72 @@
                                     <field name="fail"/>
                                     <field name="rate" widget="percentage"/>
                                     <field name="image_ids" widget="many2many_binary"/>
+                                    <field name="note"/>
                                     <button name="action_open_form" type="object" string="Chế độ xem"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Danh sách tiêu chí lệch" invisible="group != 'region_manager'">
-                            <button name="action_confirm_mismatch"
-                                    type="object"
-                                    string="Xác nhận"
-                                    class="btn-primary" invisible="state != 'reviewing'"/>
-                            <field name="mismatch_ids" nolabel="1" mode="list,kanban"
-                                       context="{
-                                        'kanban_view_ref': 'ttb_kpi.ttb_task_mismatch_line_view_kanban',
-                                       }"  readonly="state == 'done' ">
+                        <page string="Danh sách tiêu chí lệch" invisible="group != 'quality_control'" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tn_qa_qc">
+                            <button name="action_confirm_mismatch" string="Xác nhận" type="object" class="btn-primary" invisible="state != 'waiting'"/>
+                            <button name="action_choose_qc" string="Chọn kết quả QC" type="object" class="btn-primary button_mismatch" invisible="state != 'waiting'"/>
+                            <button name="action_choose_qa" string="Chọn kết quả QA" type="object" class="btn-primary button_mismatch" invisible="state != 'waiting'"/>
+                            <field name="mismatch_ids" readonly="state == 'done'">
                                 <list editable="bottom" create="0" delete="0">
-                                    <field name="template_line_id"/>
-                                    <field name="result_1"/>
-                                    <field name="result_2"/>
-                                    <field name="x_pass" />
-                                    <field name="fail" />
+                                    <field name="selected"/>
+                                    <field name="score_type" readonly="1"/>
+                                    <field name="template_line_id" readonly="1"/>
+                                    <field name="x_pass" readonly="1"/>
+                                    <field name="fail" readonly="1"/>
+                                    <field name="image_ids" widget="many2many_binary" readonly="1"/>
+                                    <field name="note" readonly="1"/>
                                 </list>
                             </field>
                         </page>
-                        <page name="ttb_task_report_kpi" string="KPI">
+                        <page string="Bảng chấm QC cũ" invisible="group != 'quality_control'" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tn_qa_qc">
+                            <field name="qc_old_line_ids" readonly="1">
+                                <list>
+                                    <field name="template_line_id"/>
+                                    <field name="x_pass"/>
+                                    <field name="fail"/>
+                                    <field name="image_ids" widget="many2many_binary"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Bảng chấm QA cũ" invisible="group != 'quality_control'" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tn_qa_qc">
+                            <field name="qa_old_line_ids" readonly="1">
+                                <list>
+                                    <field name="template_line_id"/>
+                                    <field name="x_pass"/>
+                                    <field name="fail"/>
+                                    <field name="image_ids" widget="many2many_binary"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Danh sách tiêu chí lệch cũ" invisible="group != 'quality_control'" groups="ttb_kpi.group_ttb_kpi_tn_cskh,ttb_kpi.group_ttb_kpi_tn_qa_qc">
+                            <field name="mismatch_old_ids" readonly="1">
+                                <list>
+                                    <field name="score_type"/>
+                                    <field name="template_line_id"/>
+                                    <field name="x_pass"/>
+                                    <field name="fail"/>
+                                    <field name="image_ids" widget="many2many_binary"/>
+                                    <field name="note"/>
+                                </list>
+
+                            </field>
+                        </page>
+                        <page string="Điểm QA/QC" invisible="group != 'quality_control'">
+                            <group>
+                                <field name="qa_score" readonly="1" widget="percentage"/>
+                                <field name="qa_old_score" readonly="1" widget="percentage"/>
+                                <field name="qc_score" readonly="1" widget="percentage"/>
+                                <field name="qc_old_score" readonly="1" widget="percentage"/>
+                                <field name="total_score" readonly="1" widget="percentage"/>
+                            </group>
+                        </page>
+                        <page name="ttb_task_report_kpi" string="KPI" invisible="group == 'quality_control'">
                             <field name="kpi_ids" nolabel="1" readonly="1">
                                 <list editable="bottom">
                                     <field name="kpi_type"/>
@@ -155,8 +260,13 @@
                                 </list>
                             </field>
                         </page>
-
-                        <page name="failed_lines" string="Không đạt và phương án xử lý" invisible="state != 'done' or show_tb_fail_mission == False">
+                        <page string="Thông tin khác" invisible="group == 'cs'">
+                            <group>
+                                <field name="out_of_ip"/>
+                                <field name="is_overdue"/>
+                            </group>
+                        </page>
+                        <page name="failed_lines" string="Không đạt và phương án xử lý" invisible="state != 'done' or show_tb_fail_mission == False or group == 'quality_control'">
 
                             <field name="failed_line_ids">
                                 <list editable="bottom">
@@ -267,7 +377,7 @@
                     <field name="x_pass" readonly="state == 'done' "/>
                     <field name="fail" readonly="state == 'done' "/>
                     <field name="rate" widget="percentage" readonly="state == 'done' "/>
-                    <field name="image_ids" widget="many2many_binary" options="{'multiple': True}" readonly="state == 'done' "/>
+                    <field name="image_ids" widget="many2many_binary_camera" readonly="state == 'done' "/>
                     <field name="state" invisible="1"/>
                 </group>
             </form>
@@ -280,11 +390,8 @@
         <field name="arch" type="xml">
             <form create="0" delete="0">
                 <group>
-                    <field name="solution_plan" invisible="show_solution_fields == False"/>
-                    <field name="urgency_level" invisible="show_solution_fields == False"/>
-                    <field name="process_status" invisible="show_solution_fields == False"/>
-                    <field name="image_ids" widget="many2many_binary" options="{'multiple': True}"/>
-                    <button type="object" name="button_fail_form" string="Xác nhận"/>
+                    <field name="note"/>
+                    <field name="image_ids" widget="many2many_binary_camera" readonly="state == 'done'"/>
                 </group>
             </form>
         </field>
@@ -296,7 +403,7 @@
         <field name="arch" type="xml">
             <form create="0" delete="0">
                 <group>
-                    <field name="image_ids" widget="many2many_binary" options="{'multiple': True}"/>
+                    <field name="image_ids" widget="many2many_binary_camera" readonly="state == 'done' "/>
                 </group>
             </form>
         </field>
@@ -339,9 +446,9 @@
                                     <field name="requirement"/>
                                 </i>
                             </div>
-                            <div name="action_open_image" class="col-4">
-                                <button invisible="state == 'done'" class="btn btn-primary" name="action_open_image" type="object">Chụp ảnh</button>
-                            </div>
+<!--                            <div name="action_open_image" class="col-4">-->
+<!--                                <button invisible="state == 'done'" class="btn btn-primary" name="action_open_image" type="object">Chụp ảnh</button>-->
+<!--                            </div>-->
                         </div>
                         <div class="row mb4">
                             <div class="col-10 oe_kanban_card">
@@ -353,44 +460,7 @@
             </kanban>
         </field>
     </record>
-    <record id="ttb_task_mismatch_line_view_kanban" model="ir.ui.view">
-            <field name="name">ttb.task.mismatch.line.view.kanban</field>
-            <field name="model">ttb.task.report.mismatch.line</field>
-            <field name="arch" type="xml">
-                <kanban class="o_kanban_mobile o_kanban_small_column" create="0" delete="0" can_open="0" limit="2000">
-                    <field name="template_line_id"/>
-                    <field name="result_1"/>
-                    <field name="result_2"/>
-                    <field name="x_pass" />
-                    <field name="fail" />
-                    <templates>
-                        <t t-name="card">
-                            <div class="row mb4">
-                                <div  class="col-6">
-                                    <b>
-                                        <field name="template_line_id"/>
-                                    </b>
-                                </div>
-                                <div>
-                                    <span>Người đánh giá: <field name="result_1" /></span>
-                                </div>
-                                <div>
-                                    <span>Chấm chéo chấm: <field name="result_2" /></span>
-                                </div>
-                                <div name="button_x_pass" class="col-2">
-                                    <button invisible="x_pass == False" class="btn btn-primary" name="button_x_pass" type="object">Đạt</button>
-                                    <button invisible="x_pass == True" class="btn btn-outline-secondary" name="button_x_pass" type="object">Đạt</button>
-                                </div>
-                                <div name="button_fail" class="col-2">
-                                    <button invisible="fail == False"  class="btn btn-primary" name="button_fail" type="object">Không</button>
-                                    <button invisible="fail == True" class="btn btn-outline-secondary" name="button_fail" type="object">Không</button>
-                                </div>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
+
     <record id="ttb_task_report_line_view_search" model="ir.ui.view">
         <field name="name">ttb.task.report.line.view.search</field>
         <field name="model">ttb.task.report.line</field>

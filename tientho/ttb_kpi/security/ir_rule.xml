@@ -211,6 +211,17 @@
         <field name="domain_force">[('user_branch_id', 'in', user.ttb_branch_ids.ids), '|', ('create_uid', '=', user.id), ('group', '=', 'manager')]</field>
     </record>
 
+    <record id="ttb_task_report_manager_branch_write_rule" model="ir.rule">
+        <field name="name">Chuyên viên QA/QC có quyền xem, sửa phiếu đánh giá nhiệm vụ</field>
+        <field name="model_id" ref="model_ttb_task_report"/>
+        <field name="groups" eval="[(4, ref('ttb_kpi.group_ttb_kpi_specialist_qa_qc'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('user_branch_id', 'in', user.ttb_branch_ids.ids), ('group', '=', 'quality_control')]</field>
+    </record>
+
     <record id="ttb_task_report_manager_branch_read_rule" model="ir.rule">
         <field name="name">Quản lý cơ sở xem các phiếu đánh giá cơ sở và quầy của mình</field>
         <field name="model_id" ref="model_ttb_task_report"/>

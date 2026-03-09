@@ -16,6 +16,7 @@ patch(BarcodeInput.prototype, {
             const isAndroid = /Android/i.test(navigator.userAgent);
             if (!isAndroid) return;
 
+            input.value = '';
             try {
                 // blur + focus lại sau 30-120ms (thử chỉnh hiệu ứng)
                 input.blur();

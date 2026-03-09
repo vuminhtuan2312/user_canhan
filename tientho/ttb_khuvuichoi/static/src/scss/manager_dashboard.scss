@@ -1,4 +1,83 @@
 .o_ttb_manager_dashboard {
+  // Tiêu đề + icon chuyển chế độ (fa-retweet): cùng hàng, không lệch
+  .o_ttb_dashboard_title_with_switch {
+    align-items: center;
+
+    .o_ttb_dashboard_switch_icon {
+      font-size: 1.25rem;
+      line-height: 1;
+      color: var(--bs-secondary, #6c757d);
+      transition: color 0.2s ease, opacity 0.2s ease;
+      flex-shrink: 0;
+      &:hover {
+        color: var(--bs-primary, #0d6efd);
+        opacity: 1;
+      }
+      &.o_ttb_dashboard_switch_icon--active {
+        color: var(--bs-primary, #0d6efd);
+      }
+    }
+
+    .o_ttb_dashboard_title_texts {
+      min-height: 1.5em;
+    }
+    .o_ttb_dashboard_title_text {
+      opacity: 0;
+      transition: opacity 0.3s ease-out;
+      white-space: nowrap;
+      &.o_ttb_dashboard_title_text--active {
+        opacity: 1;
+      }
+    }
+    .o_ttb_dashboard_title_text:first-child {
+      position: relative;
+      z-index: 1;
+    }
+    .o_ttb_dashboard_title_text.position-absolute {
+      z-index: 0;
+    }
+    .o_ttb_dashboard_title_text.position-absolute.o_ttb_dashboard_title_text--active {
+      z-index: 2;
+    }
+  }
+
+  // Chuyển đổi Tổng quan / Tổng quan báo cáo: hiệu ứng mờ dần
+  .o_ttb_dashboard_overview {
+    transition: opacity 0.35s ease-out;
+    &.o_ttb_dashboard_overview--hidden {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      z-index: -1;
+    }
+  }
+
+  .o_ttb_dashboard_report {
+    opacity: 0;
+    transition: opacity 0.35s ease-out;
+    min-height: 0;
+    &.o_ttb_dashboard_report--visible {
+      opacity: 1;
+    }
+    .o_ttb_report_chart_card {
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .o_ttb_report_chart_wrapper {
+      position: relative;
+      height: 320px;
+      padding: 1rem;
+    }
+    .o_ttb_report_chart_canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+
   &.o_ttb_dashboard_scroll {
     height: 100%;
     overflow-y: auto;

@@ -6,6 +6,7 @@ class PosOrderLine(models.Model):
 
     # Thêm domain thuế bán vào trường của base
     tax_ids = fields.Many2many(domain="[('type_tax_use', '=', 'sale')]")
+    ttb_summary = fields.Char(string='Tổng hợp', compute='_compute_ttb_summary', store=False)
 
     # Thêm index vào trường base tăng tốc độ
     refunded_orderline_id = fields.Many2one(index=True)
@@ -30,3 +31,15 @@ class PosOrderLine(models.Model):
     def compute_tax_ids_amount(self):
         for rec in self:
             rec.tax_ids_amount = rec.tax_ids[:1].amount if rec.tax_ids else 0.0
+
+    @api.depends('product_id', 'product_id.barcode', 'product_id.default_code', 'product_id.name')
+    def _compute_ttb_summary(self):
+        for line in self:
+            if line.product_id:
+                barcode = line.product_id.barcode or ''
+                default_code = line.product_id.default_code or ''
+                name = line.product_id.name or ''
+                parts = [p for p in (barcode, default_code, name) if p]
+                line.ttb_summary = " | ".join(parts)
+            else:
+                line.ttb_summary = ''

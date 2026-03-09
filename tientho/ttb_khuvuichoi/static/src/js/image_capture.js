@@ -296,14 +296,19 @@ class imageCapture extends Component {
             this.desktopCaptureActions.el.classList.remove("d-none");
             this.desktopCaptureActions.el.classList.add("d-flex");
             this.camera.el.classList.add("d-none");
-            // Bật stream mặc định trước (để trình duyệt hỏi quyền và có thể lấy label camera)
+            // Bật stream mặc định với camera sau (environment)
             await this._startCameraStream(getUserMedia);
             const devices = await this._enumerateVideoDevices();
             this.state.videoDevices = devices;
             if (devices.length > 0) {
-                this.state.selectedDeviceId = devices[0].deviceId;
-                // Đồng bộ stream với camera đầu tiên trong danh sách
-                await this._startCameraStream(getUserMedia);
+                // Giữ đúng camera đang dùng (đã là camera sau nhờ facingMode: "environment")
+                const videoTrack = this.state.stream && this.state.stream.getVideoTracks()[0];
+                const settings = videoTrack ? videoTrack.getSettings() : {};
+                const currentDeviceId = settings.deviceId;
+                this.state.selectedDeviceId = currentDeviceId || devices[0].deviceId;
+                if (!currentDeviceId) {
+                    await this._startCameraStream(getUserMedia);
+                }
             }
         } catch (error) {
             console.error("Error accessing camera:", error);

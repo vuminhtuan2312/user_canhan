@@ -1,4 +1,5 @@
 from . import ttb_report_pos
+from . import pos_order_line
 from . import purchase_order_line
 from . import wizard_coverage_month
 from . import report_coverage_month
