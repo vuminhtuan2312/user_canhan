@@ -19,6 +19,10 @@ class StockBarcodeIncomingController(StockBarcodeController):
                                 line['is_inventory_kk'] = False
                             else:
                                 line['is_inventory_kk'] = True
+                            if move.picking_id.mch_category_id != move.product_id.categ_id_level_2:
+                                line['mch2_wrong'] = True
+                            else:
+                                line['mch2_wrong'] = False
                             picking_name = move.picking_id.name
                             if 'kcl' in picking_name:
                                 line['kcl'] = True

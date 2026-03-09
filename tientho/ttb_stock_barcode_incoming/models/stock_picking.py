@@ -75,10 +75,18 @@ class StockPicking(models.Model):
         help='Thời gian từ scheduled_date đến date_done (phút)',
         store=True
     )
+    id_augges_2 = fields.Integer(
+        string='ID Augges 2',
+        tracking=True,
+    )
     phieu_kk_id = fields.Many2one('inventory.mch2.session', string='Phiếu KK')
     hk1_id = fields.Many2one('inventory.mch2.session', string='Phiếu HK1')
     hk_a_id = fields.Many2one('inventory.mch2_session', string='Phiếu HK-A')
 
+    sp_augges_2 = fields.Char(
+        string='Số phiếu Augges 2',
+        tracking=True,
+    )
     @api.depends('inventory_scan_start_time', 'date_done')
     def _compute_inventory_time_minutes(self):
         for record in self:
@@ -331,16 +339,25 @@ class StockPicking(models.Model):
                         if line.quantity < line.stock_qty:
                             out_detail_datas.append(line.prepare_augges_values(-line.quantity + line.stock_qty, price_product * line.quantity))
         slnxm_id = False
+        slnxm_id_2 = False
+        value_sp = False
+        value_sp_2 = False
         if in_detail_datas:
             master_data['ID_Nx'] = 52
             slnxm_id = self.env['ttb.augges'].create_slnx(master_data, in_detail_datas)
+            cursor.execute(f"SELECT sp FROM SlNxM where id = {slnxm_id}")
+            value_sp = cursor.fetchone()[0]
         if out_detail_datas:
             master_data['ID_Nx'] = 82
-            slnxm_id = self.env['ttb.augges'].create_slnx(master_data, out_detail_datas)
+            slnxm_id_2 = self.env['ttb.augges'].create_slnx(master_data, out_detail_datas)
+            cursor.execute(f"SELECT sp FROM SlNxM where id = {slnxm_id_2}")
+            value_sp_2 = cursor.fetchone()[0]
 
         self.write({
             'id_augges': slnxm_id,
-            # 'sp_augges': value_sp,
+            'sp_augges': value_sp,
+            'id_augges_2': slnxm_id_2 if out_detail_datas else False,
+            'sp_augges_2': value_sp_2 if out_detail_datas else False,
             'is_sent_augges': True,
         })
 
@@ -850,113 +867,113 @@ class StockPicking(models.Model):
                             move_data['stock_qty'] = move.stock_qty
 
         # 2. Logic Return Request
-        if self.ttb_return_request_id:
-            current_user = self.env.user
-            spoof_uid = (current_user.id, current_user.name)
+        # if self.ttb_return_request_id:
+        #     current_user = self.env.user
+        #     spoof_uid = (current_user.id, current_user.name)
 
-            valid_moves = self.move_ids.filtered(lambda m: m.state not in ['done', 'cancel'])
+        #     valid_moves = self.move_ids.filtered(lambda m: m.state not in ['done', 'cancel'])
 
-            if valid_moves:
+        #     if valid_moves:
 
-                move_fields = self.env['stock.move']._get_fields_stock_barcode()
-                for f in ['product_uom_qty', 'quantity', 'create_uid', 'write_uid', 'product_id']:
-                    if f not in move_fields: move_fields.append(f)
+        #         move_fields = self.env['stock.move']._get_fields_stock_barcode()
+        #         for f in ['product_uom_qty', 'quantity', 'create_uid', 'write_uid', 'product_id']:
+        #             if f not in move_fields: move_fields.append(f)
 
-                if 'ttb_required_qty' not in move_fields and 'ttb_required_qty' in self.env['stock.move']._fields:
-                    move_fields.append('ttb_required_qty')
+        #         if 'ttb_required_qty' not in move_fields and 'ttb_required_qty' in self.env['stock.move']._fields:
+        #             move_fields.append('ttb_required_qty')
 
-                moves_data = valid_moves.sudo().read(move_fields)
+        #         moves_data = valid_moves.sudo().read(move_fields)
 
-                picking_rec = data['records']['stock.picking'][0] if 'stock.picking' in data['records'] and \
-                                                                     data['records']['stock.picking'] else None
-                pick_loc_id = to_id(picking_rec.get('location_id')) if picking_rec else False
-                pick_dest_id = to_id(picking_rec.get('location_dest_id')) if picking_rec else False
+        #         picking_rec = data['records']['stock.picking'][0] if 'stock.picking' in data['records'] and \
+        #                                                              data['records']['stock.picking'] else None
+        #         pick_loc_id = to_id(picking_rec.get('location_id')) if picking_rec else False
+        #         pick_dest_id = to_id(picking_rec.get('location_dest_id')) if picking_rec else False
 
-                for m_data in moves_data:
-                    if pick_loc_id: m_data['location_id'] = pick_loc_id
-                    if pick_dest_id: m_data['location_dest_id'] = pick_dest_id
+        #         for m_data in moves_data:
+        #             if pick_loc_id: m_data['location_id'] = pick_loc_id
+        #             if pick_dest_id: m_data['location_dest_id'] = pick_dest_id
 
-                    if 'product_id' in m_data: m_data['product_id'] = to_id(m_data['product_id'])
-                    if 'product_uom' in m_data: m_data['product_uom'] = to_id(m_data['product_uom'])
+        #             if 'product_id' in m_data: m_data['product_id'] = to_id(m_data['product_id'])
+        #             if 'product_uom' in m_data: m_data['product_uom'] = to_id(m_data['product_uom'])
 
-                    m_data['create_uid'] = spoof_uid
-                    m_data['write_uid'] = spoof_uid
-                    m_data.update({'package_id': False, 'result_package_id': False, 'owner_id': False, 'lot_id': False})
+        #             m_data['create_uid'] = spoof_uid
+        #             m_data['write_uid'] = spoof_uid
+        #             m_data.update({'package_id': False, 'result_package_id': False, 'owner_id': False, 'lot_id': False})
 
-                    qty_demand = m_data.get('product_uom_qty', 0)
-                    if not m_data.get('ttb_required_qty') and qty_demand > 0:
-                        m_data['ttb_required_qty'] = qty_demand
-                    if qty_demand > 0:
-                        m_data['reserved_uom_qty'] = qty_demand
+        #             qty_demand = m_data.get('product_uom_qty', 0)
+        #             if not m_data.get('ttb_required_qty') and qty_demand > 0:
+        #                 m_data['ttb_required_qty'] = qty_demand
+        #             if qty_demand > 0:
+        #                 m_data['reserved_uom_qty'] = qty_demand
 
-                if 'moves' not in data: data['moves'] = []
-                data['moves'] = [m for m in data['moves'] if m['id'] not in valid_moves.ids]
-                data['moves'].extend(moves_data)
+        #         if 'moves' not in data: data['moves'] = []
+        #         data['moves'] = [m for m in data['moves'] if m['id'] not in valid_moves.ids]
+        #         data['moves'].extend(moves_data)
 
-                lines = valid_moves.mapped('move_line_ids')
-                if lines:
-                    line_fields = self.env['stock.move.line']._get_fields_stock_barcode()
-                    for f in ['create_uid', 'write_uid', 'owner_id', 'product_id', 'product_uom_id', 'move_id']:
-                        if f not in line_fields: line_fields.append(f)
+        #         lines = valid_moves.mapped('move_line_ids')
+        #         if lines:
+        #             line_fields = self.env['stock.move.line']._get_fields_stock_barcode()
+        #             for f in ['create_uid', 'write_uid', 'owner_id', 'product_id', 'product_uom_id', 'move_id']:
+        #                 if f not in line_fields: line_fields.append(f)
 
-                    lines_data = lines.sudo().read(line_fields)
+        #             lines_data = lines.sudo().read(line_fields)
 
-                    for l_data in lines_data:
-                        l_data['create_uid'] = spoof_uid
-                        l_data['write_uid'] = spoof_uid
-                        l_data['owner_id'] = False
+        #             for l_data in lines_data:
+        #                 l_data['create_uid'] = spoof_uid
+        #                 l_data['write_uid'] = spoof_uid
+        #                 l_data['owner_id'] = False
 
-                        if pick_loc_id: l_data['location_id'] = pick_loc_id
-                        if pick_dest_id: l_data['location_dest_id'] = pick_dest_id
+        #                 if pick_loc_id: l_data['location_id'] = pick_loc_id
+        #                 if pick_dest_id: l_data['location_dest_id'] = pick_dest_id
 
-                        if 'product_id' in l_data: l_data['product_id'] = to_id(l_data['product_id'])
-                        if 'product_uom_id' in l_data: l_data['product_uom_id'] = to_id(l_data['product_uom_id'])
+        #                 if 'product_id' in l_data: l_data['product_id'] = to_id(l_data['product_id'])
+        #                 if 'product_uom_id' in l_data: l_data['product_uom_id'] = to_id(l_data['product_uom_id'])
 
-                        if 'move_id' in l_data: l_data['move_id'] = to_id(l_data['move_id'])
+        #                 if 'move_id' in l_data: l_data['move_id'] = to_id(l_data['move_id'])
 
-                    if 'stock.move.line' not in data['records']: data['records']['stock.move.line'] = []
-                    current_line_ids = {l['id'] for l in lines_data}
-                    data['records']['stock.move.line'] = [l for l in data['records']['stock.move.line'] if
-                                                          l['id'] not in current_line_ids]
-                    data['records']['stock.move.line'].extend(lines_data)
+        #             if 'stock.move.line' not in data['records']: data['records']['stock.move.line'] = []
+        #             current_line_ids = {l['id'] for l in lines_data}
+        #             data['records']['stock.move.line'] = [l for l in data['records']['stock.move.line'] if
+        #                                                   l['id'] not in current_line_ids]
+        #             data['records']['stock.move.line'].extend(lines_data)
 
-                if 'product.product' not in data['records']: data['records']['product.product'] = []
-                products_needed = valid_moves.mapped('product_id')
-                prod_fields = self.env['product.product']._get_fields_stock_barcode()
-                full_prod_data = products_needed.sudo().read(prod_fields)
-                for p in full_prod_data:
-                    if 'uom_id' in p: p['uom_id'] = to_id(p['uom_id'])
-                    if 'uom_po_id' in p: p['uom_po_id'] = to_id(p['uom_po_id'])
+        #         if 'product.product' not in data['records']: data['records']['product.product'] = []
+        #         products_needed = valid_moves.mapped('product_id')
+        #         prod_fields = self.env['product.product']._get_fields_stock_barcode()
+        #         full_prod_data = products_needed.sudo().read(prod_fields)
+        #         for p in full_prod_data:
+        #             if 'uom_id' in p: p['uom_id'] = to_id(p['uom_id'])
+        #             if 'uom_po_id' in p: p['uom_po_id'] = to_id(p['uom_po_id'])
 
-                existing_p_ids = {p['id'] for p in data['records']['product.product']}
-                data['records']['product.product'].extend([p for p in full_prod_data if p['id'] not in existing_p_ids])
+        #         existing_p_ids = {p['id'] for p in data['records']['product.product']}
+        #         data['records']['product.product'].extend([p for p in full_prod_data if p['id'] not in existing_p_ids])
 
-                if 'uom.uom' not in data['records']: data['records']['uom.uom'] = []
-                uoms_needed = valid_moves.mapped('product_uom')
-                uom_fields = ['name', 'display_name', 'rounding', 'factor', 'uom_type', 'category_id', 'active']
-                uom_data = uoms_needed.sudo().read(uom_fields)
-                for u in uom_data:
-                    if 'category_id' in u: u['category_id'] = to_id(u['category_id'])
+        #         if 'uom.uom' not in data['records']: data['records']['uom.uom'] = []
+        #         uoms_needed = valid_moves.mapped('product_uom')
+        #         uom_fields = ['name', 'display_name', 'rounding', 'factor', 'uom_type', 'category_id', 'active']
+        #         uom_data = uoms_needed.sudo().read(uom_fields)
+        #         for u in uom_data:
+        #             if 'category_id' in u: u['category_id'] = to_id(u['category_id'])
 
-                existing_u_ids = {u['id'] for u in data['records']['uom.uom']}
-                data['records']['uom.uom'].extend([u for u in uom_data if u['id'] not in existing_u_ids])
+        #         existing_u_ids = {u['id'] for u in data['records']['uom.uom']}
+        #         data['records']['uom.uom'].extend([u for u in uom_data if u['id'] not in existing_u_ids])
 
-                if 'uom.category' not in data['records']: data['records']['uom.category'] = []
-                cats_needed = uoms_needed.mapped('category_id')
-                cat_data = cats_needed.sudo().read(['name', 'display_name'])
-                existing_c_ids = {c['id'] for c in data['records']['uom.category']}
-                data['records']['uom.category'].extend([c for c in cat_data if c['id'] not in existing_c_ids])
+        #         if 'uom.category' not in data['records']: data['records']['uom.category'] = []
+        #         cats_needed = uoms_needed.mapped('category_id')
+        #         cat_data = cats_needed.sudo().read(['name', 'display_name'])
+        #         existing_c_ids = {c['id'] for c in data['records']['uom.category']}
+        #         data['records']['uom.category'].extend([c for c in cat_data if c['id'] not in existing_c_ids])
 
-                if picking_rec:
-                    picking_record = data['records']['stock.picking'][0]
-                    current_move_ids = set(picking_record.get('move_ids', []))
-                    current_move_ids.update(valid_moves.ids)
-                    picking_record['move_ids'] = list(current_move_ids)
+        #         if picking_rec:
+        #             picking_record = data['records']['stock.picking'][0]
+        #             current_move_ids = set(picking_record.get('move_ids', []))
+        #             current_move_ids.update(valid_moves.ids)
+        #             picking_record['move_ids'] = list(current_move_ids)
 
-                    moves_no_pack = valid_moves.filtered(lambda m: not m.package_level_id)
-                    current_move_no_pack_ids = set(picking_record.get('move_ids_without_package', []))
-                    current_move_no_pack_ids.update(moves_no_pack.ids)
-                    picking_record['move_ids_without_package'] = list(current_move_no_pack_ids)
+        #             moves_no_pack = valid_moves.filtered(lambda m: not m.package_level_id)
+        #             current_move_no_pack_ids = set(picking_record.get('move_ids_without_package', []))
+        #             current_move_no_pack_ids.update(moves_no_pack.ids)
+        #             picking_record['move_ids_without_package'] = list(current_move_no_pack_ids)
 
         return data
 

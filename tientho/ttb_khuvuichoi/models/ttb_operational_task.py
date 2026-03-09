@@ -676,6 +676,7 @@ class TtbOperationalTask(models.Model):
         branch_names_str = ', '.join(branch_names) if branch_names else ''
 
         state_labels = dict(Task._fields['state'].selection)
+        audit_state_labels = dict(Task._fields['audit_state'].selection)
         result_tasks = []
         for t in tasks:
             result_tasks.append({
@@ -694,6 +695,31 @@ class TtbOperationalTask(models.Model):
                 'notification_sent': bool(t.notification_sent),
             })
 
+        # Công việc hậu kiểm (chỉ nhân viên đăng nhập) cho báo cáo hiệu suất
+        audit_domain = domain_base + range_domain + [('is_audit_required', '=', True)]
+        audit_tasks_rs = Task.search(
+            audit_domain,
+            order='audit_state asc, actual_date_end desc, id desc',
+        )
+        result_audit_tasks = []
+        for t in audit_tasks_rs:
+            result_audit_tasks.append({
+                'id': t.id,
+                'name': t.name,
+                'area_id': t.area_id.id if t.area_id else False,
+                'area_name': t.area_id.name if t.area_id else '-',
+                'assignment_date': fields.Date.to_string(t.assignment_id.date) if t.assignment_id.date else False,
+                'employee_id': t.employee_id.id if t.employee_id else False,
+                'employee_name': t.employee_id.name if t.employee_id else False,
+                'planned_date_start': fields.Datetime.to_string(t.planned_date_start) if t.planned_date_start else False,
+                'planned_date_end': fields.Datetime.to_string(t.planned_date_end) if t.planned_date_end else False,
+                'actual_date_end': fields.Datetime.to_string(t.actual_date_end) if t.actual_date_end else False,
+                'status': t.audit_state,
+                'status_label': audit_state_labels.get(t.audit_state, t.audit_state),
+                'is_late': bool(t.is_late),
+                'note': (t.audit_note or '').strip(),
+            })
+
         meta_extra = {
             'notification_enabled': notification_enabled,
             'is_admin': is_admin,
@@ -709,7 +735,6 @@ class TtbOperationalTask(models.Model):
             failed_domain,
             order='actual_date_end desc, id desc',
         )
-        audit_state_labels = dict(Task._fields['audit_state'].selection)
         result_failed = []
         for t in failed_tasks_rs:
             result_failed.append({
@@ -741,6 +766,7 @@ class TtbOperationalTask(models.Model):
                 'late': total_late,
             },
             'tasks': result_tasks,
+            'audit_tasks': result_audit_tasks,
             'failed_audit_tasks': result_failed,
             'failed_audit_lines': failed_audit_lines,
         }

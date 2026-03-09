@@ -44,37 +44,18 @@ patch(BarcodeModel.prototype, {
     },
     _getMoveLineData(id) {
     const smlData = super._getMoveLineData(id);
-
-    let move = null;
-    let picking = null;
-
-    if (smlData.move_id) {
-        move = this.cache.getRecord('stock.move', smlData.move_id);
-        if (move) {
-            picking = this.cache.getRecord('stock.picking', move.picking_id);
+    // Fix hiển thị x/all cho phiếu trả hàng
+    if (this.record?.ttb_return_request_id) {
+        if (smlData.move_id) {
+            const move = this.cache.getRecord('stock.move', smlData.move_id);
+            if (move) {
+                // Gán reserved_uom_qty bằng tổng nhu cầu của move để hiển thị x/all
+                smlData.reserved_uom_qty = move.product_uom_qty;
+            }
         }
     }
-
-    // Fix hiển thị x/all cho phiếu trả hàng
-    if (this.record?.ttb_return_request_id && move) {
-        smlData.reserved_uom_qty = move.product_uom_qty;
-    }
-
-    // 🔴 Kiểm tra MCH2 sai
-    if (
-        picking?.mch_category_id?.category_level &&
-        move?.product_id?.categ_id_level_2
-    ) {
-        smlData.mch2_wrong =
-            picking.mch_category_id.category_level !==
-            move.product_id.categ_id_level_2;
-
-        smlData.mch2_expected = picking.mch_category_id.category_level;
-        smlData.mch2_real = move.product_id.categ_id_level_2;
-    }
-
     return smlData;
-}
+    },
     // createNewLine(params) {
     //
     //     const product = params.fieldsParams.product_id;

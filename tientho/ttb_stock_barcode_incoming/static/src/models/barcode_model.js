@@ -3,10 +3,15 @@ import { escape } from "@web/core/utils/strings";
 import BarcodeModel from "@stock_barcode/models/barcode_model";
 import BarcodePickingModel from '@stock_barcode/models/barcode_picking_model';
 import { ConfirmationDialog, AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
-import { patch } from "@web/core/utils/patch";
+// import { patch } from "@web/core/utils/patch";
 import { markup } from "@odoo/owl";
 import { user } from '@web/core/user';
 import { logStockBarcode } from "../barcode_logger_utils";
+
+// Code lại ra một file mới vì code trước tệ ko sửa được
+function patch() {
+    console.log('do nothing')
+}
 
 patch(BarcodeModel.prototype, {
 
@@ -237,6 +242,7 @@ patch(BarcodePickingModel.prototype, {
         }
     },
 
+    // Hàm này không thấy được dùng
     _createLine(data) {
         if (this.isReturnPicking || (this.isRestrictedMode && this.isPickOrPack)) {
             const product = data.product;

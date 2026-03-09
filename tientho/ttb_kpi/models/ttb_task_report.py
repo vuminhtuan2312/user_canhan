@@ -34,7 +34,7 @@ class TtbTaskReport(models.Model):
     date = fields.Datetime(string='Ngày đánh giá', required=False, readonly=False, copy=False)
     reviewer_id = fields.Many2one(string='Người đánh giá', comodel_name='res.users', required=False, readonly=True, copy=False)
     reviewer_job_id = fields.Many2one(string='Chức vụ người đánh giá', comodel_name='hr.job', compute='_compute_reviewer_job_id', store=True, tracking=True)
-    group = fields.Selection(string='Nhóm đánh giá', selection=[('region_manager', 'Quản lý vùng'), ('cross_dot_area_manager', 'Giám đốc vùng chấm chéo'),('branch_mannager', 'Quản lý cơ sở'), ('cs', 'Trải nghiệm khách hàng'), ('manager', 'Quản lý trực tiếp')], default='manager', required=True, tracking=True)
+    group = fields.Selection(string='Nhóm đánh giá', selection=[('region_manager', 'Quản lý vùng'), ('quality_control', 'Kiểm soát chất lượng'), ('cross_dot_area_manager', 'Giám đốc vùng chấm chéo'),('branch_mannager', 'Quản lý cơ sở'), ('cs', 'Trải nghiệm khách hàng'), ('manager', 'Quản lý trực tiếp')], default='manager', required=True, tracking=True)
     kpi_type_id = fields.Many2one(string='Loại KPI', comodel_name='ttb.kpi.type', required=True)
     code = fields.Char(string='Mã Loại KPI', related='kpi_type_id.code', readonly=True)
     area_id = fields.Many2one(string='Khu vực', comodel_name='ttb.area', tracking=True)
@@ -70,10 +70,22 @@ class TtbTaskReport(models.Model):
         tracking=True
     )
     note = fields.Text(string="Ghi chú", tracking=True)
-    state = fields.Selection(string='Trạng thái', selection=[('new', 'Mới'), ('reviewing', 'Đang đánh giá'), ('done', 'Hoàn thành'), ('cancel', 'Hủy'), ('waiting', 'Chờ duyệt'), ('overdue','Trễ hạn'),('awaiting_approval','Gửi duyệt mở phiếu')], default='new', tracking=True)
+    state = fields.Selection(
+        string='Trạng thái',
+        selection=[
+            ('new', 'Mới'),
+            ('reviewing', 'Đang đánh giá'),
+            ('done_qa', 'Hoàn thành QA'),
+            ('done_qc', 'Hoàn thành QC'),
+            ('done', 'Hoàn thành'),
+            ('waiting', 'Chờ duyệt'),
+            ('overdue','Trễ hạn'),
+            ('awaiting_approval','Gửi duyệt mở phiếu'),
+            ('cancel', 'Hủy'),
+        ], default='new', tracking=True)
     line_ids = fields.One2many(string='Danh sách công việc', comodel_name='ttb.task.report.line', inverse_name='report_id')
     line_id_cross_dot = fields.One2many('ttb.task.report.line', inverse_name='report_cross_id', string='Danh sách nhiệm vụ chấm chéo')
-    mismatch_ids = fields.One2many('ttb.task.report.mismatch.line', inverse_name='report_id', string='Tiêu chí lệch')
+    mismatch_ids = fields.One2many('ttb.task.report.mismatch.line', inverse_name='report_id', string='Danh sách tiêu chí lệch')
     kpi_ids = fields.One2many(string='KPI', comodel_name='ttb.task.report.kpi', inverse_name='report_id')
     hide_button_cancel = fields.Boolean(string='Hiện button hủy phiếu', compute='_compute_hide_button_cancel')
     cei_id = fields.Many2one(string='Phiếu điểm CEI', comodel_name='ttb.cei.score')
@@ -125,7 +137,611 @@ class TtbTaskReport(models.Model):
     upper_level_process = fields.Boolean(string='Cấp trên xử lý', default=False, tracking=True)
     upper_response_note = fields.Text(string="Kết quả chốt", tracking=True)
     upper_response_done = fields.Boolean(string="Cấp trên phản hồi kết quả", default=False, tracking=True)
+    qa_user_id = fields.Many2one('res.users', string='Người chấm chéo')
+    qa_user_job_id = fields.Many2one(string='Chức vụ người chấm chéo', comodel_name='hr.job', compute='_compute_reviewer_job_id', store=True, tracking=True)
+    qa_date = fields.Datetime(string='Ngày chấm chéo')
+    qc_start_time = fields.Datetime(string="Thời gian bắt đầu chấm (QC)")
+    qa_start_time = fields.Datetime(string="Thời gian bắt đầu chấm chéo (QA)")
+    qc_done_time = fields.Datetime(string="Hoàn thành QC")
+    qa_done_time = fields.Datetime(string="Hoàn thành QA")
+    qc_retry_count = fields.Float(string="Số lần chấm lại QC")
+    qa_retry_count = fields.Float(string="Số lần chấm lại QA")
+    qc_retry_confirm_time = fields.Datetime(string='Thời điểm XN chấm lại QC')
+    qa_retry_confirm_time = fields.Datetime(string='Thời điểm XN chấm lại QA')
+    start_time = fields.Datetime(string="Thời điểm bắt đầu")
+    out_of_ip = fields.Boolean(string='Chấm ngoài IP')
+    is_overdue = fields.Boolean(string='Trễ hạn')
+    qc_old_line_ids = fields.One2many(comodel_name='ttb.task.report.line.qc.old', inverse_name='report_id', string='Bảng chấm QC cũ')
+    qa_old_line_ids = fields.One2many(comodel_name='ttb.task.report.line.qa.old', inverse_name='report_id',string='Bảng chấm QA cũ')
+    qc_recheck_id = fields.One2many(comodel_name='recheck.qc.wizard', inverse_name='report_id', string='Chấm lại QC')
+    qa_recheck_id = fields.One2many(comodel_name='recheck.qa.wizard', inverse_name='report_id', string='Chấm lại QA')
+    reason_qc = fields.Text(string='Lý do chấm lại QC', related='qc_recheck_id.reason_qc')
+    reason_qa = fields.Text(string='Lý do chấm lại QA', related='qa_recheck_id.reason_qa')
+    qc_retry_time = fields.Datetime(string='Thời điểm chấm lại QC')
+    qa_retry_time = fields.Datetime(string='Thời điểm chấm lại QA')
+    done_time = fields.Datetime(string='Thời điểm hoàn thành')
+    mismatch_old_ids = fields.One2many(string='Danh sách tiêu chí lệch cũ', comodel_name='ttb.task.report.mismatch.old', inverse_name='report_id')
+    qa_score = fields.Float(string="Điểm QA")
+    qa_old_score = fields.Float(string="Điểm QA cũ")
+    qc_score = fields.Float(string="Điểm QC")
+    qc_old_score = fields.Float(string="Điểm QC cũ")
+    total_score = fields.Float(string="Điểm QA/QC")
+    form_url = fields.Char(compute="_compute_form_url")
+    state_qa = fields.Selection([
+        ('draft', 'Draft'),
+        ('evaluating', 'Đang chấm'),
+        ('done', 'Hoàn tất')
+    ], default='draft')
 
+    state_qc = fields.Selection([
+        ('draft', 'Draft'),
+        ('evaluating', 'Đang chấm'),
+        ('done', 'Hoàn tất')
+    ], default='draft')
+
+    is_done = fields.Boolean(compute='_compute_is_done')
+
+    def _compute_is_done(self):
+        for rec in self:
+            rec.is_done = rec.state_qa == 'done' and rec.state_qc == 'done'
+
+    def _compute_form_url(self):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        for rec in self:
+            rec.form_url = f"{base_url}/web#id={rec.id}&model={rec._name}&view_type=form"
+
+    def action_start_qc(self):
+        for rec in self:
+            today = date.today()
+            domain = [
+                ('date_from', '<=', today),
+                ('date_to', '>=', today),
+                ('kpi_type_id', '=', rec.kpi_type_id.id),
+                '&',
+                '|', ('area_ids', '=', False), ('area_ids', '=', rec.area_id.id),
+                '|', ('categ_ids', '=', False), ('categ_ids', '=', rec.categ_id.id),
+            ]
+
+            task_template = self.env['ttb.task.template'].sudo().search(domain, order='id desc', limit=1)
+            if task_template:
+                task_template_line = task_template.sudo().line_ids.filtered_domain(
+                    ['|', ('applied_job_ids', '=', False), ('applied_job_ids', '=', rec.user_job_id.id)])
+                if not task_template_line:
+                    return {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'type': 'danger',
+                            'sticky': True,
+                            'message': "Thông báo: Không tìm thấy Danh sách công việc. Vui lòng kiểm tra lại các tiêu chí đã chọn! (Đặc biệt là 2 tiêu chí Chức vụ và Khu vực)",
+                        }
+                    }
+                for line in task_template_line:
+                    vals = {
+                        'template_line_id': line.id,
+                        'category_id': line.category_id.id,
+                        'sequence': line.sequence,
+                        'requirement': line.requirement,
+                        'kpi_type': line.kpi_type.id,
+                        'rate': line.rate,
+                    }
+
+                    vals_cross = vals.copy()
+                    vals_cross['report_id'] = rec.id
+                    self.env['ttb.task.report.line'].sudo().create(vals_cross)
+            if rec.state == 'new':
+                rec.write({
+                    'state': 'reviewing',
+                    'reviewer_id': self.env.user.id,
+                    'qc_start_time': fields.Datetime.now(),
+                    'start_time': fields.Datetime.now(),
+                    'state_qc': 'evaluating'
+                })
+            else:
+                rec.write({
+                    'reviewer_id': self.env.user.id,
+                    'qc_start_time': fields.Datetime.now(),
+                    'state_qc': 'evaluating'
+                })
+
+    def action_start_qa(self):
+        for rec in self:
+            today = date.today()
+            domain = [
+                ('date_from', '<=', today),
+                ('date_to', '>=', today),
+                ('kpi_type_id', '=', rec.kpi_type_id.id),
+                '&',
+                '|', ('area_ids', '=', False), ('area_ids', '=', rec.area_id.id),
+                '|', ('categ_ids', '=', False), ('categ_ids', '=', rec.categ_id.id),
+            ]
+
+            task_template = self.env['ttb.task.template'].sudo().search(domain, order='id desc', limit=1)
+            if task_template:
+                task_template_line = task_template.sudo().line_ids.filtered_domain(
+                    ['|', ('applied_job_ids', '=', False), ('applied_job_ids', '=', rec.user_job_id.id)])
+                if not task_template_line:
+                    return {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'type': 'danger',
+                            'sticky': True,
+                            'message': "Thông báo: Không tìm thấy Danh sách công việc. Vui lòng kiểm tra lại các tiêu chí đã chọn! (Đặc biệt là 2 tiêu chí Chức vụ và Khu vực)",
+                        }
+                    }
+                for line in task_template_line:
+                    vals = {
+                        'template_line_id': line.id,
+                        'category_id': line.category_id.id,
+                        'sequence': line.sequence,
+                        'requirement': line.requirement,
+                        'kpi_type': line.kpi_type.id,
+                        'rate': line.rate,
+                    }
+
+                    vals_cross = vals.copy()
+                    vals_cross['report_cross_id'] = rec.id
+                    self.env['ttb.task.report.line'].sudo().create(vals_cross)
+            if rec.state == 'new':
+                rec.write({
+                    'state': 'reviewing',
+                    'qa_user_id': self.env.user.id,
+                    'qa_start_time': fields.Datetime.now(),
+                    'start_time': fields.Datetime.now(),
+                    'state_qa': 'evaluating'
+                })
+            else:
+                rec.write({
+                    'qa_user_id': self.env.user.id,
+                    'qa_start_time': fields.Datetime.now(),
+                    'state_qa': 'evaluating'
+                })
+
+    def _get_mismatch_ratio(self):
+        self.ensure_one()
+
+        qc_lines = self.line_ids
+        qa_lines = self.line_id_cross_dot
+
+        qa_map = {
+            l.template_line_id.id: l
+            for l in qa_lines
+            if l.template_line_id
+        }
+        total = 0
+        mismatch = 0
+
+        for qc in qc_lines:
+            if not qc.template_line_id:
+                continue
+            qa = qa_map.get(qc.template_line_id.id)
+            if not qa:
+                continue
+            total += 1
+            if qc.x_pass != qa.x_pass:
+                mismatch += 1
+
+        return mismatch / total if total else 0
+
+    def action_confirm_qc(self):
+        self.ensure_one()
+
+        for line in self.line_ids:
+            if line.x_pass == True and not line.image_ids:
+                raise UserError('Tiêu chí đạt bắt buộc có hình ảnh.')
+
+            if line.fail == True:
+                if not line.image_ids:
+                    raise UserError('Tiêu chí không đạt bắt buộc có hình ảnh.')
+                if not line.note:
+                    raise UserError('Tiêu chí không đạt bắt buộc có ghi chú.')
+
+            check_line_ids = line.filtered_domain([('fail', '=', False), ('x_pass', '=', False)])
+
+            if check_line_ids:
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'type': 'danger',
+                        'sticky': True,
+                        'message': "Cần đánh giá tất cả các tiêu chí trước khi ấn xác nhận",
+                    }
+                }
+
+        now = fields.Datetime.now()
+
+        vals = {}
+
+        if self.qc_retry_count >= 1:
+            vals['qc_retry_confirm_time'] = now
+        else:
+            vals['qc_done_time'] = now
+
+        if self.state == 'reviewing':
+            vals['state'] = 'done_qc'
+            vals['state_qc'] = 'done'
+            self.write(vals)
+            return
+        if self.state == 'done_qa':
+            M = self._get_mismatch_ratio()
+            if M <= 0.1:
+                vals['state'] = 'done'
+                vals['done_time'] = now
+                vals['state_qc'] = 'done'
+                self.write(vals)
+            else:
+                vals['state'] = 'waiting'
+                vals['state_qc'] = 'done'
+                self.write(vals)
+                self._generate_mismatch_lines()
+                self._compute_old_scores()
+                if self.reviewer_id and self.reviewer_id.partner_id:
+                    self.message_notify(
+                        subject="Phiếu có tiêu chí lệch",
+                        body="Kết quả QC và QA lệch trên 10%. Phiếu chuyển sang trạng thái Chờ duyệt.",
+                        partner_ids=[self.reviewer_id.partner_id.id],
+                        subtype_xmlid="mail.mt_comment",
+                        email_layout_xmlid=False,
+                        email_add_signature=False
+                    )
+                    return {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'type': 'warning',
+                            'sticky': True,
+                            'message': 'Kết quả QC và QA lệch trên 10%. Phiếu đã chuyển sang Chờ duyệt. Vui lòng load lại trang để cập nhật trạng thái mới nhất',
+                        }
+                    }
+
+    def action_confirm_qa(self):
+        self.ensure_one()
+
+        for line in self.line_id_cross_dot:
+            if line.x_pass == True and not line.image_ids:
+                raise UserError('Tiêu chí đạt bắt buộc có hình ảnh.')
+
+            if line.fail == True:
+                if not line.image_ids:
+                    raise UserError('Tiêu chí không đạt bắt buộc có hình ảnh.')
+                if not line.note:
+                    raise UserError('Tiêu chí không đạt bắt buộc có ghi chú.')
+
+                check_line_id_cross_dot = line.filtered_domain([('fail', '=', False), ('x_pass', '=', False)])
+                if check_line_id_cross_dot:
+                    return {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'type': 'danger',
+                            'sticky': True,
+                            'message': "Cần đánh giá tất cả các tiêu chí trước khi hoàn thành",
+                        }
+                    }
+
+        now = fields.Datetime.now()
+
+        vals = {}
+
+        if self.qa_retry_count >= 1:
+            vals['qa_retry_confirm_time'] = now
+        else:
+            vals['qa_done_time'] = now
+
+        if self.state == 'reviewing':
+            vals['state'] = 'done_qa'
+            vals['state_qa'] = 'done'
+            self.write(vals)
+            return
+        if self.state == 'done_qc':
+            M = self._get_mismatch_ratio()
+            if M <= 0.1:
+                vals['state'] = 'done'
+                vals['done_time'] = now
+                vals['state_qa'] = 'done'
+                self.write(vals)
+            else:
+                vals['state'] = 'waiting'
+                vals['state_qa'] = 'done'
+                self.write(vals)
+                self._generate_mismatch_lines()
+                self._compute_old_scores()
+                if self.reviewer_id and self.reviewer_id.partner_id:
+                    self.message_notify(
+                        subject="Phiếu có tiêu chí lệch",
+                        body="Kết quả QC và QA lệch trên 10%. Phiếu chuyển sang trạng thái Chờ duyệt.",
+                        partner_ids=[self.reviewer_id.partner_id.id],
+                        subtype_xmlid="mail.mt_comment",
+                        email_layout_xmlid=False,
+                        email_add_signature=False
+                    )
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'reload_with_notification',
+                    'params': {
+                        'type': 'warning',
+                        'message': 'Kết quả QC và QA lệch trên 10%. Phiếu đã chuyển sang Chờ duyệt.',
+                        'delay': 3000,
+                    }
+                }
+
+    def _snapshot_qc_lines(self):
+        QcOld = self.env['ttb.task.report.line.qc.old']
+        for line in self.line_ids:
+            QcOld.create({
+                'report_id': self.id,
+                'x_pass': line.x_pass,
+                'fail': line.fail,
+                'template_line_id': line.template_line_id.id,
+                'image_ids': [(6, 0, line.image_ids.ids)],
+                'note': line.note
+            })
+
+    def _snapshot_qa_lines(self):
+        QaOld = self.env['ttb.task.report.line.qa.old']
+        for line in self.line_id_cross_dot:
+            QaOld.create({
+                'report_id': self.id,
+                'x_pass': line.x_pass,
+                'fail': line.fail,
+                'template_line_id': line.template_line_id.id,
+                'image_ids': [(6, 0, line.image_ids.ids)],
+                'note': line.note
+            })
+
+    def create_mismatch_old(self):
+        self.ensure_one()
+
+        self.mismatch_old_ids.unlink()
+
+        vals_list = []
+
+        for line in self.mismatch_ids:
+            vals_list.append({
+                'report_id': self.id,
+                'score_type': line.score_type,
+                'template_line_id': line.template_line_id.id,
+                'x_pass': line.x_pass,
+                'fail': line.fail,
+                'note': line.note,
+                'image_ids': [(6, 0, line.image_ids.ids)]
+            })
+        if vals_list:
+            self.env['ttb.task.report.mismatch.old'].create(vals_list)
+
+        self.mismatch_ids.unlink()
+
+    def action_open_recheck_qa(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Chấm lại QA',
+            'res_model': 'recheck.qa.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_report_id': self.id
+            }
+        }
+
+    def action_open_recheck_qc(self):
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Chấm lại QC',
+            'res_model': 'recheck.qc.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_report_id': self.id
+            }
+        }
+
+    def _generate_mismatch_lines(self):
+        self.ensure_one()
+
+        self.mismatch_ids.unlink()
+
+        mismatch_vals = []
+
+        for qc_line in self.line_ids:
+            qa_line = self.line_id_cross_dot.filtered(
+                lambda l: l.template_line_id == qc_line.template_line_id
+            )
+
+            if not qa_line:
+                continue
+
+            qa_line = qa_line[0]
+
+            if qa_line.x_pass != qc_line.x_pass or qa_line.fail != qa_line.fail:
+                pair_key = f"{qc_line.template_line_id.id}"
+
+                mismatch_vals.append((0, 0, {
+                    'score_type': 'qc',
+                    'source_line_id': qc_line.id,
+                    'template_line_id': qc_line.template_line_id.id,
+                    'x_pass': qc_line.x_pass,
+                    'fail': qc_line.fail,
+                    'image_ids': [(6, 0, qc_line.image_ids.ids)],
+                    'note': qc_line.note,
+                    'pair_key': pair_key
+
+                }))
+
+                mismatch_vals.append((0, 0, {
+                    'score_type': 'qa',
+                    'source_line_id': qa_line.id,
+                    'template_line_id': qa_line.template_line_id.id,
+                    'x_pass': qa_line.x_pass,
+                    'fail': qa_line.fail,
+                    'image_ids': [(6, 0, qa_line.image_ids.ids)],
+                    'note': qa_line.note,
+                    'pair_key': pair_key
+                }))
+        self.write({'mismatch_ids': mismatch_vals})
+
+    def action_confirm_mismatch(self):
+        self.ensure_one()
+
+        if not self.mismatch_ids:
+            raise UserError("Không có tiêu chí lệch để xử lý.")
+        pair_keys = self.mismatch_ids.mapped('pair_key')
+
+        for key in pair_keys:
+            lines = self.mismatch_ids.filtered(lambda l: l.pair_key == key)
+            selected = lines.filtered(lambda l: l.selected)
+
+            if len(selected) != 1:
+                raise UserError("Mỗi cặp tiêu chí lệch phải chọn đúng 1 tiêu chí.")
+
+        for line in self.mismatch_ids.filtered(lambda l: l.selected):
+            if line.score_type == 'qc':
+                if line.source_line_id:
+                    line.source_line_id.write({
+                        'x_pass': line.x_pass,
+                        'fail': line.fail,
+                        'note': line.note,
+                        'image_ids': [(6, 0, line.image_ids.ids)]
+                    })
+
+                cross = self.line_id_cross_dot.filtered(lambda l: l.template_line_id == line.template_line_id)
+                if cross:
+                    cross.write({
+                        'x_pass': line.x_pass,
+                        'fail': line.fail,
+                        'note': line.note,
+                        'image_ids': [(6, 0, line.image_ids.ids)]
+                    })
+
+            if line.score_type == 'qa':
+                if line.source_line_cross_id:
+                    line.source_line_cross_id.write({
+                        'x_pass': line.x_pass,
+                        'fail': line.fail,
+                        'note': line.note,
+                        'image_ids': [(6, 0, line.image_ids.ids)]
+                    })
+                qc = self.line_ids.filtered(lambda l: l.template_line_id == line.template_line_id)
+                if qc:
+                    qc.write({
+                        'x_pass': line.x_pass,
+                        'fail': line.fail,
+                        'note': line.note,
+                        'image_ids': [(6, 0, line.image_ids.ids)]
+                    })
+
+        self.write({
+            'state': 'done',
+            'done_time': fields.Datetime.now(),
+            'state_qa_qc': 'done'
+        })
+        self._compute_final_scores()
+
+    def action_cancel(self):
+        self.write({
+            'state': 'cancel'
+        })
+
+    def action_open_choose_result(self):
+        invalid_reports = self.filtered(lambda r: r.state != 'waiting')
+
+        if invalid_reports:
+            names = "\n".join(invalid_reports.mapped('name'))
+            raise UserError(
+                f"Có Phiếu QA/QC không đủ điều kiện chấm lệch:\n\n{names}"
+            )
+
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'choose.result.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_ids': self.ids
+            }
+        }
+
+    def _apply_mismatch_result(self, choice):
+        for rec in self:
+            mismatch_lines = rec.mismatch_ids.filtered(
+                lambda l: l.score_type == choice
+            )
+
+            mismatch_lines.write({'selected': True})
+
+            for line in mismatch_lines:
+
+                qc_line = rec.line_ids.filtered(
+                    lambda l: l.template_line_id == line.template_line_id
+                )
+
+                if qc_line:
+                    qc_line.write({
+                        'x_pass': line.x_pass,
+                        'fail': line.fail,
+                        'note': line.note,
+                        'image_ids': [(6, 0, line.image_ids.ids)]
+                    })
+                qa_line = rec.line_id_cross_dot.filtered(
+                    lambda l: l.template_line_id == line.template_line_id
+                )
+
+                if qa_line:
+                    qa_line.write({
+                        'x_pass': line.x_pass,
+                        'fail': line.fail,
+                        'note': line.note,
+                        'image_ids': [(6, 0, line.image_ids.ids)]
+                    })
+        self.write({
+            'state': 'done',
+            'done_time': fields.Datetime.now(),
+            'state_qa_qc': 'done'
+        })
+        self._compute_final_scores()
+
+    def action_choose_qc(self):
+        self.ensure_one()
+        self.mismatch_ids.filtered(lambda l: l.score_type == 'qc').write({'selected': True})
+
+        self.action_confirm_mismatch()
+
+    def action_choose_qa(self):
+        self.ensure_one()
+
+        self.mismatch_ids.filtered(lambda l: l.score_type == 'qa').write({'selected': True})
+        self.action_confirm_mismatch()
+
+    def _calculate_score(self, lines):
+        total = len(lines)
+        if not total:
+            return 0
+        passed = len(lines.filtered(lambda l: l.x_pass))
+        return (passed / total)
+
+    def _compute_old_scores(self):
+        for rec in self:
+            qa_lines = rec.line_id_cross_dot
+            qc_lines = rec.line_ids
+
+            rec.qa_old_score = rec._calculate_score(qa_lines)
+            rec.qc_old_score = rec._calculate_score(qc_lines)
+
+    def _compute_final_scores(self):
+        for rec in self:
+            qa_lines = rec.line_id_cross_dot
+            qc_lines = rec.line_ids
+
+            qa_score = rec._calculate_score(qa_lines)
+            qc_score = rec._calculate_score(qc_lines)
+
+            rec.qa_score = qa_score
+            rec.qc_score = qc_score
+            rec.total_score = (qa_score + qc_score) / 2
     def _compute_can_edit_cs_agreement(self):
         now = fields.Datetime.now()
         for rec in self:
@@ -520,10 +1136,13 @@ class TtbTaskReport(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('seg.ttb.task.report')
         return super(TtbTaskReport, self).create(vals_list)
 
-    @api.depends('reviewer_id')
+    @api.depends('reviewer_id', 'qa_user_id')
     def _compute_reviewer_job_id(self):
         for rec in self:
-            rec.reviewer_job_id = rec.reviewer_id.employee_id.job_id.id
+            rec.write({
+                'reviewer_job_id': rec.reviewer_id.employee_id.job_id.id,
+                'qa_user_job_id': rec.qa_user_id.employee_id.job_id.id,
+            })
 
     def button_filter_date(self):
         popup_id = self.env['ttb.popup.filtered'].search(
@@ -730,7 +1349,6 @@ class TtbTaskReport(models.Model):
         for rec in self:
             check_line_ids = rec.line_ids.filtered_domain([('fail', '=', False), ('x_pass', '=', False)])
             check_line_id_cross_dot = rec.line_id_cross_dot.filtered_domain([('fail', '=', False), ('x_pass', '=', False)])
-            check_mismatch_ids = rec.mismatch_ids.filtered_domain([('fail', '=', False), ('x_pass', '=', False)])
             if check_line_ids:
                 return {
                     'type': 'ir.actions.client',
@@ -741,7 +1359,7 @@ class TtbTaskReport(models.Model):
                         'message': "Cần đánh giá tất cả các tiêu chí trước khi hoàn thành",
                     }
                 }
-            if rec.group == 'region_manager' and (check_line_id_cross_dot or check_mismatch_ids):
+            if rec.group == 'region_manager' and check_line_id_cross_dot:
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
@@ -1236,180 +1854,6 @@ class TtbTaskReport(models.Model):
                 if not existed_count:
                     self.create(branch_mannager_values)
 
-    def cron_create_task_report_cskh(self, exclude_branch_ids=[], target_date=None):
-        if target_date:
-            today = fields.Date.from_string(target_date)
-        else:
-            today = (datetime.now() + relativedelta(hours=7)).date()
-
-        creation_month = today.month
-
-        if today.day not in [1, 8, 15, 22]:
-            return
-
-        period = (today.day - 1) // 7 + 1
-
-        # Tính deadline
-        if today.day == 1:
-            deadline = today.replace(day=7)
-        elif today.day == 8:
-            deadline = today.replace(day=14)
-        elif today.day == 15:
-            deadline = today.replace(day=21)
-        else:
-            next_month = today.replace(day=28) + timedelta(days=4)
-            last_day = next_month - timedelta(days=next_month.day)
-            deadline = last_day
-
-        kpi_type_id = self.env.ref('ttb_kpi.ttb_kpi_type_cskh').id
-        task_templates = self.env['ttb.task.template'].sudo().search([
-            ('date_from', '<=', today),
-            ('date_to', '>=', today),
-            ('kpi_type_id', '=', kpi_type_id),
-            ('area_ids', '!=', False),
-        ])
-        if not task_templates:
-            return
-
-        already_processed_users = set()
-
-        for template in task_templates:
-            template_area_ids = template.area_ids.ids
-
-            domain = [
-                ('ttb_area_ids', 'in', template_area_ids),
-                ('ttb_branch_ids', '!=', False),
-            ]
-            if exclude_branch_ids:
-                domain.append(('ttb_branch_ids', 'not in', exclude_branch_ids))
-
-            users = self.env['res.users'].sudo().search(domain)
-
-            users = list({u.id: u for u in users}.values())
-
-            for user in users:
-                if user.id in already_processed_users:
-                    continue
-
-                employee = user.employee_id
-                job_name = employee.job_id.name if employee and employee.job_id else ''
-                official_date = employee.official_working_date
-
-                if job_name == "Quản lý Nhà sách":
-                    continue
-
-                if official_date and official_date.month == today.month and official_date.day >= 15:
-                    continue
-
-                user_area_ids = user.ttb_area_ids.filtered(lambda a: a.id in template_area_ids)
-                if not user_area_ids:
-                    continue
-
-                area = user_area_ids[0]
-
-                for branch in user.ttb_branch_ids:
-                    existing = self.search([
-                        ('user_id', '=', user.id),
-                        ('user_branch_id', '=', branch.id),
-                        ('area_id', '=', area.id),
-                        ('kpi_type_id', '=', kpi_type_id),
-                        ('deadline', '=', deadline),
-                        ('group', '=', 'manager')
-                    ])
-                    if existing:
-                        continue
-
-                    values = {
-                        'kpi_type_id': kpi_type_id,
-                        'deadline': deadline,
-                        'group': 'manager',
-                        'user_id': user.id,
-                        'user_job_id': employee.job_id.id if employee else False,
-                        'user_branch_id': branch.id,
-                        'area_id': area.id,
-                        'categ_id': user.ttb_categ_id.id if user.ttb_categ_id else False,
-                        'period': period,
-                        'creation_month': creation_month
-                    }
-                    self.create(values)
-
-                already_processed_users.add(user.id)
-    # Sinh phiếu bổ sung chạy lúc 23h cho CSKH
-    def cron_create_task_report_cskh_additional(self, target_date=None):
-        if target_date:
-            today = fields.Date.from_string(target_date)
-        else:
-            today = (datetime.now() + relativedelta(hours=7)).date()
-
-        creation_month = today.month
-
-        employees = self.env['hr.employee'].sudo().search([
-            ('official_working_date', '=', today),
-            ('user_id', '!=', False)
-        ])
-        users = employees.mapped('user_id')
-
-        kpi_type_id = self.env.ref('ttb_kpi.ttb_kpi_type_cskh').id
-        task_templates = self.env['ttb.task.template'].sudo().search([
-            ('date_from', '<=', today),
-            ('date_to', '>=', today),
-            ('kpi_type_id', '=', kpi_type_id),
-            ('area_ids', '!=', False),
-        ])
-        if not task_templates:
-            return
-        for user in users:
-            employee = user.employee_id
-            job_name = employee.job_id.name if employee and employee.job_id else ''
-            official_date = employee.official_working_date
-
-            if job_name == "Quản lý Nhà sách":
-                continue
-
-            user_area_ids = user.ttb_area_ids
-            user_branch_ids = user.ttb_branch_ids.ids
-
-            for template in task_templates:
-                common_area_ids = user_area_ids.filtered(lambda a: a.id in template.area_ids.ids)
-
-                if not common_area_ids:
-                    continue
-
-                area = common_area_ids[0]
-
-                for branch_id in user_branch_ids:
-                    if official_date.day <= 7:
-                        period = 1
-                        deadline = official_date.replace(day=14)
-                    elif 8 <= official_date.day < 15:
-                        period = 2
-                        deadline = official_date.replace(day=21)
-                    else:
-                        continue
-
-                    existed = self.search_count([
-                        ('user_id', '=', user.id),
-                        ('user_branch_id', '=', branch_id),
-                        ('area_id', '=', area.id),
-                        ('kpi_type_id', '=', kpi_type_id),
-                        ('period', '=', period),
-                        ('creation_month', '=', creation_month),
-                    ])
-                    if not existed:
-                        values = {
-                            'kpi_type_id': kpi_type_id,
-                            'deadline': deadline,
-                            'group': 'manager',
-                            'user_id': user.id,
-                            'user_job_id': employee.job_id.id if employee else False,
-                            'user_branch_id': branch_id,
-                            'area_id': area.id,
-                            'categ_id': user.ttb_categ_id.id if user.ttb_categ_id else False,
-                            'period': period,
-                            'creation_month': creation_month
-                        }
-                        self.create(values)
-
     def _is_weekday(self, date):
         """Kiểm tra ngày có phải là ngày trong tuần (T2-T6)"""
         return date.weekday() < 5
@@ -1756,7 +2200,7 @@ class TtbTaskReport(models.Model):
                           'area_id': area.id,
                           'user_branch_id': branch.id,
                           'deadline': end_month,
-                          'group': 'region_manager',
+                          'group': 'quality_control',
                           'user_ids':user_ids,
                           }
                 existed_count = self.count_existed(values, ['user_ids'])
@@ -1783,7 +2227,7 @@ class TtbTaskReport(models.Model):
                           'categ_id': categ.id,
                           'user_branch_id': branch.id,
                           'deadline': end_month,
-                          'group': 'region_manager',
+                          'group': 'quality_control',
                           'user_ids': user_ids
                           }
                 existed_count = self.count_existed(values, ['user_ids'])
@@ -1822,7 +2266,7 @@ class TtbTaskReport(models.Model):
                         'area_id': area.id,
                         'user_branch_id': branch.id,
                         'deadline': end_month,
-                        'group': 'region_manager',
+                        'group': 'quality_control',
                     }
                     existed_count = self.count_existed(values)
                     for i in range(max(0, count - existed_count)):
@@ -2301,45 +2745,3 @@ class TtbTaskReport(models.Model):
     confirmed_by_cross_evaluator_id = fields.Many2one(string='Người xác nhận kết quả chéo', comodel_name='res.users', tracking=True)
     confirmed_by_final_evaluator_id = fields.Many2one(string='Người xác nhận tiêu chí lệch', comodel_name='res.users', tracking=True)
 
-    def action_confirm_comparison(self):
-        if self.line_ids:
-            self.confirmed_by_primary_evaluator_id = self.env.user.id
-        if self.line_id_cross_dot:
-            self.confirmed_by_cross_evaluator_id = self.env.user.id
-        for report in self:
-            mismatch_vals = []
-
-            for line in report.line_ids:
-                cross_line = report.line_id_cross_dot.filtered(
-                    lambda x: x.template_line_id.id == line.template_line_id.id)
-                if cross_line:
-                    line_result = 'dat' if line.x_pass else 'khong_dat'
-                    cross_result = 'dat' if cross_line[0].x_pass else 'khong_dat'
-
-                    if line_result != cross_result:
-                        mismatch_vals.append((0, 0, {
-                            'template_line_id': line.template_line_id.id,
-                            'origin_line_id': line.id,
-                            'result_1': line_result,
-                            'result_2': cross_result,
-                        }))
-
-            report.mismatch_ids = [(5, 0, 0)] + mismatch_vals
-
-    def action_confirm_mismatch(self):
-        self.ensure_one()
-        self.confirmed_by_final_evaluator_id = self.env.user.id
-        for rec in self:
-            for mismatch_line in rec.mismatch_ids:
-                origin_line = mismatch_line.origin_line_id
-
-                if origin_line and mismatch_line.fail:
-                    origin_line.write({
-                        'x_pass': False,
-                        'fail': True,
-                    })
-                elif origin_line and mismatch_line.x_pass:
-                    origin_line.write({
-                        'x_pass': True,
-                        'fail': False,
-                    })

@@ -3,6 +3,6 @@
     <!-- Menu gốc + menu cha (Quản lý, Báo cáo, Cấu hình) -->
     <menuitem id="ttb_menu_root" name="Khu vui chơi" web_icon="ttb_khuvuichoi,static/description/icon.png"/>
     <menuitem id="ttb_menu_management" name="Quản lý" parent="ttb_menu_root" sequence="20" groups="group_ttb_manager_branch,group_ttb_director_branch"/>
-    <menuitem id="ttb_menu_reporting" name="Báo cáo" parent="ttb_menu_root" sequence="30" groups="group_ttb_employee_branch,group_ttb_employee_branch,group_ttb_manager_branch"/>
+    <menuitem id="ttb_menu_reporting" name="Báo cáo" parent="ttb_menu_root" sequence="30" groups="group_ttb_employee_branch,group_ttb_manager_branch,group_ttb_director_branch"/>
     <menuitem id="ttb_menu_configuration" name="Cấu hình" parent="ttb_menu_root" sequence="40" groups="base.group_system"/>
 </odoo>

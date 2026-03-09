@@ -1,6 +1,7 @@
 /** @odoo-module **/
 
-import { Component, onMounted, onWillStart, onWillUnmount, useState } from "@odoo/owl";
+import { Component, onMounted, onWillStart, onWillUnmount, useState, useEffect, useRef } from "@odoo/owl";
+import { loadBundle } from "@web/core/assets";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { deserializeDate, deserializeDateTime, formatDate, formatDateTime } from "@web/core/l10n/dates";
@@ -14,6 +15,7 @@ export class ManagerDashboard extends Component {
         this.notification = useService("notification");
 
         this.state = useState({
+            viewMode: "overview", // "overview" | "report"
             loading: true,
             currentTimeVNDate: "",
             currentTimeVNTime: "",
@@ -42,6 +44,8 @@ export class ManagerDashboard extends Component {
             failedAuditLines: [],
             expandedAreas: {},
             expandedEmployees: {},
+            reportPostAuditPerformance: [],
+            reportCompletionPerformance: [],
         });
 
         onWillStart(async () => {
@@ -58,6 +62,121 @@ export class ManagerDashboard extends Component {
                 clearInterval(this._clockInterval);
                 this._clockInterval = null;
             }
+            this._destroyReportChart();
+        });
+
+        this.reportChartCanvasRef = useRef("reportChartCanvas");
+        this._reportChart = null;
+
+        useEffect(
+            () => {
+                if (this.state.viewMode !== "report") {
+                    this._destroyReportChart();
+                    return;
+                }
+                loadBundle("web.chartjs_lib").then(() => this._renderReportChart());
+                return () => this._destroyReportChart();
+            },
+            () => [
+                this.state.viewMode,
+                this.state.reportPostAuditPerformance?.length,
+                this.state.reportCompletionPerformance?.length,
+            ]
+        );
+    }
+
+    _destroyReportChart() {
+        if (this._reportChart) {
+            this._reportChart.destroy();
+            this._reportChart = null;
+        }
+    }
+
+    _getReportChartData() {
+        const audit = this.state.reportPostAuditPerformance || [];
+        const completion = this.state.reportCompletionPerformance || [];
+        const byKey = {};
+        const parsePercent = (s) => (s && typeof s === "string" ? parseFloat(String(s).replace("%", "").trim()) : 0) || 0;
+        for (const row of audit) {
+            const k = row.area_key ?? "none";
+            if (!byKey[k]) byKey[k] = { area_key: k, area_name: row.area_name || "Chưa phân khu vực", audit: 0, completion: 0 };
+            byKey[k].audit = parsePercent(row.percent_display);
+        }
+        for (const row of completion) {
+            const k = row.area_key ?? "none";
+            if (!byKey[k]) byKey[k] = { area_key: k, area_name: row.area_name || "Chưa phân khu vực", audit: 0, completion: 0 };
+            byKey[k].completion = parsePercent(row.percent_display);
+        }
+        const rows = Object.values(byKey).slice(0, 27);
+        return {
+            labels: rows.map((r) => r.area_name),
+            auditPercents: rows.map((r) => r.audit),
+            completionPercents: rows.map((r) => r.completion),
+        };
+    }
+
+    _renderReportChart() {
+        const canvas = this.reportChartCanvasRef.el;
+        if (!canvas) return;
+        this._destroyReportChart();
+        const { labels, auditPercents, completionPercents } = this._getReportChartData();
+        if (!labels.length) return;
+        const Chart = globalThis.Chart;
+        if (!Chart) return;
+        this._reportChart = new Chart(canvas, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "Tỉ lệ hoàn thành",
+                        data: completionPercents,
+                        backgroundColor: "rgba(255, 159, 64, 0.8)",
+                        borderColor: "rgb(255, 159, 64)",
+                        borderWidth: 1,
+                    },
+                    {
+                        label: "Điểm hậu kiểm",
+                        data: auditPercents,
+                        backgroundColor: "rgba(54, 162, 235, 0.8)",
+                        borderColor: "rgb(54, 162, 235)",
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                    },
+                },
+                scales: {
+                    x: {
+                        title: { display: false },
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45,
+                            font: { size: 11 },
+                        },
+                        grid: { display: false },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: "Tỉ lệ %",
+                        },
+                        ticks: {
+                            stepSize: 25,
+                            callback: (v) => v + "%",
+                        },
+                        grid: { color: "rgba(0,0,0,0.08)" },
+                    },
+                },
+            },
         });
     }
 
@@ -106,12 +225,21 @@ export class ManagerDashboard extends Component {
             this.state.rangeDomain = data.range?.domain || [];
             this.state.lastRefreshedAt = new Date();
             this._resetCountdown();
+            this._computeReportPerformance();
         } catch (e) {
             this.notification.add("Không thể tải dashboard quản lý. Vui lòng thử lại.", { type: "danger" });
             throw e;
         } finally {
             this.state.loading = false;
         }
+    }
+
+    setViewMode(mode) {
+        this.state.viewMode = mode === "report" ? "report" : "overview";
+    }
+
+    toggleViewMode() {
+        this.state.viewMode = this.state.viewMode === "report" ? "overview" : "report";
     }
 
     setRange = async (rangeKey) => {
@@ -312,6 +440,59 @@ export class ManagerDashboard extends Component {
 
     _resetCountdown() {
         this.state.nextRefreshInSec = this.state.refreshEverySec;
+    }
+
+    _computeReportPerformance() {
+        // Hiệu suất hậu kiểm: tính theo số công việc đạt/không đạt (pass/fail) theo Khu vực.
+        // Ví dụ 1 khu vực có tổng 5 công việc đã hậu kiểm, 4 đạt (pass), 1 không đạt (fail) => 80%.
+        const auditTasks = this.state.auditTasks || [];
+        const byAreaAudit = {};
+        for (const t of auditTasks) {
+            const key = t.area_id !== false && t.area_id != null ? String(t.area_id) : "none";
+            if (!byAreaAudit[key]) {
+                byAreaAudit[key] = {
+                    area_key: key,
+                    area_name: t.area_name || "Chưa phân khu vực",
+                    passed: 0,
+                    failed: 0,
+                };
+            }
+            if (t.status === "pass") byAreaAudit[key].passed += 1;
+            else if (t.status === "fail") byAreaAudit[key].failed += 1;
+            // pending/other: bỏ qua để không ảnh hưởng tỷ lệ đạt
+        }
+        const postAuditRows = Object.values(byAreaAudit).map((row) => {
+            const total = row.passed + row.failed;
+            return {
+                ...row,
+                total,
+                percent_display: total > 0 ? `${((row.passed / total) * 100).toFixed(1)}%` : "-",
+            };
+        });
+        this.state.reportPostAuditPerformance = postAuditRows;
+
+        const tasks = this.state.employeeTasks || [];
+        const byArea = {};
+        for (const t of tasks) {
+            const key = t.area_id ?? "none";
+            if (!byArea[key]) {
+                byArea[key] = {
+                    area_key: key,
+                    area_name: t.area_name || "Chưa phân khu vực",
+                    total: 0,
+                    done: 0,
+                };
+            }
+            byArea[key].total += 1;
+            if (t.status === "done") byArea[key].done += 1;
+        }
+        const completionRows = Object.values(byArea).map((row) => ({
+            ...row,
+            not_done: row.total - row.done,
+            percent_display:
+                row.total > 0 ? `${((row.done / row.total) * 100).toFixed(1)}%` : "-",
+        }));
+        this.state.reportCompletionPerformance = completionRows;
     }
 
     _startTickers() {

@@ -8,6 +8,7 @@
         'security/ir.model.access.csv',
         'data/ir_sequence.xml',
         'views/ttb_report_pos.xml',
+        'views/pos_order_line_views.xml',
         'wizard/ttb_change_ncc_wizard.xml',
         'views/wizard_coverage_month.xml',
         'views/wizard_coverage_week.xml',

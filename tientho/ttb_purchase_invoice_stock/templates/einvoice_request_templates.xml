@@ -116,7 +116,7 @@
                                             <table class="ttb-ei-info">
                                                 <tbody>
                                                     <tr>
-                                                        <th>Tên khách hàng</th>
+                                                        <th>Tên công ty / Tên người mua</th>
                                                         <td><t t-esc="order_info.get('customer_name', '')"/></td>
                                                     </tr>
                                                     <tr>

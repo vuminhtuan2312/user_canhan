@@ -51,14 +51,21 @@ class TtbPostAudit(models.Model):
         shifts = Calendar.search([('active', '=', True)])
         for shift in shifts:
             audit_hour = self._get_audit_hour_for_date(shift, today_vn)
-            if audit_hour <= 0 or hour_vn < audit_hour:
-                continue
-            assignments = Assignment.search([
-                ('date', '=', today_vn),
+            today_assignments = Assignment.browse()
+            if audit_hour > 0 and hour_vn >= audit_hour:
+                today_assignments = Assignment.search([
+                    ('date', '=', today_vn),
+                    ('shift_id', '=', shift.id),
+                    ('state', '=', 'done'),
+                    ('post_audit_generated', '=', False),
+                ])
+            past_assignments = Assignment.search([
+                ('date', '<', today_vn),
                 ('shift_id', '=', shift.id),
                 ('state', '=', 'done'),
                 ('post_audit_generated', '=', False),
             ])
+            assignments = today_assignments | past_assignments
             for assignment in assignments:
                 inspectors = self.env['hr.employee']
                 if assignment.manager_id:
