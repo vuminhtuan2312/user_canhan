@@ -7,6 +7,11 @@
         <field name="priority">10</field>
         <field name="arch" type="xml">
             <header position="inside">
+                <button name="%(ttb_purchase.action_purchase_order_payment_type_wizard)d"
+                        type="action"
+                        string="Đề nghị thanh toán"
+                        class="btn-primary"
+                        invisible="state != 'purchase'"/>
                 <button name="action_change_purchase_order_status" type="object" string="Mua hàng NCC Trung Quốc"
                         class="btn-secondary" invisible="purchase_order_status != 'advance_payment' or state != 'purchase'"
                         context="{'purchase_order_status': 'advance_payment'}"/>/>

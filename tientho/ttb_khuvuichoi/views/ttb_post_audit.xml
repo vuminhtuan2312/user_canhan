@@ -57,7 +57,8 @@
                                     <field name="note" optional="show" readonly="state != 'pending'"/>
                                     <field name="is_pass" readonly="is_fail == True or state != 'pending'"/>
                                     <field name="is_fail" readonly="is_pass == True or state != 'pending'"/>
-                                    <field name="proof_image" options="{'size': [300, 300]}" widget="capture_image" readonly="state != 'pending'" invisible="not is_fail"/>
+                                    <field name="proof_media_type" column_invisible="1"/>
+                                    <field name="proof_image" options="{'media_type_field': 'proof_media_type'}" widget="capture_image" readonly="state != 'pending'" invisible="not is_fail"/>
                                 </list>
                             </field>
                         </page>

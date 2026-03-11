@@ -420,6 +420,7 @@ class StockPicking(models.Model):
                 'product_uom': move.product_uom.id,
                 'product_uom_qty': abs(move.diff_qty),
                 'quantity': abs(move.diff_qty),
+                'stock_qty': move.stock_qty,
                 'location_id': move.location_id.id,
                 'location_dest_id': move.location_dest_id.id,
                 'is_cong_don': move.is_cong_don,

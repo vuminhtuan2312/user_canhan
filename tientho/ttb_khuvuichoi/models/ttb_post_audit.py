@@ -236,6 +236,21 @@ class TtbPostAudit(models.Model):
             return [('assignment_id.date', '=', today_vn + timedelta(days=1))]
         if key in ('day2', 'ngay_kia', 'ngaykia'):
             return [('assignment_id.date', '=', today_vn + timedelta(days=2))]
+        if key in ('7_days', '7ngay', '7-day', '7day'):
+            return [
+                ('assignment_id.date', '>=', today_vn - timedelta(days=6)),
+                ('assignment_id.date', '<=', today_vn),
+            ]
+        if key in ('15_days', '15ngay', '15-day', '15day'):
+            return [
+                ('assignment_id.date', '>=', today_vn - timedelta(days=14)),
+                ('assignment_id.date', '<=', today_vn),
+            ]
+        if key in ('30_days', '30ngay', '30-day', '30day'):
+            return [
+                ('assignment_id.date', '>=', today_vn - timedelta(days=29)),
+                ('assignment_id.date', '<=', today_vn),
+            ]
         return [('assignment_id.date', '=', today_vn)]
 
     @api.model
@@ -351,6 +366,7 @@ class TtbPostAuditLine(models.Model):
     state = fields.Selection(related='post_audit_id.state', store=True, readonly=True)
 
     proof_image = fields.Binary(string='Ảnh chứng minh')
+    proof_media_type = fields.Selection([('image', 'Image'), ('video', 'Video')], string='Loại minh chứng')
 
     @api.constrains('is_pass', 'is_fail')
     def _check_pass_fail(self):

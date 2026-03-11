@@ -59,6 +59,7 @@ class TtbOperationalTask(models.Model):
 
     is_late = fields.Boolean(string='Trễ hạn', readonly=True)
     proof_image = fields.Binary(string='Hình ảnh minh chứng')
+    proof_media_type = fields.Selection([('image', 'Image'), ('video', 'Video')], string='Loại minh chứng')
     proof_image_ids = fields.One2many('ttb.task.proof.image', 'task_id', string='Danh sách ảnh minh chứng')
     proof_image_count = fields.Integer(string='Số ảnh', compute='_compute_proof_image_count', store=False)
 
@@ -80,6 +81,7 @@ class TtbOperationalTask(models.Model):
     rework_source_audit_line_id = fields.Many2one('ttb.post.audit.line', string='Dòng hậu kiểm gốc', compute='_compute_rework_source_audit_line_id', store=True)
     rework_source_note = fields.Text(string='Ghi chú từ phiếu hậu kiểm gốc', related='rework_source_audit_line_id.note')
     rework_source_proof_image = fields.Binary(string='Hình ảnh từ phiếu hậu kiểm gốc', related='rework_source_audit_line_id.proof_image')
+    rework_source_proof_media_type = fields.Selection([('image', 'Image'), ('video', 'Video')], string='Loại minh chứng từ phiếu hậu kiểm gốc', related='rework_source_audit_line_id.proof_media_type')
 
     # Hậu kiểm
     is_audit_required = fields.Boolean(string='Cần hậu kiểm', default=False)
@@ -197,15 +199,21 @@ class TtbOperationalTask(models.Model):
                 vals['notification_sent'] = True
 
         proof_image_data = vals.pop('proof_image', None)
+        proof_media_type = vals.pop('proof_media_type', None)
         if proof_image_data and self.env.context.get('proof_image_append', True) and len(self) == 1:
             task = self
             if task.state == 'ready':
                 current_count = len(task.proof_image_ids)
                 if current_count >= 5:
                     raise UserError(_('Đã đủ tối đa 5 ảnh minh chứng. Không thể thêm ảnh mới.'))
+                if not proof_media_type and isinstance(proof_image_data, str) and proof_image_data.startswith('Gk'):
+                    proof_media_type = 'video'
+                if not proof_media_type:
+                    proof_media_type = 'image'
                 self.env['ttb.task.proof.image'].create({
                     'task_id': task.id,
                     'image': proof_image_data,
+                    'media_type': proof_media_type,
                     'sequence': 10 + current_count,
                 })
 
@@ -213,6 +221,32 @@ class TtbOperationalTask(models.Model):
         if ready_tasks:
             ready_tasks.write({'notification_sent': False})
         return res
+
+    def action_append_proof_media(self, base64_data, media_type='image'):
+        """
+        Ghi ảnh/video minh chứng qua RPC (tránh gửi payload lớn qua form save).
+        Widget gọi method này rồi clear proof_image trên form và save.
+        """
+        self.ensure_one()
+        if self.state != 'ready':
+            raise UserError(_('Chỉ được thêm minh chứng khi công việc ở trạng thái Sẵn sàng.'))
+        current_count = len(self.proof_image_ids)
+        if current_count >= 5:
+            raise UserError(_('Đã đủ tối đa 5 ảnh minh chứng. Không thể thêm ảnh mới.'))
+        if not base64_data or not isinstance(base64_data, str):
+            raise UserError(_('Dữ liệu minh chứng không hợp lệ.'))
+        # Cho phép base64 thuần hoặc data URL (data:video/webm;base64,xxx)
+        if base64_data.startswith('data:'):
+            _head, _, base64_data = base64_data.partition(',')
+        if not media_type or media_type not in ('image', 'video'):
+            media_type = 'video' if base64_data.startswith('Gk') else 'image'
+        self.env['ttb.task.proof.image'].create({
+            'task_id': self.id,
+            'image': base64_data,
+            'media_type': media_type,
+            'sequence': 10 + current_count,
+        })
+        return True
 
     # ---------------------------------------------------------
     # CRON
@@ -577,8 +611,13 @@ class TtbOperationalTask(models.Model):
         """
         Lọc task theo khung giờ planned_date_start / planned_date_end theo ngày Việt Nam (UTC+7).
         Mỗi ngày: start = 00:00:00, end = 23:59:59 (giờ VN).
+        Hỗ trợ các mốc:
+        - today: Hôm nay
+        - 7_days: Hôm nay + 6 ngày tiếp theo
+        - 15_days: Hôm nay + 14 ngày tiếp theo
+        - 30_days: Hôm nay + 29 ngày tiếp theo
         """
-        key = (range_key or 'before').strip().lower()
+        key = (range_key or 'today').strip().lower()
         if key in ('all', 'toan_bo', 'toanbo'):
             return [], "Toàn bộ"
 
@@ -595,6 +634,14 @@ class TtbOperationalTask(models.Model):
             end_utc = end_vn - timedelta(hours=7)
             return start_utc, end_utc
 
+        def _vn_range_to_utc_range(start_day_vn, end_day_vn):
+            """Chuyển một khoảng nhiều ngày VN sang khoảng UTC bao phủ toàn bộ."""
+            start_vn = datetime.combine(start_day_vn, time(0, 0, 0))
+            end_vn = datetime.combine(end_day_vn, time(23, 59, 59))
+            start_utc = start_vn - timedelta(hours=7)
+            end_utc = end_vn - timedelta(hours=7)
+            return start_utc, end_utc
+
         if key in ('before', 'truoc'):
             # Trước: task có planned_date_end trước 00:00:00 hôm nay (VN)
             start_today_utc, _ = _vn_day_to_utc_range(today_vn)
@@ -604,20 +651,36 @@ class TtbOperationalTask(models.Model):
             ]
             return domain, "Trước"
 
+        # Các mốc theo ngày
         if key in ('today', 'hom_nay', 'homnay'):
-            day_vn = today_vn
+            start_utc, end_utc = _vn_day_to_utc_range(today_vn)
             label = "Hôm nay"
         elif key in ('tomorrow', 'ngay_mai', 'ngaymai'):
             day_vn = today_vn + timedelta(days=1)
+            start_utc, end_utc = _vn_day_to_utc_range(day_vn)
             label = "Ngày mai"
         elif key in ('day2', 'ngay_kia', 'ngaykia'):
             day_vn = today_vn + timedelta(days=2)
+            start_utc, end_utc = _vn_day_to_utc_range(day_vn)
             label = "Ngày kia"
+        # Các mốc nhiều ngày: lùi về quá khứ, bao gồm hôm nay
+        elif key in ('7_days', '7ngay', '7-day', '7day'):
+            start_day = today_vn - timedelta(days=6)
+            start_utc, end_utc = _vn_range_to_utc_range(start_day, today_vn)
+            label = "7 ngày gần nhất"
+        elif key in ('15_days', '15ngay', '15-day', '15day'):
+            start_day = today_vn - timedelta(days=14)
+            start_utc, end_utc = _vn_range_to_utc_range(start_day, today_vn)
+            label = "15 ngày gần nhất"
+        elif key in ('30_days', '30ngay', '30-day', '30day'):
+            start_day = today_vn - timedelta(days=29)
+            start_utc, end_utc = _vn_range_to_utc_range(start_day, today_vn)
+            label = "30 ngày gần nhất"
         else:
-            day_vn = today_vn
+            # Mặc định: Hôm nay
+            start_utc, end_utc = _vn_day_to_utc_range(today_vn)
             label = "Hôm nay"
 
-        start_utc, end_utc = _vn_day_to_utc_range(day_vn)
         start_utc_str = fields.Datetime.to_string(start_utc)
         end_utc_str = fields.Datetime.to_string(end_utc)
         domain = [
@@ -629,7 +692,7 @@ class TtbOperationalTask(models.Model):
         return domain, label
 
     @api.model
-    def get_employee_dashboard_data(self, range_key='before', limit=50):
+    def get_employee_dashboard_data(self, range_key='today', limit=50):
         Task = self.env['ttb.operational.task']
         uid = self.env.uid
 
@@ -930,6 +993,21 @@ class TtbOperationalTask(models.Model):
             assignment_date_domain = [('date', '<', fields.Date.to_string(today_vn))]
         elif key in ('tomorrow', 'ngay_mai', 'ngaymai'):
             assignment_date_domain = [('date', '=', fields.Date.to_string(today_vn + timedelta(days=1)))]
+        elif key in ('7_days', '7ngay', '7-day', '7day'):
+            assignment_date_domain = [
+                ('date', '>=', fields.Date.to_string(today_vn - timedelta(days=6))),
+                ('date', '<=', fields.Date.to_string(today_vn)),
+            ]
+        elif key in ('15_days', '15ngay', '15-day', '15day'):
+            assignment_date_domain = [
+                ('date', '>=', fields.Date.to_string(today_vn - timedelta(days=14))),
+                ('date', '<=', fields.Date.to_string(today_vn)),
+            ]
+        elif key in ('30_days', '30ngay', '30-day', '30day'):
+            assignment_date_domain = [
+                ('date', '>=', fields.Date.to_string(today_vn - timedelta(days=29))),
+                ('date', '<=', fields.Date.to_string(today_vn)),
+            ]
         else:
             assignment_date_domain = [('date', '=', fields.Date.to_string(today_vn))]
         assignment_domain = [('branch_id', 'in', visible_branch_ids)] + assignment_date_domain

@@ -387,6 +387,24 @@ export class ManagerDashboard extends Component {
         return this.getAreaGroups(this.state.failedAuditTasks || [], () => false);
     }
 
+    getPostAuditsSorted() {
+        const byArea = this.state.postAuditsByArea || [];
+        const all = [];
+        for (const area of byArea) {
+            const list = area.post_audits || [];
+            for (const pa of list) {
+                all.push(pa);
+            }
+        }
+        const stateOrder = { pending: 0, draft: 1, done: 2 };
+        return all.sort((a, b) => {
+            const ra = stateOrder[a?.state] ?? 99;
+            const rb = stateOrder[b?.state] ?? 99;
+            if (ra !== rb) return ra - rb;
+            return (a?.id || 0) - (b?.id || 0);
+        });
+    }
+
     getEmployeeGroupsForAreaFailed(areaGroup) {
         return this.getEmployeeGroups(areaGroup.tasks, () => false);
     }

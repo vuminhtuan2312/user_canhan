@@ -32,6 +32,8 @@
         'wizards/print_goods_distribution.xml',
         'wizards/import_code_imported_goods.xml',
         'wizards/purchase_order_advance_request_wizard_views.xml',
+        'wizards/purchase_order_payment_type_wizard_views.xml',
+        'wizards/advance_request_print_wizard_views.xml',
         'wizards/mau_in_tam_ung_wizard.xml',
         'wizards/stock_picking_confirm_wizard.xml',
         'wizards/goods_distribution_confirm_wizard.xml',

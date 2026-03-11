@@ -17,3 +17,4 @@ from . import const
 from . import invoice_report_without_nibot
 from . import ttb_mrp_bom
 from . import pos_invoice_schedule
+from . import advance_request

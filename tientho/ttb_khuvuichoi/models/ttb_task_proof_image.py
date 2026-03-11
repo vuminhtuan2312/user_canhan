@@ -7,5 +7,6 @@ class TtbTaskProofImage(models.Model):
     _order = 'sequence, id'
 
     task_id = fields.Many2one('ttb.operational.task', string='Công việc', required=True, ondelete='cascade')
-    image = fields.Binary(string='Ảnh', attachment=True)
+    image = fields.Binary(string='Ảnh')
+    media_type = fields.Selection([('image', 'Image'), ('video', 'Video')], string='Loại minh chứng')
     sequence = fields.Integer(string='Thứ tự', default=10)

@@ -38,6 +38,7 @@
 
             <!-- Nút để mở camera/upload, chỉ hiện khi không ở chế độ chỉ đọc -->
             <div t-if="!props.readonly" class="o_add_attachment_button_container mt-2">
+                <input type="file" t-ref="cameraInput" accept="image/*" capture="environment" t-on-change="onFileInputChange" class="d-none"/>
                 <button class="btn btn-primary" t-on-click="onClickAdd">
                     <i class="fa fa-camera me-1"/>
                     <span>Chụp hoặc Tải ảnh lên</span>

@@ -11,6 +11,7 @@
 
         'security/ir.model.access.csv',
         'wizards/create_template_wizard_views.xml',
+        'wizards/refuse_campaign_wizard_views.xml',
         'views/condition_to_send_zns_views.xml',
         'views/zns_send_views.xml',
         'views/period_campaign_views.xml',

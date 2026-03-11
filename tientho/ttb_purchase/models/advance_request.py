@@ -69,6 +69,15 @@ class AdvanceRequest(models.Model):
     _description = 'Yêu cầu tạm ứng'
 
     name = fields.Char(string='Mã phiếu', required=True, copy=False, readonly=True, default='Mới')
+    document_type = fields.Selection(
+        selection=[
+            ('import_advance', 'Tạm ứng nhập khẩu'),
+            ('supplier_advance', 'Tạm ứng Nhà cung cấp'),
+            ('supplier_payment', 'Thanh toán nhà cung cấp')
+        ],
+        string='Loại phiếu',
+        tracking=True
+    )
     request_user_id = fields.Many2one(comodel_name='res.users', string='Người đề nghị', default=lambda self: self.env.user)
     department_id = fields.Many2one(comodel_name='hr.department', string='Bộ phận', default=lambda self: self.env['hr.department'].search([('name', '=', 'Ngành hàng')], limit=1))
     date = fields.Date(string='Ngày lập phiếu', default=fields.Date.context_today)
@@ -555,6 +564,98 @@ class AdvanceRequest(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': _('Tải Hợp đồng'),
+            'res_model': 'report.downloader',
+            'res_id': downloader.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
+
+    def action_print_supplier_advance(self):
+        """In tạm ứng nhà cung cấp"""
+        self.ensure_one()
+
+        if DocxTemplate is None:
+            raise UserError(_("Thư viện 'docxtpl' chưa được cài đặt."))
+
+        module_name = 'ttb_purchase'
+        module_path = get_module_path(module_name)
+        if not module_path:
+            raise UserError(_("Không thể tìm thấy module: %s", module_name))
+
+        template_path = os.path.join(module_path, 'data', 'Mẫu in tạm ứng nhà cung cấp.docx')
+
+        if not os.path.exists(template_path):
+            raise UserError(_("Không tìm thấy file mẫu tại đường dẫn: %s", template_path))
+
+        doc = DocxTemplate(template_path)
+        context = {
+            'request': self,
+            'now': fields.Datetime.now().strftime('%d-%m-%Y'),
+            'amount_in_words': convert_number_to_words(self.amount_total),
+            'payment_type': self.payment_type
+        }
+
+        doc.render(context)
+
+        file_stream = io.BytesIO()
+        doc.save(file_stream)
+        file_stream.seek(0)
+        file_b64 = base64.b64encode(file_stream.read())
+
+        downloader = self.env['report.downloader'].create({
+            'file_data': file_b64,
+            'file_name': f'Tạm ứng NCC {self.name.replace("/", "_")}.docx',
+        })
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Tải file'),
+            'res_model': 'report.downloader',
+            'res_id': downloader.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
+
+    def action_print_supplier_payment(self):
+        """In thanh toán nhà cung cấp"""
+        self.ensure_one()
+
+        if DocxTemplate is None:
+            raise UserError(_("Thư viện 'docxtpl' chưa được cài đặt."))
+
+        module_name = 'ttb_purchase'
+        module_path = get_module_path(module_name)
+        if not module_path:
+            raise UserError(_("Không thể tìm thấy module: %s", module_name))
+
+        template_path = os.path.join(module_path, 'data', 'Mẫu in thanh toán nhà cung cấp.docx')
+
+        if not os.path.exists(template_path):
+            raise UserError(_("Không tìm thấy file mẫu tại đường dẫn: %s", template_path))
+
+        doc = DocxTemplate(template_path)
+        context = {
+            'request': self,
+            'now': fields.Datetime.now().strftime('%d-%m-%Y'),
+            'amount_in_words': convert_number_to_words(self.amount_total),
+            'payment_type': self.payment_type
+        }
+
+        doc.render(context)
+
+        file_stream = io.BytesIO()
+        doc.save(file_stream)
+        file_stream.seek(0)
+        file_b64 = base64.b64encode(file_stream.read())
+
+        downloader = self.env['report.downloader'].create({
+            'file_data': file_b64,
+            'file_name': f'Thanh toán NCC {self.name.replace("/", "_")}.docx',
+        })
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Tải file'),
             'res_model': 'report.downloader',
             'res_id': downloader.id,
             'view_mode': 'form',

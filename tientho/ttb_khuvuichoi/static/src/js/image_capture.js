@@ -16,6 +16,9 @@ export const fileTypeMagicWordMap = {
     i: "png",
     P: "svg+xml",
 };
+export function isWebMBase64(data) {
+    return typeof data === "string" && data.length >= 2 && data.substring(0, 2) === "Gk";
+}
 
 const placeholder = "/web/static/img/placeholder.png";
 export function imageCacheKey(value) {
@@ -35,6 +38,10 @@ class imageCapture extends Component {
         width: { type: Number, optional: true },
         height: { type: Number, optional: true },
         reload: { type: Boolean, optional: true },
+        /** Tên field lưu loại media ('image' | 'video') để hiển thị đúng khi mở lại */
+        mediaTypeField: { type: String, optional: true },
+        /** Nếu true: lưu qua RPC action_append_proof_media rồi clear field (tránh payload lớn qua form) */
+        appendViaRpc: { type: Boolean, optional: true },
     };
     static defaultProps = {
              acceptedFileExtensions: "image/*",
@@ -50,7 +57,7 @@ class imageCapture extends Component {
         this.state = useState({
             isValid: true,
             stream: null,
-            /** Data URL ảnh vừa lưu để hiển thị ngay, không cần F5 */
+            /** Data URL ảnh/video vừa lưu để hiển thị ngay, không cần F5 */
             previewDataUrl: null,
             /** Trạng thái popup camera trên desktop/Odoo app */
             isDesktopModalOpen: false,
@@ -59,16 +66,28 @@ class imageCapture extends Component {
             videoDevices: [],
             /** deviceId đang chọn */
             selectedDeviceId: "",
+            /** Chế độ: 'photo' (chụp ảnh) hoặc 'video' (quay video) */
+            captureMode: "photo",
+            /** Đang ghi hình (video) */
+            isRecording: false,
+            /** Thời gian quay (giây) để hiển thị 00:00 */
+            recordingDurationSeconds: 0,
         });
+        this.recordingStartTime = null;
+        this.recordingTimerId = null;
         this.player = useRef("player");
         this.capture = useRef("capture");
         this.camera = useRef("camera");
         this.save_image = useRef("save_image");
         this.mobileCameraInput = useRef("mobileCameraInput");
+        this.mobileVideoInput = useRef("mobileVideoInput");
         this.desktopCaptureActions = useRef("desktopCaptureActions");
         this.snapshotCanvas = useRef("snapshotCanvas");
         this.imageInput = useRef("imageInput");
         this.desktopModal = useRef("desktopModal");
+        /** MediaRecorder và buffer khi quay video */
+        this.mediaRecorder = null;
+        this.recordedChunks = [];
         this.rawCacheKey = this.props.record.data.write_date;
         onWillUpdateProps((nextProps) => {
             const { record } = this.props;
@@ -96,6 +115,13 @@ class imageCapture extends Component {
             this.props.enableZoom && this.props.readonly && this.props.record.data[this.props.name]
         );
     }
+    /** Định dạng thời gian quay: MM:SS */
+    get recordingDurationFormatted() {
+        const s = this.state.recordingDurationSeconds || 0;
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+    }
     getUrl(previewFieldName) {
         // Ưu tiên ảnh vừa lưu (hiển thị ngay không cần F5)
         if (this.state.previewDataUrl) {
@@ -105,27 +131,44 @@ class imageCapture extends Component {
             return this.lastURL;
         }
         if (this.state.isValid && this.props.record.data[this.props.name]) {
-            if (isBinarySize(this.props.record.data[this.props.name])) {
+            const data = this.props.record.data[this.props.name];
+            if (isBinarySize(data)) {
                 if (!this.rawCacheKey) {
                     this.rawCacheKey = this.props.record.data.write_date;
                 }
-                this.lastURL = url("/web/image", {
-                    model: this.props.record.resModel,
-                    id: this.props.record.resId,
-                    field: previewFieldName,
-                    unique: imageCacheKey(this.rawCacheKey),
-                });
+                const typeField = this.props.mediaTypeField;
+                const isVideoBinary =
+                    typeField && this.props.record.data[typeField] === "video";
+                this.lastURL = url(
+                    isVideoBinary ? "/web/binary/proof" : "/web/image",
+                    {
+                        model: this.props.record.resModel,
+                        id: this.props.record.resId,
+                        field: previewFieldName,
+                        unique: imageCacheKey(this.rawCacheKey),
+                    }
+                );
             } else {
-                // Use magic-word technique for detecting image type
-                 const magic =
-                    fileTypeMagicWordMap[this.props.record.data[this.props.name][0]] || "png";
-                this.lastURL = `data:image/${magic};base64,${
-                    this.props.record.data[this.props.name]
-                }`;
+                const raw = typeof data === "string" ? data : "";
+                if (isWebMBase64(raw)) {
+                    this.lastURL = `data:video/webm;base64,${raw}`;
+                } else {
+                    const magic =
+                        fileTypeMagicWordMap[raw[0]] || "png";
+                    this.lastURL = `data:image/${magic};base64,${raw}`;
+                }
             }
             return this.lastURL;
         }
         return placeholder;
+    }
+    get isVideo() {
+        const urlStr = this.state.previewDataUrl || this.lastURL || "";
+        if (typeof urlStr === "string" && urlStr.startsWith("data:video/")) return true;
+        const data = this.props.record.data[this.props.name];
+        if (!isBinarySize(data) && typeof data === "string" && isWebMBase64(data)) return true;
+        const typeField = this.props.mediaTypeField;
+        return !!(typeField && this.props.record.data[typeField] === "video");
     }
     onFileRemove() {
         this.state.isValid = true;
@@ -135,30 +178,65 @@ class imageCapture extends Component {
     async onFileUploaded(info) {
         this.state.isValid = true;
         this.rawCacheKey = null;
-        // Base64 từ action_save_image (phần sau dấu phẩy) -> tạo data URL để hiển thị ngay
         const base64 = typeof info.data === "string" ? info.data : null;
-        const dataUrl = base64 ? `data:image/png;base64,${base64}` : null;
+        const isVideo = (info.type && info.type.startsWith("video/")) || this.state.captureMode === "video";
+        const mimeType = info.type || (isVideo ? "video/webm" : "image/png");
+        const dataUrl = base64 ? `data:${mimeType};base64,${base64}` : null;
         if (dataUrl) {
             this.state.previewDataUrl = dataUrl;
         }
-        this.props.record.update({ [this.props.name]: info.data });
+        if (this.props.appendViaRpc && this.props.record.resModel && this.props.record.resId && base64) {
+            try {
+                await rpc("/web/dataset/call_kw", {
+                    model: this.props.record.resModel,
+                    method: "action_append_proof_media",
+                    args: [this.props.record.resId, base64, isVideo ? "video" : "image"],
+                    kwargs: {},
+                });
+                this.props.record.update({
+                    [this.props.name]: false,
+                    ...(this.props.mediaTypeField && { [this.props.mediaTypeField]: false }),
+                });
+                await this.props.record.save();
+                this.state.previewDataUrl = null;
+                if (this.props.record.data.write_date) {
+                    this.rawCacheKey = this.props.record.data.write_date;
+                }
+                this.notification.add(isVideo ? _t("Đã lưu video.") : _t("Đã lưu ảnh."), { type: "success" });
+            } catch (err) {
+                console.error("Append proof media failed:", err);
+                this.notification.add(err?.message || _t("Không thể lưu minh chứng."), { type: "danger" });
+            }
+            return;
+        }
+        const updates = { [this.props.name]: info.data };
+        if (this.props.mediaTypeField) {
+            updates[this.props.mediaTypeField] = isVideo ? "video" : "image";
+        }
+        this.props.record.update(updates);
         try {
             await this.props.record.save();
             if (this.props.record.data.write_date) {
                 this.rawCacheKey = this.props.record.data.write_date;
             }
-            this.notification.add(_t("Đã lưu ảnh."), { type: "success" });
+            this.notification.add(isVideo ? _t("Đã lưu video.") : _t("Đã lưu ảnh."), { type: "success" });
         } catch (err) {
             console.error("Save record failed:", err);
             this.notification.add(_t("Lưu form thất bại. Vui lòng nhấn Lưu thủ công."), { type: "warning" });
         }
     }
     /**
-     * Click nút camera: mobile = mở input capture (chỉ camera), desktop = mở stream
+     * Click nút camera: mobile = mở input capture (chỉ camera / camcorder), desktop = mở stream
      */
-    onCameraClick() {
+    onCameraClick(ev) {
+        const mode = ev?.currentTarget?.dataset?.mode === "video" ? "video" : "photo";
+        this.state.captureMode = mode;
         if (this.isMobileBrowser) {
-            this.mobileCameraInput.el.click();
+            if (mode === "video" && this.mobileVideoInput?.el) {
+                this.mobileVideoInput.el.click();
+            } else if (this.mobileCameraInput?.el) {
+                this.mobileCameraInput.el.click();
+            }
         } else {
             this.OnClickOpenCamera();
         }
@@ -194,6 +272,40 @@ class imageCapture extends Component {
                 self.notification.add(_t("Không thể lưu ảnh"), { type: "danger" });
             }
             self.mobileCameraInput.el.value = "";
+        };
+        reader.readAsDataURL(file);
+    }
+
+    /**
+     * Mobile: sau khi quay xong từ input capture video, gửi file video lên
+     */
+    async onMobileVideoChange(ev) {
+        const file = ev.target.files && ev.target.files[0];
+        if (!file || !file.type.startsWith("video/")) return;
+        const self = this;
+        const reader = new FileReader();
+        reader.onload = async function () {
+            const dataUrl = reader.result;
+            try {
+                const results = await rpc("/web/dataset/call_kw", {
+                    model: "image.capture",
+                    method: "action_save_image",
+                    args: [[], dataUrl],
+                    kwargs: {},
+                });
+                const data = {
+                    data: results,
+                    name: file.name || "VideoFile.webm",
+                    objectUrl: null,
+                    size: file.size,
+                    type: file.type || "video/webm",
+                };
+                self.onFileUploaded(data);
+            } catch (err) {
+                console.error("Save video failed:", err);
+                self.notification.add(_t("Không thể lưu video"), { type: "danger" });
+            }
+            self.mobileVideoInput.el.value = "";
         };
         reader.readAsDataURL(file);
     }
@@ -271,7 +383,8 @@ class imageCapture extends Component {
             this.state.stream = null;
         }
         const videoConstraints = this._getVideoConstraints();
-        this.state.stream = await getUserMedia({ video: videoConstraints, audio: false });
+        const wantsAudio = this.state.captureMode === "video";
+        this.state.stream = await getUserMedia({ video: videoConstraints, audio: wantsAudio });
         this.player.el.srcObject = this.state.stream;
     }
 
@@ -316,26 +429,126 @@ class imageCapture extends Component {
         }
     }
 
+    /**
+     * Đổi camera: nếu đang quay thì chỉ thay video track trong stream hiện tại (ghi hình không dừng).
+     * Nếu không quay thì đổi stream như cũ.
+     */
     async onCameraDeviceChange(ev) {
         const deviceId = ev.target.value;
         if (deviceId === this.state.selectedDeviceId) return;
-        this.state.selectedDeviceId = deviceId;
         const getUserMedia = this._getUserMedia();
         if (!getUserMedia) return;
+        this.state.selectedDeviceId = deviceId;
         try {
             this.snapshotCanvas.el.classList.add("d-none");
             this.player.el.classList.remove("d-none");
             this.state.hasSnapshot = false;
-            await this._startCameraStream(getUserMedia);
+            if (this.state.isRecording && this.state.stream && this.mediaRecorder && this.mediaRecorder.state === "recording") {
+                await this._replaceVideoTrackWhileRecording(getUserMedia);
+            } else {
+                await this._startCameraStream(getUserMedia);
+            }
         } catch (error) {
             console.error("Error switching camera:", error);
             this.notification.add(_t("Không thể chuyển sang camera này."), { type: "danger" });
         }
     }
+    /**
+     * Thay chỉ video track trong stream đang ghi, để MediaRecorder không bị dừng.
+     */
+    async _replaceVideoTrackWhileRecording(getUserMedia) {
+        const newStream = await getUserMedia({
+            video: this._getVideoConstraints(),
+            audio: this.state.captureMode === "video",
+        });
+        const currentStream = this.state.stream;
+        const newVideoTrack = newStream.getVideoTracks()[0];
+        const oldVideoTrack = currentStream.getVideoTracks()[0];
+        if (!oldVideoTrack || !newVideoTrack) {
+            this.stopTracksOnMediaStream(newStream);
+            return;
+        }
+        currentStream.removeTrack(oldVideoTrack);
+        currentStream.addTrack(newVideoTrack);
+        oldVideoTrack.stop();
+        newStream.getAudioTracks().forEach((t) => t.stop());
+        this.player.el.srcObject = currentStream;
+    }
     stopTracksOnMediaStream(mediaStream) {
         for (const track of mediaStream.getTracks()) {
             track.stop();
         }
+    }
+    async OnClickStartRecording() {
+        if (this.state.captureMode !== "video") {
+            return;
+        }
+        const getUserMedia = this._getUserMedia();
+        if (!getUserMedia) {
+            this.notification.add(this._getCameraUnavailableMessage(), { type: "danger" });
+            return;
+        }
+        try {
+            if (!this.state.stream) {
+                await this._startCameraStream(getUserMedia);
+            }
+            this.recordedChunks = [];
+            let options;
+            try {
+                options = { mimeType: "video/webm;codecs=vp8,opus" };
+                // Một số trình duyệt có thể không hỗ trợ mimeType cụ thể
+                // trong trường hợp đó sẽ ném lỗi và ta fallback ở catch.
+                // eslint-disable-next-line no-new
+                new MediaRecorder(this.state.stream, options);
+            } catch {
+                options = undefined;
+            }
+            this.mediaRecorder = new MediaRecorder(this.state.stream, options);
+            this.mediaRecorder.ondataavailable = (event) => {
+                if (event.data && event.data.size > 0) {
+                    this.recordedChunks.push(event.data);
+                }
+            };
+            this.mediaRecorder.onstop = () => {
+                const blob = new Blob(this.recordedChunks, { type: "video/webm" });
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    this.url = reader.result; // data:video/webm;base64,...
+                    this.state.hasSnapshot = true;
+                };
+                reader.readAsDataURL(blob);
+            };
+            this.mediaRecorder.start();
+            this.state.isRecording = true;
+            this.state.hasSnapshot = false;
+            this.recordingStartTime = Date.now();
+            this.state.recordingDurationSeconds = 0;
+            if (this.recordingTimerId) clearInterval(this.recordingTimerId);
+            this.recordingTimerId = setInterval(() => {
+                if (!this.recordingStartTime) return;
+                this.state.recordingDurationSeconds = Math.floor(
+                    (Date.now() - this.recordingStartTime) / 1000
+                );
+            }, 1000);
+        } catch (error) {
+            console.error("Error starting recording:", error);
+            this.notification.add(_t("Không thể bắt đầu quay video."), { type: "danger" });
+        }
+    }
+    _clearRecordingTimer() {
+        if (this.recordingTimerId) {
+            clearInterval(this.recordingTimerId);
+            this.recordingTimerId = null;
+        }
+        this.recordingStartTime = null;
+        this.state.recordingDurationSeconds = 0;
+    }
+    OnClickStopRecording() {
+        if (this.mediaRecorder && this.state.isRecording) {
+            this.mediaRecorder.stop();
+        }
+        this.state.isRecording = false;
+        this._clearRecordingTimer();
     }
     OnClickCaptureImage() {
         const video = this.player.el;
@@ -371,8 +584,20 @@ class imageCapture extends Component {
             this.stopTracksOnMediaStream(this.state.stream);
             this.state.stream = null;
         }
+        if (this.mediaRecorder && this.state.isRecording) {
+            try {
+                this.mediaRecorder.stop();
+            } catch {
+                // bỏ qua lỗi khi dừng recorder
+            }
+        }
+        this.mediaRecorder = null;
+        this.recordedChunks = [];
+        this._clearRecordingTimer();
         this.state.isDesktopModalOpen = false;
         this.state.hasSnapshot = false;
+        this.state.isRecording = false;
+        this.state.recordingDurationSeconds = 0;
         this.state.videoDevices = [];
         this.state.selectedDeviceId = "";
     }
@@ -391,10 +616,10 @@ class imageCapture extends Component {
             });
             const data = {
                 data: results,
-                name: "ImageFile.png",
+                name: this.state.captureMode === "video" ? "VideoFile.webm" : "ImageFile.png",
                 objectUrl: null,
                 size: 0,
-                type: "image/png",
+                type: this.state.captureMode === "video" ? "video/webm" : "image/png",
             };
             self.onFileUploaded(data);
         } finally {
@@ -404,6 +629,12 @@ class imageCapture extends Component {
     onLoadFailed() {
         this.state.isValid = false;
         this.notification.add(_t("Could not display the selected image"), {
+            type: "danger",
+        });
+    }
+    onVideoLoadFailed() {
+        this.state.isValid = false;
+        this.notification.add(_t("Could not play the selected video"), {
             type: "danger",
         });
     }
@@ -462,6 +693,8 @@ supportedTypes: ["binary"],
         width: options.size && Boolean(options.size[0]) ? options.size[0] : attrs.width,
         height: options.size && Boolean(options.size[1]) ? options.size[1] : attrs.height,
         reload: "reload" in options ? Boolean(options.reload) : true,
+        mediaTypeField: options.media_type_field || undefined,
+        appendViaRpc: Boolean(options.append_via_rpc),
     }),
 };
 registry.category("fields").add("capture_image", ImageCapture);
