@@ -32,6 +32,9 @@ class PurchaseOrderLine(models.Model):
                 line.ttb_editable = False
     ttb_discount_amount = fields.Float(string='CK tiền', compute='_compute_ttb_discount_amount', inverse='_inverse_ttb_discount_amount', store=True, readonly=False)
     discount_type = fields.Selection(selection=[('percent', 'Phần trăm'), ('money', 'Tiền')], string='Loại chiết khấu')
+    ttb_ck_co_dinh = fields.Float(string='%CK cố định', digits=(5, 2))
+    ttb_ck_thang = fields.Float(string='%CK tháng', digits=(5, 2))
+    ttb_ck_san_pham = fields.Float(string='%CK sản phẩm', digits=(5, 2))
 
     @api.onchange('discount')
     def _onchange_discount_set_type(self):
@@ -118,10 +121,53 @@ class PurchaseOrderLine(models.Model):
 
             if update:
                 rec.write(update)
+
+            if (rec.order_id and rec.order_id.ttb_type != 'imported_goods'
+                    and rec.product_id and rec.order_id.partner_id):
+                po_date = rec.order_id.date_order
+                partner_id = rec.order_id.partner_id.id
+                product_id = rec.product_id.id
+
+                fixed_disc = self._get_supplier_discount(partner_id, product_id, 'fixed', po_date)
+                monthly_disc = self._get_supplier_discount(partner_id, product_id, 'monthly', po_date)
+                product_disc = self._get_supplier_discount(partner_id, product_id, 'product', po_date)
+
+                ck_co_dinh = fixed_disc.discount_percentage if fixed_disc else 0.0
+                ck_thang = monthly_disc.discount_percentage if monthly_disc else 0.0
+                ck_san_pham = product_disc.discount_percentage if product_disc else 0.0
+
+                ck_update = {
+                    'ttb_ck_co_dinh': ck_co_dinh,
+                    'ttb_ck_thang': ck_thang,
+                    'ttb_ck_san_pham': ck_san_pham,
+                }
+                total_ck = ck_co_dinh + ck_thang + ck_san_pham
+                if total_ck > 0:
+                    ck_update['discount'] = total_ck
+                    ck_update['discount_type'] = 'percent'
+                rec.write(ck_update)
+
             if rec.product_id:
                 rec.order_id.update_stock_system()
 
         return records
+
+    def _get_supplier_discount(self, partner_id, product_id, discount_type, po_date):
+        if not po_date or not partner_id or not product_id:
+            return None
+        domain = [
+            ('partner_id', '=', partner_id),
+            ('product_id', '=', product_id),
+            ('discount_type', '=', discount_type),
+            ('date_start', '<=', po_date),
+            ('date_end', '>=', po_date),
+        ]
+        discounts = self.env['supplier.discount'].search(domain)
+        if not discounts:
+            return None
+        if len(discounts) == 1:
+            return discounts[0]
+        return min(discounts, key=lambda d: abs((d.date_start - po_date).total_seconds()))
 
     ttb_stock_qty = fields.Float(string='Tồn kho', compute='_compute_ttb_sale_stock_qty', store=True)
     ttb_sale_30_qty = fields.Float(string='SL bán 30 ngày', compute='_compute_ttb_sale_stock_qty', store=True)

@@ -4,7 +4,7 @@
     'category': 'Tools',
     'summary': "Quy trình mua hàng",
     'depends': ['base', 'ttb_approval', 'purchase_stock', 'ttb_product', 'sale_stock', 'web_grid', 'base_view_inheritance_extension',
-                'ttb_stock', 'binary_field_preview', 'point_of_sale', 'base_import',],
+                'ttb_stock', 'binary_field_preview', 'point_of_sale', 'base_import', 'ttb_stock_barcode_incoming', 'ttb_stock_barcode_kiem_ke'],
     'data': [
         # data always first
         'data/ir_sequence.xml',
@@ -67,6 +67,7 @@
         'views/advance_request.xml',
         'views/product_classification_views.xml',
         'views/product_template.xml',
+        'views/supplier_discount.xml',
 
         # menu always last
         'views/menu.xml',

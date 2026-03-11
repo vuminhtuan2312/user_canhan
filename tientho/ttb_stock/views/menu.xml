@@ -15,7 +15,7 @@
     <menuitem id="menu_stock_consume_root" name="Xuất dùng" parent="stock.menu_stock_root" sequence="99"/>
     <menuitem id="stock_consume_request_menu" action="action_stock_consume_request" name="Phiếu đề nghị xuất dùng" parent="ttb_stock.menu_stock_consume_root" sequence="11"/>
     <menuitem id="menu_stock_consume_picking" action="action_stock_consume_picking" name="Phiếu điều chuyển xuất dùng" parent="ttb_stock.menu_stock_consume_root" sequence="12"/>
-    <menuitem id="stock_transfer_request_menu_root" parent="stock.menu_stock_root" name="Phiếu đề nghị chuyển hàng" sequence="99">
+    <menuitem id="stock_transfer_request_menu_root" parent="stock.menu_stock_root" name="Điều chuyển hàng hóa" sequence="99">
         <menuitem id="stock_transfer_request_stock_picking_menu" name="Chuyển lên quầy">
             <menuitem id="menu_stock_picking_retail_receive" 
                       name="Kho bán lẻ nhận hàng" 
@@ -33,9 +33,13 @@
                       sequence="30"/>
         </menuitem>
         <menuitem id="stock_transfer_request_menu_child" name="Điều chuyển cơ sở khác">
-            <menuitem id="stock_transfer_request_menu" name="Phiếu điều chuyển hàng giữa các cơ sở"
+            <menuitem id="men" name="Phiếu điều chuyển hàng giữa các cơ sở"
                       action="stock_transfer_request_action"/>
+            <menuitem id="menu_stock_picking_transfer_out" name="Phiếu DC xuất kho" action="action_stock_picking_transfer_out" sequence="20"/>
+            <menuitem id="menu_stock_picking_transfer_in" name="Phiếu DC nhập kho" action="action_stock_picking_transfer_in" sequence="30"/>
         </menuitem>
+
+
     </menuitem>
 
     <menuitem id="menu_barcode_change_root" name="Chuyển mã" parent="stock.menu_stock_root" sequence="99"/>

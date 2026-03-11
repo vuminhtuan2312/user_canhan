@@ -15,34 +15,9 @@ class TtbKpiType(models.Model):
     company_id = fields.Many2one(comodel_name='res.company', string='Công ty', index=True, default=lambda self: self.env.company)
     is_checklist = fields.Boolean(string='Checklist')
     menu_template_id = fields.Many2one('ir.ui.menu', string='Menu Template ID')
-    day_of_week = fields.Selection([
-        ('0', 'Thứ 2'),
-        ('1', 'Thứ 3'),
-        ('2', 'Thứ 4'),
-        ('3', 'Thứ 5'),
-        ('4', 'Thứ 6'),
-        ('5', 'Thứ 7'),
-        ('6', 'Chủ nhật'),
-    ], string="Ngày sinh phiếu")
-
-    deadline = fields.Selection([
-        ('0', 'Thứ 2'),
-        ('1', 'Thứ 3'),
-        ('2', 'Thứ 4'),
-        ('3', 'Thứ 5'),
-        ('4', 'Thứ 6'),
-        ('5', 'Thứ 7'),
-        ('6', 'Chủ nhật'),
-    ], string="Hạn chấm của phiếu")
-
-    interval_type = fields.Selection([
-        ('weekly', 'Hàng tuần'),
-        ('biweekly', 'Cách tuần'),
-    ], default='weekly', string='Tần xuất')
-
     run_time = fields.Float(string="Giờ chạy (0-23)")
     branch_ids = fields.Many2many("ttb.branch", string="Cơ sở áp dụng")
-
+    schedule_ids = fields.One2many('ttb.kpi.schedule', 'kpi_type_id',string="Lịch sinh phiếu")
     cron_id = fields.Many2one("ir.cron", string="Tác vụ đã lên lịch", tracking=True)
     job_ids = fields.Many2many("hr.job", string='Người đánh giá')
     is_checklist_restaurant = fields.Boolean(string='Check list nhà hàng')
@@ -143,22 +118,27 @@ class TtbKpiType(models.Model):
     def cron_generate_task_report(self, kpi_type_id):
         kpi = self.browse(kpi_type_id)
         today = fields.Date.today()
-        if today.weekday() != int(kpi.day_of_week):
-            return
-
-        if kpi.interval_type == "biweekly":
-            week_number = today.isocalendar()[1]
-            if week_number % 2 == 0:
+        today_weekday = today.weekday()
+        for schedule in kpi.schedule_ids:
+            if today_weekday != int(schedule.day_of_week):
                 return
 
-        start_weekday = int(kpi.day_of_week)
-        deadline_weekday = int(kpi.deadline)
+            if schedule.interval_type == "biweekly":
+                week_number = today.isocalendar()[1]
+                if week_number % 2 == 0:
+                    return
 
-        delta_days = (deadline_weekday - start_weekday) % 7
-        deadline_date = today + timedelta(days=delta_days)
+            start_weekday = int(schedule.day_of_week)
+            deadline_weekday = int(schedule.deadline)
 
-        deadline = datetime.combine(deadline_date, time(23, 59, 59))
+            delta_days = (deadline_weekday - start_weekday) % 7
+            deadline_date = today + timedelta(days=delta_days)
 
+            deadline = datetime.combine(deadline_date, time(23, 59, 59))
+            self._generate_task_report(kpi, deadline)
+
+    def _generate_task_report(self, kpi, deadline):
+        today = fields.Date.today()
         task_templates = kpi.env['ttb.task.template'].search([
             ('date_from', '<=', today),
             ('date_to', '>=', today),
@@ -167,7 +147,7 @@ class TtbKpiType(models.Model):
         if not task_templates:
             return
 
-        TaskReport = kpi.env['ttb.task.report'].sudo()
+        TaskReport = self.env['ttb.task.report'].sudo()
 
         for branch in kpi.branch_ids:
             reviewer_domain = [
@@ -179,7 +159,7 @@ class TtbKpiType(models.Model):
                     ('ttb_area_ids', 'in', kpi.area_ids.ids)
                 )
 
-            reviewer = kpi.env['res.users'].sudo().search(reviewer_domain, limit=1)
+            reviewer = self.env['res.users'].sudo().search(reviewer_domain, limit=1)
 
             if not reviewer:
                 continue
@@ -234,7 +214,6 @@ class TtbKpiType(models.Model):
                         body="Hệ thống vừa sinh phiếu checklist định kỳ.",
                         partner_ids=partner_ids,
                     )
-
 
 class TtbKpiTypeRate(models.Model):
     _name = 'ttb.kpi.type.rate'

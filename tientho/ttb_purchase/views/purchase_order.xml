@@ -293,6 +293,9 @@
                 </attribute>
             </field>
             <xpath expr="//field[@name='order_line']//list//field[@name='discount']" position="after">
+                <field name="ttb_ck_co_dinh" optional="hide"/>
+                <field name="ttb_ck_thang" optional="hide"/>
+                <field name="ttb_ck_san_pham" optional="hide"/>
                 <field name="ttb_discount_amount" readonly="qty_invoiced != 0" optional="hide"/>
             </xpath>
             <xpath expr="//field[@name='order_line']//list//field[@name='price_subtotal']" position="after">
