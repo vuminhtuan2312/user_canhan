@@ -271,7 +271,9 @@ class imageCapture extends Component {
                 console.error("Save image failed:", err);
                 self.notification.add(_t("Không thể lưu ảnh"), { type: "danger" });
             }
-            self.mobileCameraInput.el.value = "";
+            if (self.mobileCameraInput?.el) {
+                self.mobileCameraInput.el.value = "";
+            }
         };
         reader.readAsDataURL(file);
     }
@@ -305,7 +307,9 @@ class imageCapture extends Component {
                 console.error("Save video failed:", err);
                 self.notification.add(_t("Không thể lưu video"), { type: "danger" });
             }
-            self.mobileVideoInput.el.value = "";
+            if (self.mobileVideoInput?.el) {
+                self.mobileVideoInput.el.value = "";
+            }
         };
         reader.readAsDataURL(file);
     }

@@ -28,3 +28,4 @@ from . import advance_request
 from . import advance_request_attachment
 from . import product_classification
 from . import product_template
+from . import supplier_discount

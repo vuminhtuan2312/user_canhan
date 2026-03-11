@@ -32,18 +32,26 @@
                             <field name="is_checklist_restaurant" invisible="is_checklist"/>
                             <field name="branch_ids" widget="many2many_tags"/>
                             <field name="job_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
                             <field name="job_ids_user" widget="many2many_tags" invisible="not is_checklist_restaurant"/>
                             <field name="area_ids" widget="many2many_tags" invisible="not is_checklist_restaurant"/>
                             <field name="group_id"/>
                             <field name="need_approved_plan"/>
-                        </group>
-                        <group>
-                            <field name="day_of_week"/>
-                            <field name="deadline"/>
-                            <field name="interval_type" />
                             <field name="run_time" widget="float_time"/>
                         </group>
                     </group>
+                    <notebook>
+                        <page string="Lịch sinh phiếu">
+                            <field name="schedule_ids">
+                                <list editable="bottom">
+                                    <field name="day_of_week"/>
+                                    <field name="deadline"/>
+                                    <field name="interval_type"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

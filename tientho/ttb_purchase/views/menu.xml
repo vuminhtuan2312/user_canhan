@@ -77,6 +77,12 @@
                     sequence="5"
             />
             <menuitem
+                    name="Chiết khấu của nhà cung cấp"
+                    id="supplier_discount_menu"
+                    action="supplier_discount_action"
+                    sequence="15"
+            />
+            <menuitem
                     name="Bảng giá của nhà cung cấp"
                     groups="group_purchase_expert"
                     id="purchase.menu_product_pricelist_action2_purchase"

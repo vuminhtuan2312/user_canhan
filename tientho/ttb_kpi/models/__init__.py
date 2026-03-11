@@ -33,3 +33,4 @@ from . import ttb_cancel_reason
 from . import ttb_task_report_line_qa_old
 from . import ttb_task_report_line_qc_old
 from . import ttb_task_report_mismatch_old
+from . import ttb_kpi_schedule

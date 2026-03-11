@@ -270,4 +270,137 @@
         <field name="paperformat_id" ref="paperformat_portrait_a4"/>
      </record>
 
+    <record id="view_picking_form_transfer_strict" model="ir.ui.view">
+        <field name="name">stock.picking.form.transfer.strict</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="partner_id" string="Đối tượng kho" invisible="transfer_request_id == False"/>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='shelf_location']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='mch_category_id']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='period_inventory_id']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='career_inventory']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='transfer_state']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='inventory_time_minutes']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='percent_products_to_check']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='min_products_to_check']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='inventory_origin_id']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='is_recheck_inventory_origin']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='product_uom_qty']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='name']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='product_packaging_id']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='ttb_barcode_k']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='return_price_unit']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='confirm_vendor_price']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='ttb_required_qty']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='qty_picked']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='achieved_qty']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='reject_qty_total']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='ttb_discount']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='return_price_subtotal']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='vendor_product_name']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//list//field[@name='diff_qty']" position="attributes">
+                <attribute name="column_invisible">parent.transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='extra']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+            <xpath expr="//page[@name='note']" position="attributes">
+                <attribute name="invisible">transfer_request_id != False</attribute>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page name="transfer_shipping_info" string="Thông tin vận chuyển" invisible="transfer_request_id == False">
+                    <group>
+                        <group>
+                            <field name="id_augges" string="ID Augges"/>
+                            <field name="sp_augges" string="Số phiếu Augges"/>
+                        </group>
+                    </group>
+                </page>
+
+                <page name="transfer_other_info" string="Thông tin khác" invisible="transfer_request_id == False">
+                    <group>
+                        <group>
+                            <field name="user_id" string="Người phụ trách"/>
+                            <field name="support_user_ids" string="Người phụ trách hỗ trợ" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
 </odoo>

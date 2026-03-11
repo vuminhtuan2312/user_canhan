@@ -244,4 +244,19 @@
         <field name="view_id" ref="ttb_stock_picking_receive_export_list_view"/>
     </record>
 
+
+    <record id="action_stock_picking_transfer_out" model="ir.actions.act_window">
+        <field name="name">Phiếu DC xuất kho</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('picking_type_id.code', '=', 'internal'), ('transfer_request_id', '!=', False), ('location_dest_id.usage', '=', 'transit')]</field>
+    </record>
+
+    <record id="action_stock_picking_transfer_in" model="ir.actions.act_window">
+        <field name="name">Phiếu DC nhập kho</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('picking_type_id.code', '=', 'internal'), ('transfer_request_id', '!=', False), ('location_id.usage', '=', 'transit')]</field>
+
+    </record>
 </odoo>
