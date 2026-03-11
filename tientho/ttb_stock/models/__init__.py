@@ -14,3 +14,4 @@ from . import stock_consume_request_line
 from . import barcode_change_reason
 from . import barcode_change_request
 from . import barcode_change_request_line
+from . import product_product

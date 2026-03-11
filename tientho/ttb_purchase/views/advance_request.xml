@@ -22,8 +22,11 @@
                     <button name="action_print_advance_request_docx" string="In tạm ứng (DOCX)"
                         type="object" class="btn-primary"/>
                     <button name="action_print_return_request_docx" string="In hoàn ứng (DOCX)"
-                        type="object" class="btn-primary" invisible="state not in ('refunding', 'refunded')"/>
-
+                            type="object" class="btn-primary" invisible="state not in ('refunding', 'refunded')"/>
+                    <button name="%(ttb_purchase.action_advance_request_print_wizard)d"
+                            type="action"
+                            string="In"
+                            class="btn-success"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,approved,done,refunding,refunded,cancel"/>
                 </header>
                 <sheet>
@@ -35,6 +38,7 @@
                             <field name="date" readonly="1"/>
                             <field name="date_approved"/>
                             <field name="content"/>
+                            <field name="document_type"/>
                         </group>
                         <group string="Thông tin thanh toán">
                             <field name="party"/>
@@ -109,14 +113,14 @@
                             </group>
                             <field name="rule_line_ids"/>
                         </page>
-                        <page string="Chứng từ kế toán" name="accounting_info">
+                        <page string="Chứng từ kế toán" name="accounting_info" invisible="document_type != 'import_advance'">
                             <group>
                                 <field name="attachment_ids" widget="pdf_viewer"/>
                                 <field name="wire_transfer_bill" widget="pdf_viewer"/>
                                 <field name="attachment_back_ids" widget="pdf_viewer" invisible="state not in ('refunding', 'refunded')"/>
                             </group>
                         </page>
-                        <page string="Chứng từ kế toán liên quan" name="attachment_documents">
+                        <page string="Chứng từ kế toán liên quan" name="attachment_documents" invisible="document_type != 'import_advance'">
                             <group>
                                 <group string="Bill thanh toán NCC">
                                     <field name="supplier_payment_bill_ids"
@@ -214,6 +218,7 @@
         <field name="arch" type="xml">
             <list string="Tạm ứng">
                 <field name="name" optional="show"/>
+                <field name="document_type" optional="show"/>
                 <field name="department_id" optional="show"/>
                 <field name="request_user_id" optional="show"/>
                 <field name="content" optional="show"/>

@@ -61,9 +61,10 @@
                         </div>
                         <div class="d-flex align-items-center gap-2 flex-wrap">
                         <div class="btn-group" role="group" aria-label="Time range">
-                            <button class="btn btn-sm" t-att-class="state.rangeKey === 'before' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('before')">Trước</button>
                             <button class="btn btn-sm" t-att-class="state.rangeKey === 'today' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('today')">Hôm nay</button>
-                            <button class="btn btn-sm" t-att-class="state.rangeKey === 'tomorrow' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('tomorrow')">Ngày mai</button>
+                            <button class="btn btn-sm" t-att-class="state.rangeKey === '7_days' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('7_days')">7 Ngày</button>
+                            <button class="btn btn-sm" t-att-class="state.rangeKey === '15_days' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('15_days')">15 Ngày</button>
+                            <button class="btn btn-sm" t-att-class="state.rangeKey === '30_days' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('30_days')">30 Ngày</button>
                             <button class="btn btn-sm" t-att-class="state.rangeKey === 'all' ? 'btn-primary' : 'btn-outline-primary'" t-on-click="() => setRange('all')">Toàn bộ</button>
                         </div>
                         <button type="button" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"

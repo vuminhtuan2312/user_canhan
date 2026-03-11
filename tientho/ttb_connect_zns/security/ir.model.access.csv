@@ -13,3 +13,4 @@ access_create_template_wizard,access_create_template_wizard,model_create_templat
 access_ttb_pos_order_filter,access_ttb_pos_order_filter,model_ttb_pos_order_filter,,1,1,1,1
 access_param_mapping_line,access_param_mapping_line,model_param_mapping_line,,1,1,1,1
 access_zns_api_code_error,access_zns_api_code_error,model_zns_api_code_error,,1,1,1,1
+access_refuse_campaign_wizard,access_refuse_campaign_wizard,model_refuse_campaign_wizard,,1,1,1,1

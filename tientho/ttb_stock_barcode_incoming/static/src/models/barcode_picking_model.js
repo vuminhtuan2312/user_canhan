@@ -349,6 +349,8 @@ patch(BarcodePickingModel.prototype, {
                 confirmLabel: _t("Xác nhận đã hoàn thành phiếu"),
                 cancelLabel: _t("Tiếp tục làm việc với phiếu"),
                 confirm: async () => {
+                    // Tắt popup backorder của Odoo
+                    this.showBackOrderDialog = false;
                     const result = await super.validate();
                     resolve(result);
                 },

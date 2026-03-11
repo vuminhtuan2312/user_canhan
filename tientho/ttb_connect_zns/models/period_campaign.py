@@ -11,13 +11,13 @@ class PeriodCampaign(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'ttb.approval.mixin']
     _description = 'Chiến dịch theo kỳ'
 
-    name = fields.Char(string='Tên chiến dịch', required=True)
-    start_date = fields.Datetime(string='Ngày bắt đầu', required=True)
-    end_date = fields.Datetime(string='Ngày kết thúc', required=True)
-    description = fields.Text(string='Mô tả chiến dịch')
+    name = fields.Char(string='Tên chiến dịch', required=True, tracking=True)
+    start_date = fields.Datetime(string='Ngày bắt đầu', required=True, tracking=True)
+    end_date = fields.Datetime(string='Ngày kết thúc', required=True, tracking=True)
+    description = fields.Text(string='Mô tả chiến dịch', tracking=True)
     template_id = fields.Many2one('zalo.template', string='Mẫu template', tracking=True)
     manager_campaign = fields.Many2one('res.users', string='Quản lý chiến dịch', tracking=True)
-    users_follow_campaign = fields.Many2many('res.users', 'res_users_period_campaign_rel', string='Người tham gia chiến dịch', tracking=True)
+    users_follow_campaign = fields.Many2many('res.users', 'res_users_period_campaign_rel', string='Người tham gia chiến dịch', tracking=True, default=lambda self: self.env.user)
     state = fields.Selection(
         selection=[
             ('draft', 'Nháp'),
@@ -30,12 +30,13 @@ class PeriodCampaign(models.Model):
 
         ],
         string='Trạng thái',
-        default='draft'
+        default='draft',
+        tracking = True
     )
-    time_send = fields.Integer(string='Thời gian gửi tin ZNS sau mua hàng (phút)', default=60)
+    time_send = fields.Integer(string='Thời gian gửi tin ZNS sau mua hàng (phút)', default=60, tracking=True)
     product_ids = fields.Many2many('product.product', 'period_campaign_product_product_rel', string='Danh sách sản phẩm áp dụng')
     condition_run_campaign = fields.One2many('condition.to.send.zns', 'campaign_id', string='Danh sách cơ sở chạy chiến dịch')
-    zns_send_ids = fields.One2many('zns.send', 'campaign_id', string='Danh sách tin ZNS')
+    zns_send_ids = fields.One2many('zns.send', 'campaign_id', string='Danh sách tin ZNS', tracking=True)
     model_id = fields.Many2one(
         comodel_name='ir.model',
         string='Loại chứng từ',
@@ -46,6 +47,7 @@ class PeriodCampaign(models.Model):
     )
     model = fields.Char(string='Model', related='model_id.model')
     domain = fields.Char(string='Điều kiện', default='[]')
+    reason = fields.Text(string="Lý do từ chối", readonly=True, tracking=True)
 
     @api.model_create_multi
     def create(self, vals):
@@ -127,9 +129,11 @@ class PeriodCampaign(models.Model):
                     'date_sent': fields.Datetime.now(),
                     'state': 'wait_approve',
                     'approval_line_ids': [(5, 0, 0)] + approval_line_ids})
-        if self.env.user.id not in self.current_approve_user_ids.ids:
-            self.send_notify(message='Bạn cần duyệt chiến dịch', users=self.manager_campaign,
-                             subject='Chiến dịch duyệt giá cần duyệt')
+        body = f"Hiện tại đang có chiến dịch '{self.name}' cần duyệt"
+        self.message_post(
+            body=body,
+            partner_ids=[self.manager_campaign.partner_id.id],
+        )
         partners = []
         if self.manager_campaign:
             partners.append(self.manager_campaign.partner_id.id)
@@ -145,17 +149,7 @@ class PeriodCampaign(models.Model):
         if self.state in ['draft', 'cancelled']:
             raise ValidationError(_("Chỉ có thể tạm dừng ở trạng thái khác Nháp và Hủy."))
 
-        self.state = 'pause'
-
-        partners = []
-        if self.manager_campaign:
-            partners.append(self.manager_campaign.partner_id.id)
-
-        if partners:
-            self.message_post(
-                body="📤 Chiến dịch đã được <b>gửi duyệt</b>.",
-                partner_ids=partners,
-            )
+        self.state = 'draft'
 
     def action_approve_campaign(self):
         """Hành động duyệt chiến dịch"""
@@ -201,16 +195,27 @@ class PeriodCampaign(models.Model):
                 partner_ids=list(set(partners)),
             )
 
-    def action_refuse_campaign(self):
+    def action_refuse_campaign(self, reason=None):
         """Hành động từ chối chiến dịch"""
         self.ensure_one()
+
         self.state_change('rejected')
-        if self.rule_line_ids.search([('notif_only', '=', False), ('res_id', 'in', self.ids), ('res_model', '=', self._name)], order='sequence asc', limit=1).state == 'rejected':
+
+        if self.rule_line_ids.search([
+            ('notif_only', '=', False),
+            ('res_id', 'in', self.ids),
+            ('res_model', '=', self._name)
+        ], order='sequence asc', limit=1).state == 'rejected':
             self.sudo().write({'state': 'draft'})
 
         if self.create_uid:
+            body = f"""
+            ❌ Chiến dịch đã bị <b>từ chối</b> và quay về trạng thái Nháp.
+            <br/><b>Lý do:</b> {reason or 'Không có'}
+            """
+
             self.message_post(
-                body="❌ Chiến dịch đã bị <b>từ chối</b> và quay về trạng thái Nháp.",
+                body=body,
                 partner_ids=[self.create_uid.partner_id.id],
             )
 
@@ -267,3 +272,16 @@ class PeriodCampaign(models.Model):
                 "[CRON] Auto finished %s campaign(s)",
                 len(campaigns)
             )
+
+    def action_open_refuse_popup(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Từ chối chiến dịch',
+            'res_model': 'refuse.campaign.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_id': self.id,
+                'active_model': self._name,
+            }
+        }

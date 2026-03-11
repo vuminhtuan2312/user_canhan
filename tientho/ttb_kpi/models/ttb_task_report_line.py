@@ -278,21 +278,21 @@ class TtbTaskReportLine(models.Model):
                     }
 
     def button_fail_form(self):
-        """
-        Hành động này được gọi từ nút "Xác nhận" trên form popup.
-        Nó sẽ thay đổi trạng thái và đóng popup.
-        """
-        self.ensure_one()
-        # Thiện copy điều kiện hiển thị trường phương án xử lý vào lệnh if require trường này
-        # if not self.report_cross_id:
-        if self.kpi_type_id.code in ['KVC', 'VM', 'VS'] or self.kpi_type_id.is_checklist or self.kpi_type_id.is_checklist_restaurant:
-            # Thêm kiểm tra bắt buộc ở đây để chắc chắn
-            if not self.solution_plan:
-                raise UserError("Bạn phải cung cấp phương án.")
-            if not self.urgency_level:
-                raise UserError("Bạn phải cung cấp thời gian xử lý ")
-
-        # Thay đổi trạng thái
+        # """
+        # Hành động này được gọi từ nút "Xác nhận" trên form popup.
+        # Nó sẽ thay đổi trạng thái và đóng popup.
+        # """
+        # self.ensure_one()
+        # # Thiện copy điều kiện hiển thị trường phương án xử lý vào lệnh if require trường này
+        # # if not self.report_cross_id:
+        # if self.kpi_type_id.code in ['KVC', 'VM', 'VS'] or self.kpi_type_id.is_checklist or self.kpi_type_id.is_checklist_restaurant:
+        #     # Thêm kiểm tra bắt buộc ở đây để chắc chắn
+        #     if not self.solution_plan:
+        #         raise UserError("Bạn phải cung cấp phương án.")
+        #     if not self.urgency_level:
+        #         raise UserError("Bạn phải cung cấp thời gian xử lý ")
+        #
+        # # Thay đổi trạng thái
         self.fail = not self.fail  # Giả định là luôn set thành True, không phải đảo ngược
         self._onchange_fail()
         # <<< THAY ĐỔI QUAN TRỌNG: Trả về action để đóng popup

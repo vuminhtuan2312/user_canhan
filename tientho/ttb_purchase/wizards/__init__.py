@@ -10,6 +10,8 @@ from . import print_separate_prd
 from . import print_estimated_costs
 from . import import_code_imported_goods
 from . import purchase_order_advance_request_wizard
+from . import purchase_order_payment_type_wizard
+from . import advance_request_print_wizard
 from . import mau_in_tam_ung_wizard
 from . import stock_picking_confirm_wizard
 from . import goods_distribution_confirm_wizard

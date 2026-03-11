@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_advance_request_form" model="ir.ui.view">
+        <field name="name">advance.request.form</field>
+        <field name="model">advance.request</field>
+        <field name="inherit_id" ref="ttb_purchase.purchase_advance_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='attachment_documents']" position="after">
+                <page name="Chứng từ mua hàng" invisible="document_type != 'supplier_payment'">
+                    <group>
+                        <field name="supplier_delivery_note" widget="pdf_viewer"/>
+                        <field name="warehouse_receipt" widget="pdf_viewer"/>
+                        <field name="handover_record" widget="pdf_viewer"/>
+                        <field name="acceptance_record" widget="pdf_viewer"/>
+                        <field name="red_invoice" widget="many2many_tags"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

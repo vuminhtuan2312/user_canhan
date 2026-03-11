@@ -392,6 +392,7 @@
                 <group>
                     <field name="note"/>
                     <field name="image_ids" widget="many2many_binary_camera" readonly="state == 'done'"/>
+                    <button type="object" name="button_fail_form" string="Xác nhận"/>
                 </group>
             </form>
         </field>

@@ -34,6 +34,7 @@
         'views/stock_transfer_request.xml',
         'views/stock_consume_request.xml',
         'views/barcode_change.xml',
+        'views/product_product.xml',
 
         # menu always last
         'views/menu.xml',

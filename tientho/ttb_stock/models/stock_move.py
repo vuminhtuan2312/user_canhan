@@ -18,3 +18,4 @@ class StockMove(models.Model):
     ttb_barcode_vendor = fields.Char(string='Mã hàng NCC', related='product_id.barcode_vendor')
     ttb_default_code = fields.Char(string='Mã nội bộ', related='product_id.default_code')
     ttb_price_unit = fields.Float(string='Đơn giá')
+    diff_rate = fields.Float(string="Tỷ lệ lệch")

@@ -15,6 +15,8 @@ class StockBarcodeIncomingController(StockBarcodeController):
                         move_id = line.get("move_id")
                         if move_id:
                             move = request.env['stock.move'].browse(move_id)
+                            line['stock_qty'] = move.stock_qty
+                            line['original_quantity'] = sum(move.picking_id.inventory_origin_id.move_ids_without_package.filtered(lambda l: l.product_id == move.product_id).mapped('quantity')) if move.picking_id.inventory_origin_id else 0
                             if not move.picking_id.inventory_origin_id:
                                 line['is_inventory_kk'] = False
                             else:

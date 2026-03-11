@@ -103,12 +103,14 @@
                     </div>
                     <group>
                         <group string="Hình ảnh minh chứng">
-                            <field name="proof_image" widget="capture_image" nolabel="1" invisible="proof_image_count >= 5 or state != 'ready'"/>
+                            <field name="proof_image" options="{'media_type_field': 'proof_media_type', 'append_via_rpc': true}" widget="capture_image" nolabel="1" invisible="proof_image_count >= 5 or state != 'ready'"/>
                             <field name="proof_image_count" invisible="1"/>
+                            <field name="proof_media_type" invisible="1"/>
                             <field name="proof_image_ids" nolabel="1" readonly="state != 'ready'" invisible="not proof_image_ids">
                                 <list create="false" delete="false" default_order="sequence asc">
                                     <field name="sequence" column_invisible="1"/>
-                                    <field name="image" widget="image"/>
+                                    <field name="media_type" column_invisible="1"/>
+                                    <field name="image" options="{'media_type_field': 'media_type'}" widget="capture_image"/>
                                 </list>
                             </field>
                         </group>
@@ -162,7 +164,8 @@
                                     <field name="rework_source_note" readonly="1" nolabel="1" placeholder="Chưa có ghi chú"/>
                                 </group>
                                 <group string="Hình ảnh từ phiếu hậu kiểm gốc">
-                                    <field name="rework_source_proof_image" widget="image" nolabel="1" class="mb-3"/>
+                                    <field name="rework_source_proof_image" widget="capture_image" options="{'media_type_field': 'rework_source_proof_media_type'}" nolabel="1" class="mb-3"/>
+                                    <field name="rework_source_proof_media_type" invisible="1"/>
                                     <div class="text-muted" invisible="rework_source_proof_image">Chưa có hình ảnh được ghi nhận.</div>
                                 </group>
                             </group>

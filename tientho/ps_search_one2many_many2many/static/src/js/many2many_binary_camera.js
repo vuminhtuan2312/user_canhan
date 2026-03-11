@@ -2,12 +2,13 @@
 
 import { registry } from "@web/core/registry";
 import { Many2ManyBinaryField } from "@web/views/fields/many2many_binary/many2many_binary_field";
-import { useService } from "@web/core/utils/hooks"; // Cần import hook này
+import { useService } from "@web/core/utils/hooks";
+import { useRef } from "@odoo/owl";
 
 export class Many2ManyBinaryCamera extends Many2ManyBinaryField {
     setup() {
         super.setup();
-        // Nếu cần thêm logic khởi tạo, thêm ở đây
+        this.cameraInput = useRef("cameraInput");
     }
     // Chỉ định component này sẽ sử dụng template XML mới của chúng ta
     static template = "ps_search_one2many_many2many.Many2ManyBinaryCamera";
@@ -19,31 +20,29 @@ export class Many2ManyBinaryCamera extends Many2ManyBinaryField {
 
     onClickAdd(ev) {
         ev.preventDefault();
+        if (this.cameraInput.el) {
+            this.cameraInput.el.click();
+        }
+    }
 
-        const fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.accept = "image/*";
-        fileInput.capture = "environment";
-        fileInput.multiple = true;
+    async onFileInputChange(ev) {
+        if (!ev.target.files || ev.target.files.length === 0) {
+            return;
+        }
 
-        fileInput.onchange = async () => {
-            if (!fileInput.files || fileInput.files.length === 0) {
-                return;
-            }
+        const filesToUpload = [];
+        for (const originalFile of ev.target.files) {
+            const newFilename = `camera_capture_${Date.now()}.jpg`;
+            const newFile = new File([originalFile], newFilename, { type: originalFile.type });
+            filesToUpload.push(newFile);
+        }
 
-            const filesToUpload = [];
-            for (const originalFile of fileInput.files) {
-                const newFilename = `camera_capture_${Date.now()}.jpg`;
-                const newFile = new File([originalFile], newFilename, { type: originalFile.type });
-                filesToUpload.push(newFile);
-            }
+        if (filesToUpload.length > 0) {
+            await this.onFileUploaded(filesToUpload);
+        }
 
-            if (filesToUpload.length > 0) {
-                await this.onFileUploaded(filesToUpload);
-            }
-        };
-
-        fileInput.click();
+        // Reset input to allow selecting the same file again if needed
+        ev.target.value = "";
     }
 
     async onFileUploaded(files) {

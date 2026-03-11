@@ -28,6 +28,7 @@
         'views/ttb_mrp_bom_views.xml',
         'views/pos_invoice_schedule_views.xml',
         'views/pos_product_change_views.xml',
+        'views/advance_request.xml',
         'templates/einvoice_request_templates.xml',
         'wizard/push_augges_confirm_wizard_views.xml',
     ],

@@ -1,0 +1,13 @@
+<odoo>
+    <record id="product_product_inventory_career_view_form" model="ir.ui.view">
+        <field name="name">product.product.inventory.career.view.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="inventory_career"/>
+                <field name="default_stock_qty" invisible="inventory_career == False" required="inventory_career == True"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

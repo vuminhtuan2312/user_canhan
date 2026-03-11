@@ -14,11 +14,29 @@ class StockPicking(models.Model):
         string='Phiếu đề nghị điều chuyển'
     )
 
+    career_inventory = fields.Boolean(string="Kiểm kê hướng nghiệp")
     consume_request_id = fields.Many2one('stock.consume.request', string='Phiếu đề nghị xuất dùng')
     barcode_request_id = fields.Many2one('barcode.change.request', string='Phiếu đề nghị chuyển mã')
 
     priority_level = fields.Integer(string='Mức độ ưu tiên', compute='_compute_priority_level',  store=True)
 
+    @api.onchange('career_inventory')
+    def _onchange_career_inventory(self):
+        if self.career_inventory:
+            products = self.env['product.product'].search([
+                ('inventory_career', '=', True)
+            ])
+            lines = []
+            for product in products:
+                lines.append((0,0, {
+                    'name': product.display_name,
+                    'product_id': product.id,
+                    'product_uom_qty': product.default_stock_qty,
+                    'product_uom': product.uom_id.id,
+                    'location_id': self.location_id.id,
+                    'location_dest_id': self.location_dest_id.id,
+                }))
+            self.move_ids_without_package = lines
     @api.depends('state')
     def _compute_priority_level(self):
         for rec in self:
@@ -578,6 +596,40 @@ class StockPicking(models.Model):
         res = super().button_validate()
 
         for picking in self:
+            if picking.career_inventory:
+               products_ticket = self.env['product.product'].search([
+                   ('categ_id.name', 'in', [
+                       'Vé KVC',
+                       'Vé nhà tuyết',
+                       'Vé xe điện, thú điện',
+                       'Vé tháng'
+                   ])
+               ])
+               pos_lines = self.env['pos.order.line'].search([
+                   ('product_id', 'in', products_ticket.ids),
+                   ('order_id.state', 'in', ['paid', 'done', 'invoiced'])
+               ])
+               total_ticket = sum(pos_lines.mapped('qty'))
+               expected_loss = (total_ticket / 8000) * 50
+               for move in picking.move_ids_without_package:
+                   product = move.product_id
+                   if not product.inventory_career:
+                       continue
+
+                    # Hao hụt thực tế
+                   actual_loss = move.quantity - product.default_stock_qty
+
+                   # Chênh lệch
+                   diff = expected_loss - actual_loss
+
+                   # Tỷ lệ
+                   rate = 0
+                   if expected_loss:
+                       rate = diff / expected_loss
+
+                   move.diff_qty = diff
+                   move.diff_rate = rate
+
             if picking._is_internal_out_picking():
                 picking._create_internal_in_picking()
 

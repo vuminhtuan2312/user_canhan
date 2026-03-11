@@ -5,7 +5,8 @@
         <field name="arch" type="xml">
             <form string="Hình ảnh minh chứng">
                 <div class="d-flex justify-content-center">
-                    <field name="image" widget="capture_image" nolabel="1" class="img-fluid"/>
+                    <field name="image" widget="capture_image" options="{'media_type_field': 'media_type'}" nolabel="1" class="img-fluid"/>
+                    <field name="media_type" invisible="1"/>
                 </div>
             </form>
         </field>
